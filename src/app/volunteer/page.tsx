@@ -42,11 +42,14 @@ export default function Volunteer() {
               Fill out the form below and our campaign team will be in touch with next steps.
             </p>
             <form
-              action="mailto:dietzmanncc12@gmail.com"
+              action="https://formspree.io/f/xgawedvk"
               method="POST"
-              encType="text/plain"
               className="flex flex-col gap-5"
             >
+              {/* Formspree Honeypot - invisible to real users, catches bots */}
+              <input type="text" name="_gotcha" style={{ display: 'none' }} />
+              {/* Redirect back to home page after submission */}
+              <input type="hidden" name="_next" value="https://vote-deborah-dietzmann.vercel.app/" />
               <div>
                 <label htmlFor="v-name" className="block font-label-bold text-label-bold text-heritage-gold uppercase mb-2">Full Name</label>
                 <input 

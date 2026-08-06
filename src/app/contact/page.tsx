@@ -60,11 +60,14 @@ export default function Contact() {
               We read every message and will get back to you as soon as possible.
             </p>
             <form
-              action="mailto:dietzmanncc12@gmail.com"
+              action="https://formspree.io/f/xgawedvk"
               method="POST"
-              encType="text/plain"
               className="flex flex-col gap-5"
             >
+              {/* Formspree Honeypot - invisible to real users, catches bots */}
+              <input type="text" name="_gotcha" style={{ display: 'none' }} />
+              {/* Redirect back to home page after submission */}
+              <input type="hidden" name="_next" value="https://vote-deborah-dietzmann.vercel.app/" />
               <div>
                 <label htmlFor="c-name" className="block font-label-bold text-label-bold text-primary uppercase mb-2 text-xs tracking-wider">Name</label>
                 <input 
