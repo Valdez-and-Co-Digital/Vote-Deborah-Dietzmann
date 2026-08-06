@@ -4,8 +4,20 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.deborahdietzmannforjudge.com"),
   title: "Deborah Dietzmann for Judge | County Court 12",
   description: "Official campaign website for Deborah Dietzmann, candidate for Bexar County Court at Law No. 12. Over 25 years of criminal trial experience.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    siteName: "Deborah Dietzmann for Judge",
+    url: "https://www.deborahdietzmannforjudge.com",
+    title: "Deborah Dietzmann for Judge | County Court 12",
+    description: "Official campaign website for Deborah Dietzmann, candidate for Bexar County Court at Law No. 12. Over 25 years of criminal trial experience.",
+    locale: "en_US",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
