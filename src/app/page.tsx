@@ -1,69 +1,332 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>
-            To get started, edit the{" "}
-            <code className={styles.code}>page.tsx</code> file.
-          </h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      {/* Hero Section */}
+      <section className="relative min-h-[90vh] flex items-center bg-primary overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-cover bg-center opacity-40 patriotic-pattern"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-transparent"></div>
         </div>
-        <div className={styles.ctas}>
+        <div className="relative z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 md:grid-cols-2 gap-gutter items-center">
+          <div className="flex flex-col gap-stack-lg order-2 md:order-1 pt-12 md:pt-0">
+            <div className="space-y-4">
+              <h2 className="text-heritage-gold font-label-bold text-label-bold uppercase tracking-widest flex items-center gap-2">
+                <span className="material-symbols-outlined text-lg icon-fill-1">star</span>
+                For Judge County Court 12
+              </h2>
+              <h1 className="font-headline-display text-headline-lg-mobile md:text-headline-display text-on-primary uppercase leading-tight">
+                Vote <br/>
+                <span className="text-heritage-gold">Deborah</span> <br/>
+                Dietzmann
+              </h1>
+              <p className="font-body-lg text-body-lg text-inverse-on-surface opacity-90 max-w-xl">
+                Over 25 years of criminal trial experience, dedicated to keeping Bexar County safe while preserving the rights of its citizens.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-4">
+              <Link href="/volunteer" className="bg-secondary hover:bg-on-secondary-fixed-variant text-on-secondary font-label-bold text-label-bold uppercase px-8 py-4 rounded shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2">
+                <span>Get Involved</span>
+                <span className="material-symbols-outlined">arrow_forward</span>
+              </Link>
+              <Link href="/issues" className="border border-on-primary hover:border-heritage-gold text-on-primary hover:text-heritage-gold font-label-bold text-label-bold uppercase px-8 py-4 rounded transition-all duration-200">
+                Read Platform
+              </Link>
+            </div>
+          </div>
+          <div className="order-1 md:order-2 flex justify-center md:justify-end relative h-[400px] md:h-[600px]">
+            <div className="relative w-[300px] md:w-[450px] h-[400px] md:h-[600px]">
+              <Image 
+                src="/headshot-1.jpeg" 
+                alt="Deborah Dietzmann Portrait" 
+                width={500}
+                height={700}
+                className="absolute bottom-0 w-full object-contain z-10 drop-shadow-2xl h-[120%] object-bottom" 
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Voter Registration Urgency Banner */}
+      <section className="bg-secondary text-on-secondary py-4 px-5 md:px-16">
+        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div className="flex items-center gap-3">
+            <span className="material-symbols-outlined text-2xl icon-fill-1 flex-shrink-0">campaign</span>
+            <p className="font-bold text-sm uppercase tracking-wider">
+              <span className="opacity-80">Election Day:</span> <strong>November 3, 2026</strong>
+              <span className="mx-3 opacity-40">|</span>
+              <span className="opacity-80">Voter Reg Deadline:</span> <strong>October 5, 2026</strong>
+            </p>
+          </div>
           <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+            href="https://www.bexar.org/elections"
             target="_blank"
             rel="noopener noreferrer"
+            className="flex-shrink-0 bg-on-secondary text-secondary font-bold text-xs px-5 py-2 rounded hover:opacity-90 transition-opacity uppercase tracking-wider whitespace-nowrap"
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
+            Check Your Registration →
           </a>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* Experience Section (Bento Grid) */}
+      <section className="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto bg-surface-container-lowest">
+        <div className="text-center mb-16">
+          <h2 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-4">Unmatched Legal Experience</h2>
+          <div className="w-24 h-1 bg-heritage-gold mx-auto"></div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter auto-rows-[250px]">
+          <div className="md:col-span-2 bg-primary text-on-primary rounded-xl p-8 relative overflow-hidden flex flex-col justify-end shadow-md border border-legal-gray group hover:shadow-lg transition-shadow">
+            <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+              <span className="material-symbols-outlined text-[120px] icon-fill-1">gavel</span>
+            </div>
+            <div className="relative z-10">
+              <h3 className="font-headline-display text-4xl md:text-5xl text-heritage-gold mb-2">25+ Years</h3>
+              <p className="font-body-lg text-body-lg text-inverse-on-surface">Of dedicated criminal trial experience serving the community.</p>
+            </div>
+          </div>
+          
+          <div className="bg-surface text-on-surface rounded-xl p-8 flex flex-col justify-center items-center text-center shadow-md border border-legal-gray">
+            <span className="material-symbols-outlined text-4xl text-secondary mb-4">balance</span>
+            <h3 className="font-headline-md text-headline-md text-primary mb-2">1,000s</h3>
+            <p className="font-body-md text-body-md text-on-surface-variant">Cases litigated as both Prosecutor and Defense Attorney.</p>
+          </div>
+          
+          <div className="bg-surface text-on-surface rounded-xl p-8 shadow-md border border-legal-gray flex flex-col justify-between">
+            <span className="material-symbols-outlined text-4xl text-heritage-gold mb-4">home</span>
+            <div>
+              <h3 className="font-headline-md text-headline-md text-primary mb-2">30+ Years</h3>
+              <p className="font-body-md text-body-md text-on-surface-variant">Proudly calling San Antonio home. A lifelong Texan.</p>
+            </div>
+          </div>
+          
+          <div className="md:col-span-2 bg-surface text-on-surface rounded-xl p-8 shadow-md border border-legal-gray flex flex-col justify-center">
+            <h3 className="font-headline-md text-headline-md text-primary mb-4">Comprehensive Expertise</h3>
+            <p className="font-body-md text-body-md text-on-surface-variant">
+              Experienced in both felony and misdemeanor level cases encompassing violent and serious offenses ranging from Intoxication Manslaughter and White-Collar crimes to DWI, Drug Offenses, Burglaries, Theft, Assaults, and Immigration Matters.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Core Values Section */}
+      <section className="py-section-gap relative overflow-hidden bg-primary text-on-primary">
+        <div className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay hero-pattern"></div>
+        <div className="relative z-10 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+          <div className="text-center mb-16">
+            <h2 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-heritage-gold mb-4">Core Values</h2>
+            <p className="font-body-lg text-body-lg text-inverse-on-surface max-w-2xl mx-auto">Determined to ensure that justice is both swift and fair.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+            <div className="bg-on-primary/5 backdrop-blur-md border border-on-primary/10 rounded-xl p-8 hover:bg-on-primary/10 transition-colors">
+              <div className="w-12 h-12 rounded-full bg-heritage-gold/20 flex items-center justify-center mb-6 text-heritage-gold">
+                <span className="material-symbols-outlined text-2xl icon-fill-1">done_all</span>
+              </div>
+              <h3 className="font-headline-md text-headline-md text-on-primary mb-3">Decisive &amp; Results-Driven</h3>
+              <p className="font-body-md text-body-md text-inverse-on-surface opacity-90">Committed to clear, firm rulings based on a deep understanding of the law and a history of effective trial execution.</p>
+            </div>
+            <div className="bg-on-primary/5 backdrop-blur-md border border-on-primary/10 rounded-xl p-8 hover:bg-on-primary/10 transition-colors">
+              <div className="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mb-6 text-secondary">
+                <span className="material-symbols-outlined text-2xl icon-fill-1">shield</span>
+              </div>
+              <h3 className="font-headline-md text-headline-md text-on-primary mb-3">Protecting Citizens</h3>
+              <p className="font-body-md text-body-md text-inverse-on-surface opacity-90">Dedicated to keeping Bexar County safe while vigorously preserving the constitutional rights of every individual.</p>
+            </div>
+            <div className="bg-on-primary/5 backdrop-blur-md border border-on-primary/10 rounded-xl p-8 hover:bg-on-primary/10 transition-colors md:col-span-2 lg:col-span-1">
+              <div className="w-12 h-12 rounded-full bg-primary-fixed-dim/20 flex items-center justify-center mb-6 text-primary-fixed-dim">
+                <span className="material-symbols-outlined text-2xl icon-fill-1">scale</span>
+              </div>
+              <h3 className="font-headline-md text-headline-md text-on-primary mb-3">Swift &amp; Fair Justice</h3>
+              <p className="font-body-md text-body-md text-inverse-on-surface opacity-90">Ensuring the courts operate efficiently without compromising the integrity or fairness of the judicial process.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Voter Registration Full Section */}
+      <section className="py-20 px-5 md:px-16 bg-surface-container-low border-t border-outline-variant">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            {/* Key Dates */}
+            <div className="flex flex-col gap-6">
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold text-primary mb-3" style={{ fontFamily: '"Libre Caslon Text", serif' }}>
+                  Your Vote <span className="text-secondary">Matters.</span>
+                </h2>
+                <div className="w-16 h-1 bg-heritage-gold mb-5"></div>
+                <p className="text-legal-gray text-base leading-relaxed">
+                  Make sure you're registered and ready. Every vote in Bexar County counts — especially for local judicial races that directly impact your community.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-4 bg-white border-l-4 border-heritage-gold p-4 rounded-r-xl shadow-sm">
+                  <span className="material-symbols-outlined text-3xl text-heritage-gold icon-fill-1 flex-shrink-0">event</span>
+                  <div>
+                    <div className="font-bold text-primary text-sm uppercase tracking-wider">Voter Registration Deadline</div>
+                    <div className="text-2xl font-bold text-secondary" style={{ fontFamily: '"Libre Caslon Text", serif' }}>October 5, 2026</div>
+                    <div className="text-legal-gray text-xs">Last day to register or update name/address</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 bg-white border-l-4 border-primary p-4 rounded-r-xl shadow-sm">
+                  <span className="material-symbols-outlined text-3xl text-primary icon-fill-1 flex-shrink-0">how_to_vote</span>
+                  <div>
+                    <div className="font-bold text-primary text-sm uppercase tracking-wider">Election Day</div>
+                    <div className="text-2xl font-bold text-primary" style={{ fontFamily: '"Libre Caslon Text", serif' }}>November 3, 2026</div>
+                    <div className="text-legal-gray text-xs">Bexar County Court at Law No. 12 — Vote Dietzmann</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 bg-white border-l-4 border-outline-variant p-4 rounded-r-xl shadow-sm">
+                  <span className="material-symbols-outlined text-3xl text-legal-gray icon-fill-1 flex-shrink-0">phone</span>
+                  <div>
+                    <div className="font-bold text-primary text-sm uppercase tracking-wider">Bexar County Elections</div>
+                    <div className="text-base font-bold text-legal-gray">210-335-VOTE (8683)</div>
+                    <div className="text-legal-gray text-xs">For questions about registration or polling locations</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA Box */}
+            <div className="bg-primary text-on-primary rounded-2xl p-8 md:p-10 flex flex-col gap-6 shadow-xl">
+              <div className="text-center">
+                <span className="material-symbols-outlined text-6xl text-heritage-gold icon-fill-1">how_to_vote</span>
+                <h3 className="text-xl md:text-2xl font-bold text-on-primary mt-3" style={{ fontFamily: '"Libre Caslon Text", serif' }}>
+                  Are You Registered?
+                </h3>
+                <p className="text-inverse-on-surface opacity-80 text-sm mt-2">
+                  Confirm your registration status before the October 5th deadline.
+                </p>
+              </div>
+              <a
+                href="https://www.bexar.org/elections"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-heritage-gold hover:opacity-90 text-primary font-bold text-sm px-6 py-4 rounded shadow-md transition-all duration-200 flex items-center justify-center gap-2 uppercase tracking-wider"
+              >
+                <span className="material-symbols-outlined text-sm">open_in_new</span>
+                Check Registration at Bexar.org
+              </a>
+              <div className="border-t border-on-primary/10 pt-5 flex flex-col gap-3">
+                <p className="text-inverse-on-surface opacity-70 text-xs text-center uppercase tracking-wider">Also support the campaign</p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Link href="/volunteer" className="flex-1 bg-secondary hover:bg-on-secondary-fixed-variant text-on-secondary font-bold text-xs px-4 py-3 rounded text-center uppercase tracking-wider transition-all">
+                    Get Involved
+                  </Link>
+                  <a href="mailto:dietzmanncc12@gmail.com" className="flex-1 border border-on-primary/30 hover:border-heritage-gold text-on-primary hover:text-heritage-gold font-bold text-xs px-4 py-3 rounded text-center uppercase tracking-wider transition-all">
+                    Contact Us
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Follow Me on Facebook */}
+      <section className="py-20 px-5 md:px-16 bg-white border-t border-outline-variant">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+
+            {/* Left: Header + CTA */}
+            <div className="flex flex-col gap-6">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold text-primary mb-3" style={{ fontFamily: '"Libre Caslon Text", serif' }}>Follow Me</h2>
+                <div className="w-16 h-1 bg-heritage-gold mb-5"></div>
+                <p className="text-legal-gray text-base leading-relaxed">
+                  Stay up to date with campaign events, endorsements, and community updates. Follow Deborah on Facebook for the latest news.
+                </p>
+              </div>
+              <a
+                href="https://www.facebook.com/profile.php?id=61582742332373"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-3 bg-[#1877F2] hover:bg-[#1565d8] text-white font-bold text-sm px-6 py-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 w-fit"
+              >
+                <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                Follow on Facebook
+              </a>
+              {/* Preview cards */}
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-3 bg-surface-container-low border border-outline-variant p-4 rounded-xl">
+                  <div className="w-10 h-10 rounded-full bg-[#1877F2] flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 fill-white" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-bold text-primary text-sm">Deborah Dietzmann for Judge</div>
+                    <div className="text-legal-gray text-xs">I am honored to be endorsed by Friends of SAFA...</div>
+                  </div>
+                  <a href="https://www.facebook.com/profile.php?id=61582742332373" target="_blank" rel="noopener noreferrer" className="text-[#1877F2] text-xs font-bold uppercase tracking-wider flex-shrink-0">View →</a>
+                </div>
+                <div className="flex items-center gap-3 bg-surface-container-low border border-outline-variant p-4 rounded-xl">
+                  <div className="w-10 h-10 rounded-full bg-[#1877F2] flex items-center justify-center flex-shrink-0">
+                    <svg className="w-5 h-5 fill-white" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-bold text-primary text-sm">Deborah Dietzmann for Judge</div>
+                    <div className="text-legal-gray text-xs">Vote Tuesday, November 3, 2026 — Bexar County Court 12...</div>
+                  </div>
+                  <a href="https://www.facebook.com/profile.php?id=61582742332373" target="_blank" rel="noopener noreferrer" className="text-[#1877F2] text-xs font-bold uppercase tracking-wider flex-shrink-0">View →</a>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Facebook Page Plugin embed */}
+            <div className="flex justify-center">
+              <div className="rounded-2xl overflow-hidden shadow-xl border border-outline-variant w-full max-w-[380px]">
+                <iframe
+                  src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D61582742332373&tabs=timeline&width=380&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId"
+                  width="380"
+                  height="500"
+                  style={{ border: 'none', overflow: 'hidden' }}
+                  scrolling="no"
+                  frameBorder="0"
+                  allowFullScreen
+                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                  title="Deborah Dietzmann Facebook Page"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Hashtag Banner */}
+      <section className="bg-primary text-on-primary py-16 px-5 md:px-16 text-center">
+        <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-8">
+          <h2
+            className="text-4xl md:text-6xl font-bold text-on-primary tracking-tight"
+            style={{ fontFamily: '"Libre Caslon Text", serif' }}
+          >
+            <span className="text-heritage-gold">#</span>VoteDietzmann
+          </h2>
+          <p className="text-inverse-on-surface opacity-70 text-sm uppercase tracking-widest">Share. Spread the Word. Make a Difference.</p>
+          <div className="flex items-center gap-4">
+            {/* Facebook */}
+            <a
+              href="https://www.facebook.com/profile.php?id=61582742332373"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-14 h-14 rounded-full bg-[#1877F2] hover:scale-110 transition-transform flex items-center justify-center shadow-lg"
+              aria-label="Facebook"
+            >
+              <svg className="w-6 h-6 fill-white" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+          </div>
+          <a
+            href="https://www.facebook.com/profile.php?id=61582742332373"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 border border-heritage-gold text-heritage-gold hover:bg-heritage-gold hover:text-primary font-bold text-xs px-6 py-3 rounded-full transition-all duration-200 uppercase tracking-wider"
+          >
+            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            Follow Deborah on Facebook
+          </a>
+        </div>
+      </section>
+    </>
   );
 }
