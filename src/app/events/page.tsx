@@ -11,15 +11,21 @@ export const metadata = {
 export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function EventsPage() {
-  // Fetch events from Supabase, ordered by date ascending
-  const { data: events, error } = await supabase
+  // Fetch ALL events for the calendar (so users can navigate any month)
+  const { data: allEvents, error: allError } = await supabase
     .from('events')
     .select('*')
-    .gte('date', new Date().toISOString()) // Only show upcoming events
     .order('date', { ascending: true });
 
-  if (error) {
-    console.error('Error fetching events:', error);
+  // Fetch only upcoming events for the sidebar list
+  const { data: upcomingEvents, error: upcomingError } = await supabase
+    .from('events')
+    .select('*')
+    .gte('date', new Date().toISOString())
+    .order('date', { ascending: true });
+
+  if (allError || upcomingError) {
+    console.error('Error fetching events:', allError || upcomingError);
   }
 
   return (
@@ -48,14 +54,14 @@ export default async function EventsPage() {
             
             {/* Left Column: Calendar UI (Dynamic) */}
             <div className="lg:col-span-2">
-              <InteractiveCalendar events={events || []} />
+              <InteractiveCalendar events={allEvents || []} />
             </div>
 
             {/* Right Column: Upcoming Events List */}
             <div className="lg:col-span-1">
               <h2 className="font-headline-lg text-2xl text-primary mb-6 pb-4 border-b border-outline-variant">Upcoming Events</h2>
               
-              <EventsClientView events={events || []} />
+              <EventsClientView events={upcomingEvents || []} />
             </div>
 
           </div>

@@ -12,7 +12,17 @@ type Event = {
 };
 
 export default function InteractiveCalendar({ events }: { events: Event[] }) {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  // Default to the month of the nearest future event, or current month if none
+  const getDefaultDate = () => {
+    const now = new Date();
+    const futureEvents = events.filter(e => new Date(e.date) >= now);
+    if (futureEvents.length > 0) {
+      return new Date(futureEvents[0].date);
+    }
+    return now;
+  };
+
+  const [currentDate, setCurrentDate] = useState(getDefaultDate);
 
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
