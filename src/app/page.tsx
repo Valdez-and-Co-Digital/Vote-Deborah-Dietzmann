@@ -107,7 +107,7 @@ export default function Home() {
       {/* Experience Section (Bento Grid) */}
       <section className="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto bg-surface-container-lowest">
         <div className="text-center mb-16">
-          <h2 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-4">Unmatched Legal Experience</h2>
+          <h2 className="font-extrabold text-4xl md:text-5xl lg:text-6xl text-primary mb-4 tracking-tight">Unmatched Legal Experience</h2>
           <div className="w-24 h-1 bg-heritage-gold mx-auto"></div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter auto-rows-[250px]">

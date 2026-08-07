@@ -85,32 +85,7 @@ export default function Experience() {
         </div>
       </section>
 
-      {/* Connection Section */}
-      <section className="bg-primary py-section-gap px-margin-mobile md:px-margin-desktop border-t-4 border-heritage-gold">
-        <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12 bg-on-primary/5 p-8 md:p-12 rounded-2xl border border-on-primary/10">
-          <div className="flex-1 text-center md:text-left">
-            <h2 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-primary mb-4">Scan to Connect</h2>
-            <p className="font-body-md text-body-md text-inverse-on-surface opacity-90 mb-6">
-              Save Deborah's contact information directly to your phone. Share with friends and family to help spread the word.
-            </p>
-            <div className="inline-flex items-center gap-2 text-heritage-gold font-label-bold uppercase tracking-wider">
-              <span className="material-symbols-outlined">qr_code_scanner</span>
-              Open your camera app
-            </div>
-          </div>
-          <div className="w-full md:w-auto flex justify-center">
-            <div className="bg-neutral-white p-4 rounded-xl shadow-lg transform rotate-2 hover:rotate-0 transition-transform duration-300">
-              <Image 
-                src="/design-1.jpeg" 
-                alt="QR Code to connect" 
-                width={200}
-                height={200}
-                className="w-48 h-48 object-cover rounded" 
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+
     </>
   );
 }

@@ -54,7 +54,7 @@ export default function About() {
                 <span className="material-symbols-outlined text-heritage-gold text-xl icon-fill-1 flex-shrink-0 mt-0.5">school</span>
                 <div>
                   <div className="font-bold text-primary text-sm">Coronado High School</div>
-                  <div className="text-legal-gray text-sm">San Antonio, Texas</div>
+                  <div className="text-legal-gray text-sm">Lubbock, Texas</div>
                 </div>
               </div>
               <div className="flex items-start gap-3">
