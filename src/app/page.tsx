@@ -1,7 +1,21 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { supabase } from '@/lib/supabase';
 
-export default function Home() {
+export const revalidate = 60; // Revalidate every 60 seconds
+
+export default async function Home() {
+  // Fetch next 3 upcoming events
+  const { data: events, error } = await supabase
+    .from('events')
+    .select('*')
+    .gte('date', new Date().toISOString())
+    .order('date', { ascending: true })
+    .limit(3);
+
+  if (error) {
+    console.error('Error fetching events:', error);
+  }
   return (
     <>
       {/* Hero Section */}
@@ -187,77 +201,48 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Event 1 */}
-            <div className="bg-white rounded-xl shadow-md border border-outline-variant p-6 flex flex-col justify-between hover:shadow-lg transition-shadow">
-              <div className="flex gap-4 items-start mb-6">
-                <div className="bg-primary text-on-primary rounded text-center flex flex-col overflow-hidden min-w-[60px] flex-shrink-0">
-                  <span className="text-[10px] font-bold uppercase tracking-wider bg-primary/80 text-on-primary py-1">Oct</span>
-                  <span className="text-2xl font-bold py-1">12</span>
-                </div>
-                <h3 className="font-headline-sm text-headline-sm text-primary leading-tight mt-1">San Antonio Coffee &amp; Conversation</h3>
+            {!events || events.length === 0 ? (
+              <div className="col-span-3 text-center py-8 text-legal-gray">
+                No upcoming events scheduled right now.
               </div>
-              <div className="flex flex-col gap-2 mb-6">
-                <div className="flex items-center gap-2 text-on-surface-variant text-sm">
-                  <span className="material-symbols-outlined text-sm">schedule</span>
-                  <span>9:00 AM - 10:30 AM</span>
-                </div>
-                <div className="flex items-center gap-2 text-on-surface-variant text-sm">
-                  <span className="material-symbols-outlined text-sm">location_on</span>
-                  <span>Local Grounds, San Antonio</span>
-                </div>
-              </div>
-              <Link href="/events" className="text-secondary font-bold text-xs uppercase tracking-wider hover:text-secondary-container transition-colors">
-                View Details
-              </Link>
-            </div>
+            ) : (
+              events.map((event) => {
+                const dateObj = new Date(event.date);
+                const monthShort = dateObj.toLocaleDateString('en-US', { month: 'short' });
+                const day = dateObj.getDate();
+                const timeFormatted = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                const endTimeFormatted = event.end_time 
+                  ? new Date(event.end_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+                  : null;
 
-            {/* Event 2 */}
-            <div className="bg-white rounded-xl shadow-md border border-outline-variant p-6 flex flex-col justify-between hover:shadow-lg transition-shadow">
-              <div className="flex gap-4 items-start mb-6">
-                <div className="bg-primary text-on-primary rounded text-center flex flex-col overflow-hidden min-w-[60px] flex-shrink-0">
-                  <span className="text-[10px] font-bold uppercase tracking-wider bg-primary/80 text-on-primary py-1">Oct</span>
-                  <span className="text-2xl font-bold py-1">14</span>
-                </div>
-                <h3 className="font-headline-sm text-headline-sm text-primary leading-tight mt-1">Community Town Hall Meeting</h3>
-              </div>
-              <div className="flex flex-col gap-2 mb-6">
-                <div className="flex items-center gap-2 text-on-surface-variant text-sm">
-                  <span className="material-symbols-outlined text-sm">schedule</span>
-                  <span>6:30 PM - 8:00 PM</span>
-                </div>
-                <div className="flex items-center gap-2 text-on-surface-variant text-sm">
-                  <span className="material-symbols-outlined text-sm">location_on</span>
-                  <span>Bexar Community Center</span>
-                </div>
-              </div>
-              <Link href="/events" className="text-secondary font-bold text-xs uppercase tracking-wider hover:text-secondary-container transition-colors">
-                View Details
-              </Link>
-            </div>
-
-            {/* Event 3 */}
-            <div className="bg-white rounded-xl shadow-md border border-outline-variant p-6 flex flex-col justify-between hover:shadow-lg transition-shadow">
-              <div className="flex gap-4 items-start mb-6">
-                <div className="bg-primary text-on-primary rounded text-center flex flex-col overflow-hidden min-w-[60px] flex-shrink-0">
-                  <span className="text-[10px] font-bold uppercase tracking-wider bg-primary/80 text-on-primary py-1">Oct</span>
-                  <span className="text-2xl font-bold py-1">15</span>
-                </div>
-                <h3 className="font-headline-sm text-headline-sm text-primary leading-tight mt-1">Judicial Forum &amp; Q&amp;A</h3>
-              </div>
-              <div className="flex flex-col gap-2 mb-6">
-                <div className="flex items-center gap-2 text-on-surface-variant text-sm">
-                  <span className="material-symbols-outlined text-sm">schedule</span>
-                  <span>12:00 PM - 1:30 PM</span>
-                </div>
-                <div className="flex items-center gap-2 text-on-surface-variant text-sm">
-                  <span className="material-symbols-outlined text-sm">location_on</span>
-                  <span>Downtown Library Hall</span>
-                </div>
-              </div>
-              <Link href="/events" className="text-secondary font-bold text-xs uppercase tracking-wider hover:text-secondary-container transition-colors">
-                View Details
-              </Link>
-            </div>
+                return (
+                  <div key={event.id} className="bg-white rounded-xl shadow-md border border-outline-variant p-6 flex flex-col justify-between hover:shadow-lg transition-shadow">
+                    <div className="flex gap-4 items-start mb-6">
+                      <div className="bg-primary text-on-primary rounded text-center flex flex-col overflow-hidden min-w-[60px] flex-shrink-0">
+                        <span className="text-[10px] font-bold uppercase tracking-wider bg-primary/80 text-on-primary py-1">{monthShort}</span>
+                        <span className="text-2xl font-bold py-1">{day}</span>
+                      </div>
+                      <h3 className="font-headline-sm text-headline-sm text-primary leading-tight mt-1">{event.title}</h3>
+                    </div>
+                    <div className="flex flex-col gap-2 mb-6">
+                      <div className="flex items-center gap-2 text-on-surface-variant text-sm">
+                        <span className="material-symbols-outlined text-sm">schedule</span>
+                        <span>{timeFormatted} {endTimeFormatted ? `- ${endTimeFormatted}` : ''}</span>
+                      </div>
+                      {event.location && (
+                        <div className="flex items-center gap-2 text-on-surface-variant text-sm">
+                          <span className="material-symbols-outlined text-sm">location_on</span>
+                          <span>{event.location}</span>
+                        </div>
+                      )}
+                    </div>
+                    <Link href="/events" className="text-secondary font-bold text-xs uppercase tracking-wider hover:text-secondary-container transition-colors">
+                      View Details
+                    </Link>
+                  </div>
+                );
+              })
+            )}
           </div>
           
           <div className="mt-10 text-center">

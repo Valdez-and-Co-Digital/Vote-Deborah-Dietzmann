@@ -1,11 +1,25 @@
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
+import EventsClientView from './EventsClientView';
 
 export const metadata = {
   title: 'Campaign Events | Deborah Dietzmann for Judge',
   description: 'Join Deborah Dietzmann in the community. See where she\'ll be next and get involved in the movement for fair, experienced leadership in Bexar County.',
 };
 
-export default function EventsPage() {
+export const revalidate = 60; // Revalidate every 60 seconds
+
+export default async function EventsPage() {
+  // Fetch events from Supabase, ordered by date ascending
+  const { data: events, error } = await supabase
+    .from('events')
+    .select('*')
+    .gte('date', new Date().toISOString()) // Only show upcoming events
+    .order('date', { ascending: true });
+
+  if (error) {
+    console.error('Error fetching events:', error);
+  }
   return (
     <>
       {/* Hero Section */}
@@ -107,66 +121,7 @@ export default function EventsPage() {
             <div className="lg:col-span-1">
               <h2 className="font-headline-lg text-2xl text-primary mb-6 pb-4 border-b border-outline-variant">Upcoming Events</h2>
               
-              <div className="flex flex-col gap-6">
-                
-                {/* Event Card 1 */}
-                <div className="bg-white rounded-xl shadow-md border-l-4 border-secondary p-5 hover:shadow-lg transition-shadow">
-                  <div className="text-secondary font-bold text-xs uppercase tracking-widest mb-2">Oct 2, 2024</div>
-                  <h3 className="font-headline-md text-xl text-primary mb-3">Community Town Hall</h3>
-                  <div className="flex flex-col gap-2 mb-5">
-                    <div className="flex items-center gap-2 text-on-surface-variant text-sm">
-                      <span className="material-symbols-outlined text-[16px]">schedule</span>
-                      <span>6:00 PM - 8:00 PM</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-on-surface-variant text-sm">
-                      <span className="material-symbols-outlined text-[16px]">location_on</span>
-                      <span>San Antonio Public Library</span>
-                    </div>
-                  </div>
-                  <button className="w-full border border-primary text-primary hover:bg-primary hover:text-on-primary font-bold text-sm uppercase tracking-wider py-3 rounded transition-colors">
-                    RSVP
-                  </button>
-                </div>
-
-                {/* Event Card 2 */}
-                <div className="bg-white rounded-xl shadow-md border-l-4 border-heritage-gold p-5 hover:shadow-lg transition-shadow">
-                  <div className="text-heritage-gold font-bold text-xs uppercase tracking-widest mb-2">Oct 11, 2024</div>
-                  <h3 className="font-headline-md text-xl text-primary mb-3">Legal Professionals Mixer</h3>
-                  <div className="flex flex-col gap-2 mb-5">
-                    <div className="flex items-center gap-2 text-on-surface-variant text-sm">
-                      <span className="material-symbols-outlined text-[16px]">schedule</span>
-                      <span>5:30 PM - 7:30 PM</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-on-surface-variant text-sm">
-                      <span className="material-symbols-outlined text-[16px]">location_on</span>
-                      <span>Downtown Bar Association</span>
-                    </div>
-                  </div>
-                  <button className="w-full border border-primary text-primary hover:bg-primary hover:text-on-primary font-bold text-sm uppercase tracking-wider py-3 rounded transition-colors">
-                    RSVP
-                  </button>
-                </div>
-
-                {/* Event Card 3 */}
-                <div className="bg-white rounded-xl shadow-md border-l-4 border-primary p-5 hover:shadow-lg transition-shadow">
-                  <div className="text-primary font-bold text-xs uppercase tracking-widest mb-2">Oct 15, 2024</div>
-                  <h3 className="font-headline-md text-xl text-primary mb-3">Judicial Forum &amp; Q&amp;A</h3>
-                  <div className="flex flex-col gap-2 mb-5">
-                    <div className="flex items-center gap-2 text-on-surface-variant text-sm">
-                      <span className="material-symbols-outlined text-[16px]">schedule</span>
-                      <span>12:00 PM - 1:30 PM</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-on-surface-variant text-sm">
-                      <span className="material-symbols-outlined text-[16px]">location_on</span>
-                      <span>Downtown Library Hall</span>
-                    </div>
-                  </div>
-                  <button className="w-full border border-primary text-primary hover:bg-primary hover:text-on-primary font-bold text-sm uppercase tracking-wider py-3 rounded transition-colors">
-                    RSVP
-                  </button>
-                </div>
-
-              </div>
+              <EventsClientView events={events || []} />
             </div>
 
           </div>
