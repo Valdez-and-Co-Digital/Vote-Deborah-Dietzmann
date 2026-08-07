@@ -6,10 +6,14 @@ import { supabase } from '@/lib/supabase';
 interface RSVPModalProps {
   eventId: string;
   eventTitle: string;
+  eventDate: string;
+  eventEndTime: string | null;
+  eventLocation: string | null;
+  eventDescription: string | null;
   onClose: () => void;
 }
 
-export default function RSVPModal({ eventId, eventTitle, onClose }: RSVPModalProps) {
+export default function RSVPModal({ eventId, eventTitle, eventDate, eventEndTime, eventLocation, eventDescription, onClose }: RSVPModalProps) {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -56,6 +60,41 @@ export default function RSVPModal({ eventId, eventTitle, onClose }: RSVPModalPro
     }
   };
 
+  const generateICS = () => {
+    const startDate = new Date(eventDate);
+    // Format to YYYYMMDDTHHmmssZ
+    const formatDate = (date: Date) => {
+      return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    };
+
+    const startStr = formatDate(startDate);
+    const endStr = eventEndTime ? formatDate(new Date(eventEndTime)) : formatDate(new Date(startDate.getTime() + 60 * 60 * 1000));
+
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Deborah Dietzmann Campaign//EN
+BEGIN:VEVENT
+UID:${eventId}@deborahdietzmannforjudge.com
+DTSTAMP:${formatDate(new Date())}
+DTSTART:${startStr}
+DTEND:${endStr}
+SUMMARY:${eventTitle}
+DESCRIPTION:${eventDescription || ''}
+LOCATION:${eventLocation || ''}
+END:VEVENT
+END:VCALENDAR`;
+
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${eventTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
@@ -80,12 +119,22 @@ export default function RSVPModal({ eventId, eventTitle, onClose }: RSVPModalPro
               </div>
               <h3 className="text-2xl font-bold text-primary mb-2">You're on the list!</h3>
               <p className="text-legal-gray mb-6">Thank you for your RSVP. We look forward to seeing you there.</p>
-              <button 
-                onClick={onClose}
-                className="bg-primary hover:bg-primary-fixed-variant text-on-primary font-bold px-8 py-3 rounded-md transition-colors"
-              >
-                Close
-              </button>
+              
+              <div className="flex flex-col gap-3">
+                <button 
+                  onClick={generateICS}
+                  className="w-full bg-surface-variant hover:bg-outline-variant text-primary font-bold py-3 rounded-md transition-colors flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-lg">event</span>
+                  Add to Calendar
+                </button>
+                <button 
+                  onClick={onClose}
+                  className="w-full bg-primary hover:bg-primary-fixed-variant text-on-primary font-bold px-8 py-3 rounded-md transition-colors"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">

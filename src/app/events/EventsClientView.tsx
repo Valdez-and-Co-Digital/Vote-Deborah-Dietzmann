@@ -68,6 +68,10 @@ export default function EventsClientView({ events }: { events: Event[] }) {
         <RSVPModal 
           eventId={selectedEvent.id}
           eventTitle={selectedEvent.title}
+          eventDate={selectedEvent.date}
+          eventEndTime={selectedEvent.end_time}
+          eventLocation={selectedEvent.location}
+          eventDescription={selectedEvent.description}
           onClose={() => setSelectedEvent(null)}
         />
       )}
