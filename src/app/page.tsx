@@ -128,7 +128,7 @@ export default function Home() {
           </div>
           
           <div className="bg-surface text-on-surface rounded-xl p-8 shadow-md border border-legal-gray flex flex-col justify-between">
-            <span className="material-symbols-outlined text-4xl text-heritage-gold mb-4">home</span>
+            <span className="material-symbols-outlined text-6xl text-heritage-gold mb-4">home</span>
             <div>
               <h3 className="font-headline-md text-headline-md text-primary mb-2">30+ Years</h3>
               <p className="font-body-md text-body-md text-on-surface-variant">Proudly calling San Antonio home. A lifelong Texan.</p>
@@ -174,6 +174,96 @@ export default function Home() {
               <h3 className="font-headline-md text-headline-md text-on-primary mb-3">Swift &amp; Fair Justice</h3>
               <p className="font-body-md text-body-md text-inverse-on-surface opacity-90">Ensuring the courts operate efficiently without compromising the integrity or fairness of the judicial process.</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Upcoming Events Section */}
+      <section className="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface">
+        <div className="max-w-container-max mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-4">Upcoming Events This Week</h2>
+            <div className="w-16 h-1 bg-heritage-gold mx-auto"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Event 1 */}
+            <div className="bg-white rounded-xl shadow-md border border-outline-variant p-6 flex flex-col justify-between hover:shadow-lg transition-shadow">
+              <div className="flex gap-4 items-start mb-6">
+                <div className="bg-primary text-on-primary rounded text-center flex flex-col overflow-hidden min-w-[60px] flex-shrink-0">
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-primary/80 text-on-primary py-1">Oct</span>
+                  <span className="text-2xl font-bold py-1">12</span>
+                </div>
+                <h3 className="font-headline-sm text-headline-sm text-primary leading-tight mt-1">San Antonio Coffee &amp; Conversation</h3>
+              </div>
+              <div className="flex flex-col gap-2 mb-6">
+                <div className="flex items-center gap-2 text-on-surface-variant text-sm">
+                  <span className="material-symbols-outlined text-sm">schedule</span>
+                  <span>9:00 AM - 10:30 AM</span>
+                </div>
+                <div className="flex items-center gap-2 text-on-surface-variant text-sm">
+                  <span className="material-symbols-outlined text-sm">location_on</span>
+                  <span>Local Grounds, San Antonio</span>
+                </div>
+              </div>
+              <Link href="/events" className="text-secondary font-bold text-xs uppercase tracking-wider hover:text-secondary-container transition-colors">
+                View Details
+              </Link>
+            </div>
+
+            {/* Event 2 */}
+            <div className="bg-white rounded-xl shadow-md border border-outline-variant p-6 flex flex-col justify-between hover:shadow-lg transition-shadow">
+              <div className="flex gap-4 items-start mb-6">
+                <div className="bg-primary text-on-primary rounded text-center flex flex-col overflow-hidden min-w-[60px] flex-shrink-0">
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-primary/80 text-on-primary py-1">Oct</span>
+                  <span className="text-2xl font-bold py-1">14</span>
+                </div>
+                <h3 className="font-headline-sm text-headline-sm text-primary leading-tight mt-1">Community Town Hall Meeting</h3>
+              </div>
+              <div className="flex flex-col gap-2 mb-6">
+                <div className="flex items-center gap-2 text-on-surface-variant text-sm">
+                  <span className="material-symbols-outlined text-sm">schedule</span>
+                  <span>6:30 PM - 8:00 PM</span>
+                </div>
+                <div className="flex items-center gap-2 text-on-surface-variant text-sm">
+                  <span className="material-symbols-outlined text-sm">location_on</span>
+                  <span>Bexar Community Center</span>
+                </div>
+              </div>
+              <Link href="/events" className="text-secondary font-bold text-xs uppercase tracking-wider hover:text-secondary-container transition-colors">
+                View Details
+              </Link>
+            </div>
+
+            {/* Event 3 */}
+            <div className="bg-white rounded-xl shadow-md border border-outline-variant p-6 flex flex-col justify-between hover:shadow-lg transition-shadow">
+              <div className="flex gap-4 items-start mb-6">
+                <div className="bg-primary text-on-primary rounded text-center flex flex-col overflow-hidden min-w-[60px] flex-shrink-0">
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-primary/80 text-on-primary py-1">Oct</span>
+                  <span className="text-2xl font-bold py-1">15</span>
+                </div>
+                <h3 className="font-headline-sm text-headline-sm text-primary leading-tight mt-1">Judicial Forum &amp; Q&amp;A</h3>
+              </div>
+              <div className="flex flex-col gap-2 mb-6">
+                <div className="flex items-center gap-2 text-on-surface-variant text-sm">
+                  <span className="material-symbols-outlined text-sm">schedule</span>
+                  <span>12:00 PM - 1:30 PM</span>
+                </div>
+                <div className="flex items-center gap-2 text-on-surface-variant text-sm">
+                  <span className="material-symbols-outlined text-sm">location_on</span>
+                  <span>Downtown Library Hall</span>
+                </div>
+              </div>
+              <Link href="/events" className="text-secondary font-bold text-xs uppercase tracking-wider hover:text-secondary-container transition-colors">
+                View Details
+              </Link>
+            </div>
+          </div>
+          
+          <div className="mt-10 text-center">
+            <Link href="/events" className="inline-flex items-center justify-center gap-2 border-2 border-primary text-primary font-bold text-xs uppercase tracking-widest px-8 py-3 rounded hover:bg-primary hover:text-on-primary transition-all duration-200">
+              View All Events <span className="material-symbols-outlined text-sm">calendar_month</span>
+            </Link>
           </div>
         </div>
       </section>

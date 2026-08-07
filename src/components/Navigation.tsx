@@ -9,6 +9,7 @@ const navLinks = [
   { href: '/experience', label: 'Experience' },
   { href: '/issues', label: 'Platform' },
   { href: '/endorsements', label: 'Endorsements' },
+  { href: '/events', label: 'Events' },
   { href: '/volunteer', label: 'Get Involved' },
 ];
 
@@ -17,7 +18,7 @@ export default function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="bg-primary text-on-primary w-full top-0 border-b border-heritage-gold shadow-md z-50 fixed">
+    <header className="bg-primary text-on-primary w-full top-0 border-b border-heritage-gold shadow-md z-50 sticky">
       <div className="flex justify-between items-center px-5 md:px-16 py-4 w-full max-w-[1200px] mx-auto">
         
         {/* Logo */}
