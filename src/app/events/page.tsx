@@ -8,8 +8,8 @@ export const metadata = {
   description: 'Join Deborah Dietzmann in the community. See where she\'ll be next and get involved in the movement for fair, experienced leadership in Bexar County.',
 };
 
-export const revalidate = 60; // Revalidate every 60 seconds
-
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 export default async function EventsPage() {
   // Fetch ALL events for the calendar (so users can navigate any month)
   const { data: allEvents, error: allError } = await supabase
