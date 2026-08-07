@@ -6,7 +6,7 @@ export default function Volunteer() {
     <>
       <Hero 
         title="Get Involved" 
-        subtitle="Join our grassroots movement to bring fair, experienced leadership to County Court 12. Every door knocked, every call made, every yard sign matters."
+        subtitle="Join our grassroots movement to bring fair, experienced leadership to County Court 12. Every door knocked and every call made matters."
         overline="Make a Difference"
       />
 
@@ -20,9 +20,7 @@ export default function Volunteer() {
               {[
                 { icon: 'door_front', label: 'Door Knocking / Canvassing', desc: 'Meet your neighbors and spread the word directly.' },
                 { icon: 'phone_in_talk', label: 'Phone Banking', desc: 'Help us reach voters across Bexar County.' },
-                { icon: 'yard', label: 'Request a Yard Sign', desc: 'Show your support in your neighborhood.' },
                 { icon: 'celebration', label: 'Host a Meet & Greet', desc: 'Invite friends and family to meet Deborah.' },
-                { icon: 'volunteer_activism', label: 'Donate to the Campaign', desc: 'Your financial support makes a direct impact.' },
               ].map(({ icon, label, desc }) => (
                 <div key={label} className="flex items-start gap-4 bg-neutral-white border border-outline-variant p-5 rounded-xl hover:shadow-md transition-shadow">
                   <span className="material-symbols-outlined text-3xl text-secondary icon-fill-1 flex-shrink-0 mt-1">{icon}</span>
@@ -77,7 +75,7 @@ export default function Volunteer() {
               <div>
                 <label className="block font-label-bold text-label-bold text-heritage-gold uppercase mb-3">How would you like to help?</label>
                 <div className="flex flex-col gap-2">
-                  {['Door Knocking / Canvassing', 'Phone Banking', 'Request a Yard Sign', 'Host a Meet & Greet', 'Financial Donation'].map(option => (
+                  {['Door Knocking / Canvassing', 'Phone Banking', 'Host a Meet & Greet'].map(option => (
                     <label key={option} className="flex items-center gap-3 text-inverse-on-surface opacity-90 cursor-pointer">
                       <input type="checkbox" name={option} className="w-4 h-4 accent-heritage-gold" />
                       <span className="font-body-md text-body-md">{option}</span>

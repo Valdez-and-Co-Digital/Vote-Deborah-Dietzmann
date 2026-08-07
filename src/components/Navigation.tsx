@@ -50,14 +50,8 @@ export default function Navigation() {
           })}
         </nav>
 
-        {/* Donate + Hamburger */}
+        {/* Hamburger */}
         <div className="flex items-center gap-3">
-          <Link
-            href="/volunteer"
-            className="hidden md:inline-flex bg-secondary hover:bg-on-secondary-fixed-variant text-on-secondary font-bold text-xs px-5 py-3 rounded shadow-md hover:shadow-lg transition-all duration-200 uppercase tracking-wider"
-          >
-            Donate Now
-          </Link>
           <button
             className="md:hidden text-heritage-gold"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -92,13 +86,6 @@ export default function Navigation() {
               </Link>
             );
           })}
-          <Link
-            href="/volunteer"
-            onClick={() => setMenuOpen(false)}
-            className="mt-3 bg-secondary text-on-secondary font-bold text-xs px-5 py-3 rounded text-center uppercase tracking-wider"
-          >
-            Donate Now
-          </Link>
         </div>
       )}
     </header>

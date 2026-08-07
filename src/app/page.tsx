@@ -73,6 +73,37 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Ballotpedia Section */}
+      <section className="py-12 px-5 md:px-16 bg-surface-container-lowest">
+        <div className="max-w-[1200px] mx-auto bg-primary text-on-primary rounded-2xl shadow-xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-6 opacity-10">
+             <span className="material-symbols-outlined text-[150px] icon-fill-1">history_edu</span>
+          </div>
+          <div className="flex flex-col md:flex-row items-center gap-6 relative z-10 w-full md:w-auto text-center md:text-left">
+            <div className="w-20 h-20 bg-heritage-gold rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+              <span className="material-symbols-outlined text-4xl text-primary icon-fill-1">menu_book</span>
+            </div>
+            <div>
+              <h3 className="font-headline-md text-3xl font-bold mb-2 text-heritage-gold" style={{ fontFamily: '"Libre Caslon Text", serif' }}>
+                Research on Ballotpedia
+              </h3>
+              <p className="text-inverse-on-surface opacity-90 text-body-lg max-w-2xl">
+                An informed voter is our best asset. Learn more about Deborah's qualifications, experience, and the race for County Court 12 on Ballotpedia.
+              </p>
+            </div>
+          </div>
+          <a
+            href="https://ballotpedia.org/Deborah_Dietzmann"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-shrink-0 bg-heritage-gold hover:opacity-90 text-primary font-bold px-8 py-4 rounded-lg shadow-md transition-all uppercase tracking-wider text-sm flex items-center justify-center gap-2 relative z-10 w-full md:w-auto"
+          >
+            View Candidate Profile
+            <span className="material-symbols-outlined text-sm">open_in_new</span>
+          </a>
+        </div>
+      </section>
+
       {/* Experience Section (Bento Grid) */}
       <section className="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto bg-surface-container-lowest">
         <div className="text-center mb-16">
