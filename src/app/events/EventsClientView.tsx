@@ -53,12 +53,36 @@ export default function EventsClientView({ events }: { events: Event[] }) {
                   <p className="text-sm text-legal-gray mt-2">{event.description}</p>
                 )}
               </div>
-              <button 
-                onClick={() => setSelectedEvent(event)}
-                className="w-full border border-primary text-primary hover:bg-primary hover:text-on-primary font-bold text-sm uppercase tracking-wider py-3 rounded transition-colors"
-              >
-                RSVP
-              </button>
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => setSelectedEvent(event)}
+                  className="flex-1 border border-primary text-primary hover:bg-primary hover:text-on-primary font-bold text-sm uppercase tracking-wider py-3 rounded transition-colors"
+                >
+                  RSVP
+                </button>
+                <button
+                  onClick={() => {
+                    const startDate = new Date(event.date);
+                    const formatDate = (date: Date) => date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+                    const startStr = formatDate(startDate);
+                    const endStr = event.end_time ? formatDate(new Date(event.end_time)) : formatDate(new Date(startDate.getTime() + 60 * 60 * 1000));
+                    const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Deborah Dietzmann Campaign//EN\nBEGIN:VEVENT\nUID:${event.id}@deborahdietzmannforjudge.com\nDTSTAMP:${formatDate(new Date())}\nDTSTART:${startStr}\nDTEND:${endStr}\nSUMMARY:${event.title}\nDESCRIPTION:${event.description || ''}\nLOCATION:${event.location || ''}\nEND:VEVENT\nEND:VCALENDAR`;
+                    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `${event.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                  }}
+                  className="flex-1 bg-surface-variant hover:bg-outline-variant text-primary border border-outline-variant font-bold text-sm uppercase tracking-wider py-3 rounded transition-colors flex items-center justify-center gap-1"
+                >
+                  <span className="material-symbols-outlined text-[16px]">event</span>
+                  Add to Calendar
+                </button>
+              </div>
             </div>
           );
         })
