@@ -83,7 +83,7 @@ export default function Footer() {
               © 2026 Deborah Dietzmann for Judge. All Rights Reserved.
             </p>
             <p className="text-inverse-on-surface opacity-40 text-xs">
-              Pol. Adv. Paid for by the Deborah Dietzmann campaign. [Treasurer Name], Treas.
+              Pol. Adv. Paid for by the Deborah Dietzmann campaign. Erica Gregory, Treas.
             </p>
           </div>
           <a
