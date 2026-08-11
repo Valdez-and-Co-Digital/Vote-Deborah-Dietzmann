@@ -198,7 +198,7 @@ export default async function Home() {
       <section className="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface">
         <div className="max-w-container-max mx-auto">
           <div className="text-center mb-12">
-            <h2 className="font-extrabold text-4xl md:text-5xl lg:text-6xl text-primary mb-4 tracking-tight">Upcoming Events This Week</h2>
+            <h2 className="font-extrabold text-4xl md:text-5xl lg:text-6xl text-primary mb-4 tracking-tight">Upcoming Events</h2>
             <div className="w-24 h-1 bg-heritage-gold mx-auto"></div>
           </div>
           
