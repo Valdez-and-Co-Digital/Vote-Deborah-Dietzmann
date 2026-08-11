@@ -50,16 +50,16 @@ export default async function EventsPage() {
       <section className="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface">
         <div className="max-w-[1200px] mx-auto">
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="flex flex-col gap-16">
             
-            {/* Left Column: Calendar UI (Dynamic) */}
-            <div className="lg:col-span-2 hidden lg:block">
+            {/* Top: Calendar UI (Dynamic) */}
+            <div className="w-full hidden lg:block">
               <InteractiveCalendar events={allEvents || []} />
             </div>
 
-            {/* Right Column: Upcoming Events List */}
-            <div className="lg:col-span-1">
-              <h2 className="font-headline-lg text-2xl text-primary mb-6 pb-4 border-b border-outline-variant">Upcoming Events</h2>
+            {/* Bottom: Upcoming Events List */}
+            <div className="w-full">
+              <h2 className="font-headline-lg text-2xl md:text-3xl text-primary mb-8 pb-4 border-b border-outline-variant">Upcoming Events</h2>
               
               <EventsClientView events={upcomingEvents || []} />
             </div>

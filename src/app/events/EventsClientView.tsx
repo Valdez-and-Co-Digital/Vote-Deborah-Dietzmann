@@ -80,9 +80,9 @@ export default function EventsClientView({ events }: { events: Event[] }) {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       {events.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-md border border-outline-variant p-8 text-center">
+        <div className="md:col-span-2 bg-white rounded-xl shadow-md border border-outline-variant p-8 text-center">
           <p className="text-legal-gray">No upcoming events scheduled at this time. Please check back later!</p>
         </div>
       ) : (
