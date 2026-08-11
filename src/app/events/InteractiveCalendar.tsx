@@ -106,14 +106,29 @@ export default function InteractiveCalendar({ events }: { events: Event[] }) {
                 </span>
                 
                 {/* Event Indicators */}
-                <div className="flex flex-col gap-1 mt-auto w-full">
+                <div className="flex flex-col gap-1.5 mt-auto w-full">
                   {dayEvents.slice(0, 2).map((e) => (
-                    <div key={e.id} className="w-full bg-primary text-on-primary text-[9px] font-bold p-1 rounded-sm text-center leading-none truncate group-hover:bg-primary-fixed-variant transition-colors">
+                    <div 
+                      key={e.id} 
+                      onClick={(e_evt) => {
+                        e_evt.stopPropagation();
+                        const el = document.getElementById(`event-${e.id}`);
+                        if (el) {
+                          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          el.classList.add('ring-4', 'ring-primary', 'ring-offset-4', 'transition-all', 'duration-500');
+                          setTimeout(() => {
+                            el.classList.remove('ring-4', 'ring-primary', 'ring-offset-4');
+                          }, 2000);
+                        }
+                      }}
+                      className="w-full bg-primary text-on-primary text-xs font-bold p-1.5 rounded text-center leading-tight truncate group-hover:bg-primary-fixed-variant hover:scale-[1.02] transition-all cursor-pointer shadow-sm"
+                      title={e.title}
+                    >
                       {e.title}
                     </div>
                   ))}
                   {dayEvents.length > 2 && (
-                    <div className="text-[9px] text-primary font-bold text-center">
+                    <div className="text-[10px] text-primary font-bold text-center pt-0.5">
                       +{dayEvents.length - 2} more
                     </div>
                   )}

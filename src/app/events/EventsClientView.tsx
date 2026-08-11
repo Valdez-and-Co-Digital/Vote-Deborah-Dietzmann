@@ -97,7 +97,7 @@ export default function EventsClientView({ events }: { events: Event[] }) {
           const { googleLink, outlookLink } = getCalendarLinks(event);
 
           return (
-            <div key={event.id} className="bg-white rounded-xl shadow-md border-l-4 border-primary p-5 hover:shadow-lg transition-shadow">
+            <div key={event.id} id={`event-${event.id}`} className="bg-white rounded-xl shadow-md border-l-4 border-primary p-5 hover:shadow-lg transition-shadow">
               <div className="text-primary font-bold text-xs uppercase tracking-widest mb-2">{dateFormatted}</div>
               <h3 className="font-headline-md text-xl text-primary mb-3">{event.title}</h3>
               <div className="flex flex-col gap-2 mb-5">
