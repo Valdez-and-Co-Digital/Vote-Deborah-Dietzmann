@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import Button from "@/components/Button";
+import VolunteerClientForm from "./VolunteerClientForm";
 
 export default function Volunteer() {
   return (
@@ -34,60 +35,7 @@ export default function Volunteer() {
           </div>
 
           {/* Sign Up Form */}
-          <div className="bg-primary text-on-primary rounded-2xl p-8 shadow-xl">
-            <h2 className="font-headline-md text-headline-md text-heritage-gold mb-2">Sign Up to Volunteer</h2>
-            <p className="font-body-md text-body-md text-inverse-on-surface opacity-90 mb-8">
-              Fill out the form below and our campaign team will be in touch with next steps.
-            </p>
-            <form
-              action="https://formspree.io/f/xgawedvk"
-              method="POST"
-              className="flex flex-col gap-5"
-            >
-              {/* Formspree Honeypot - invisible to real users, catches bots */}
-              <input type="text" name="_gotcha" style={{ display: 'none' }} />
-              {/* Redirect back to home page after submission */}
-              <input type="hidden" name="_next" value="https://vote-deborah-dietzmann.vercel.app/" />
-              <div>
-                <label htmlFor="v-name" className="block font-label-bold text-label-bold text-heritage-gold uppercase mb-2">Full Name</label>
-                <input 
-                  type="text" id="v-name" name="Name" required
-                  className="w-full bg-on-primary/10 border border-on-primary/20 text-on-primary placeholder:text-on-primary/50 px-4 py-3 rounded-lg focus:outline-none focus:border-heritage-gold transition-colors" 
-                  placeholder="Jane Smith"
-                />
-              </div>
-              <div>
-                <label htmlFor="v-email" className="block font-label-bold text-label-bold text-heritage-gold uppercase mb-2">Email Address</label>
-                <input 
-                  type="email" id="v-email" name="Email" required
-                  className="w-full bg-on-primary/10 border border-on-primary/20 text-on-primary placeholder:text-on-primary/50 px-4 py-3 rounded-lg focus:outline-none focus:border-heritage-gold transition-colors" 
-                  placeholder="jane@email.com"
-                />
-              </div>
-              <div>
-                <label htmlFor="v-phone" className="block font-label-bold text-label-bold text-heritage-gold uppercase mb-2">Phone (Optional)</label>
-                <input 
-                  type="tel" id="v-phone" name="Phone"
-                  className="w-full bg-on-primary/10 border border-on-primary/20 text-on-primary placeholder:text-on-primary/50 px-4 py-3 rounded-lg focus:outline-none focus:border-heritage-gold transition-colors" 
-                  placeholder="(210) 555-0100"
-                />
-              </div>
-              <div>
-                <label className="block font-label-bold text-label-bold text-heritage-gold uppercase mb-3">How would you like to help?</label>
-                <div className="flex flex-col gap-2">
-                  {['Door Knocking / Canvassing', 'Phone Banking', 'Host a Meet & Greet'].map(option => (
-                    <label key={option} className="flex items-center gap-3 text-inverse-on-surface opacity-90 cursor-pointer">
-                      <input type="checkbox" name={option} className="w-4 h-4 accent-heritage-gold" />
-                      <span className="font-body-md text-body-md">{option}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-              <Button type="submit" variant="primary" className="mt-2 w-full justify-center">
-                Sign Up to Volunteer
-              </Button>
-            </form>
-          </div>
+          <VolunteerClientForm />
         </div>
       </section>
     </>
