@@ -10,6 +10,7 @@ type Event = {
   end_time: string | null;
   location: string | null;
   description: string | null;
+  rsvp_link?: string | null;
 };
 
 export default function EventsClientView({ events }: { events: Event[] }) {
@@ -54,12 +55,23 @@ export default function EventsClientView({ events }: { events: Event[] }) {
                 )}
               </div>
               <div className="flex gap-3">
-                <button 
-                  onClick={() => setSelectedEvent(event)}
-                  className="flex-1 border border-primary text-primary hover:bg-primary hover:text-on-primary font-bold text-sm uppercase tracking-wider py-3 rounded transition-colors"
-                >
-                  RSVP
-                </button>
+                {event.rsvp_link ? (
+                  <a 
+                    href={event.rsvp_link}
+                    target={event.rsvp_link.startsWith('http') ? '_blank' : undefined}
+                    rel={event.rsvp_link.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    className="flex-1 border border-primary text-primary hover:bg-primary hover:text-on-primary font-bold text-sm uppercase tracking-wider py-3 rounded transition-colors text-center flex items-center justify-center"
+                  >
+                    RSVP Info
+                  </a>
+                ) : (
+                  <button 
+                    onClick={() => setSelectedEvent(event)}
+                    className="flex-1 border border-primary text-primary hover:bg-primary hover:text-on-primary font-bold text-sm uppercase tracking-wider py-3 rounded transition-colors"
+                  >
+                    RSVP
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     const startDate = new Date(event.date);
