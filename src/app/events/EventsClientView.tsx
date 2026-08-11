@@ -15,6 +15,69 @@ type Event = {
 
 export default function EventsClientView({ events }: { events: Event[] }) {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [calendarDropdownOpen, setCalendarDropdownOpen] = useState<string | null>(null);
+  const [copiedEmailEventId, setCopiedEmailEventId] = useState<string | null>(null);
+
+  const handleMailtoClick = (e: React.MouseEvent<HTMLAnchorElement>, email: string, eventId: string) => {
+    e.preventDefault();
+    navigator.clipboard.writeText(email);
+    setCopiedEmailEventId(eventId);
+    setTimeout(() => setCopiedEmailEventId(null), 2000);
+    window.location.href = `mailto:${email}`;
+  };
+
+  const getCalendarLinks = (event: Event) => {
+    const startDate = new Date(event.date);
+    const endDate = event.end_time ? new Date(event.end_time) : new Date(startDate.getTime() + 60 * 60 * 1000);
+    
+    // Google formatting
+    const formatGoogleDate = (date: Date) => date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const googleStart = formatGoogleDate(startDate);
+    const googleEnd = formatGoogleDate(endDate);
+    const googleParams = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: event.title,
+      dates: `${googleStart}/${googleEnd}`,
+      details: event.description || '',
+      location: event.location || ''
+    });
+    const googleLink = `https://calendar.google.com/calendar/render?${googleParams.toString()}`;
+
+    // Outlook formatting
+    const formatOutlookDate = (date: Date) => date.toISOString().split('.')[0] + 'Z';
+    const outlookStart = formatOutlookDate(startDate);
+    const outlookEnd = formatOutlookDate(endDate);
+    const outlookParams = new URLSearchParams({
+      path: '/calendar/action/compose',
+      rru: 'addevent',
+      subject: event.title,
+      startdt: outlookStart,
+      enddt: outlookEnd,
+      body: event.description || '',
+      location: event.location || ''
+    });
+    const outlookLink = `https://outlook.live.com/calendar/0/deeplink/compose?${outlookParams.toString()}`;
+
+    return { googleLink, outlookLink };
+  };
+
+  const downloadIcs = (event: Event) => {
+    const startDate = new Date(event.date);
+    const formatDate = (date: Date) => date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const startStr = formatDate(startDate);
+    const endStr = event.end_time ? formatDate(new Date(event.end_time)) : formatDate(new Date(startDate.getTime() + 60 * 60 * 1000));
+    const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Deborah Dietzmann Campaign//EN\nBEGIN:VEVENT\nUID:${event.id}@deborahdietzmannforjudge.com\nDTSTAMP:${formatDate(new Date())}\nDTSTART:${startStr}\nDTEND:${endStr}\nSUMMARY:${event.title}\nDESCRIPTION:${event.description || ''}\nLOCATION:${event.location || ''}\nEND:VEVENT\nEND:VCALENDAR`;
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${event.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    setCalendarDropdownOpen(null);
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -24,16 +87,14 @@ export default function EventsClientView({ events }: { events: Event[] }) {
         </div>
       ) : (
         events.map((event) => {
-          // Format the date
           const dateObj = new Date(event.date);
-          const monthShort = dateObj.toLocaleDateString('en-US', { month: 'short' });
-          const day = dateObj.getDate();
           const dateFormatted = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-          
           const timeFormatted = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
           const endTimeFormatted = event.end_time 
             ? new Date(event.end_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
             : null;
+
+          const { googleLink, outlookLink } = getCalendarLinks(event);
 
           return (
             <div key={event.id} className="bg-white rounded-xl shadow-md border-l-4 border-primary p-5 hover:shadow-lg transition-shadow">
@@ -54,17 +115,10 @@ export default function EventsClientView({ events }: { events: Event[] }) {
                   <p className="text-sm text-legal-gray mt-2">{event.description}</p>
                 )}
               </div>
+              
               <div className="flex gap-3">
-                {event.rsvp_link ? (
-                  <a 
-                    href={event.rsvp_link}
-                    target={event.rsvp_link.startsWith('http') ? '_blank' : undefined}
-                    rel={event.rsvp_link.startsWith('http') ? 'noopener noreferrer' : undefined}
-                    className="flex-1 border border-primary text-primary hover:bg-primary hover:text-on-primary font-bold text-sm uppercase tracking-wider py-3 rounded transition-colors text-center flex items-center justify-center"
-                  >
-                    RSVP Info
-                  </a>
-                ) : (
+                {/* RSVP Button Logic */}
+                {event.rsvp_link === 'internal' && (
                   <button 
                     onClick={() => setSelectedEvent(event)}
                     className="flex-1 border border-primary text-primary hover:bg-primary hover:text-on-primary font-bold text-sm uppercase tracking-wider py-3 rounded transition-colors"
@@ -72,28 +126,75 @@ export default function EventsClientView({ events }: { events: Event[] }) {
                     RSVP
                   </button>
                 )}
-                <button
-                  onClick={() => {
-                    const startDate = new Date(event.date);
-                    const formatDate = (date: Date) => date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-                    const startStr = formatDate(startDate);
-                    const endStr = event.end_time ? formatDate(new Date(event.end_time)) : formatDate(new Date(startDate.getTime() + 60 * 60 * 1000));
-                    const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Deborah Dietzmann Campaign//EN\nBEGIN:VEVENT\nUID:${event.id}@deborahdietzmannforjudge.com\nDTSTAMP:${formatDate(new Date())}\nDTSTART:${startStr}\nDTEND:${endStr}\nSUMMARY:${event.title}\nDESCRIPTION:${event.description || ''}\nLOCATION:${event.location || ''}\nEND:VEVENT\nEND:VCALENDAR`;
-                    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `${event.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                  }}
-                  className="flex-1 bg-surface-variant hover:bg-outline-variant text-primary border border-outline-variant font-bold text-sm uppercase tracking-wider py-3 rounded transition-colors flex items-center justify-center gap-1"
-                >
-                  <span className="material-symbols-outlined text-[16px]">event</span>
-                  Add to Calendar
-                </button>
+                {event.rsvp_link && event.rsvp_link !== 'internal' && event.rsvp_link.startsWith('mailto:') && (
+                  <a 
+                    href={event.rsvp_link}
+                    onClick={(e) => handleMailtoClick(e, event.rsvp_link!.replace('mailto:', ''), event.id)}
+                    className="flex-1 border border-primary text-primary hover:bg-primary hover:text-on-primary font-bold text-sm uppercase tracking-wider py-3 rounded transition-colors text-center flex flex-col items-center justify-center relative"
+                  >
+                    {copiedEmailEventId === event.id ? (
+                      <span className="animate-pulse">Email Copied!</span>
+                    ) : (
+                      <>
+                        <span>Email to RSVP</span>
+                        <span className="text-[10px] opacity-80 normal-case tracking-normal">{event.rsvp_link.replace('mailto:', '')}</span>
+                      </>
+                    )}
+                  </a>
+                )}
+                {event.rsvp_link && event.rsvp_link !== 'internal' && !event.rsvp_link.startsWith('mailto:') && (
+                  <a 
+                    href={event.rsvp_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 border border-primary text-primary hover:bg-primary hover:text-on-primary font-bold text-sm uppercase tracking-wider py-3 rounded transition-colors text-center flex items-center justify-center"
+                  >
+                    RSVP Info
+                  </a>
+                )}
+
+                {/* Add to Calendar Button with Dropdown */}
+                <div className="relative flex-1">
+                  <button
+                    onClick={() => setCalendarDropdownOpen(calendarDropdownOpen === event.id ? null : event.id)}
+                    className="w-full h-full bg-surface-variant hover:bg-outline-variant text-primary border border-outline-variant font-bold text-sm uppercase tracking-wider py-3 rounded transition-colors flex items-center justify-center gap-1"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">event</span>
+                    Add to Calendar
+                  </button>
+                  
+                  {calendarDropdownOpen === event.id && (
+                    <div className="absolute top-full left-0 mt-2 w-full bg-white border border-outline-variant rounded-md shadow-lg z-10 flex flex-col overflow-hidden">
+                      <a 
+                        href={googleLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        onClick={() => setCalendarDropdownOpen(null)}
+                        className="px-4 py-3 text-sm text-primary hover:bg-surface-variant transition-colors flex items-center gap-2 border-b border-outline-variant"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">calendar_month</span>
+                        Google Calendar
+                      </a>
+                      <a 
+                        href={outlookLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        onClick={() => setCalendarDropdownOpen(null)}
+                        className="px-4 py-3 text-sm text-primary hover:bg-surface-variant transition-colors flex items-center gap-2 border-b border-outline-variant"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">mail</span>
+                        Outlook Web
+                      </a>
+                      <button 
+                        onClick={() => downloadIcs(event)}
+                        className="px-4 py-3 text-sm text-primary hover:bg-surface-variant transition-colors flex items-center gap-2 text-left w-full"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">download</span>
+                        Apple / Desktop
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           );
