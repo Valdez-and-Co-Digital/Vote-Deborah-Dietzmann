@@ -126,8 +126,8 @@ export default async function Home() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 bg-primary text-on-primary rounded-xl p-8 relative overflow-hidden flex flex-col justify-end shadow-md border border-legal-gray group hover:shadow-lg transition-shadow min-h-[220px]">
-            <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
-              <span className="material-symbols-outlined text-[100px] icon-fill-1">gavel</span>
+            <div className="absolute right-[-20px] top-1/2 -translate-y-1/2 opacity-10 group-hover:opacity-20 transition-all duration-300 transform group-hover:scale-105 group-hover:-rotate-12 pointer-events-none">
+              <span className="material-symbols-outlined text-[180px] icon-fill-1">gavel</span>
             </div>
             <div className="relative z-10 mt-auto">
               <h3 className="font-headline-display text-4xl md:text-5xl text-heritage-gold mb-2">25+ Years</h3>
@@ -137,20 +137,20 @@ export default async function Home() {
           
           <div className="bg-surface text-on-surface rounded-xl p-8 flex flex-col justify-center items-center text-center shadow-md border border-legal-gray min-h-[220px]">
             <span className="material-symbols-outlined text-4xl text-secondary mb-3">balance</span>
-            <h3 className="font-headline-md text-headline-md text-primary mb-2">1,000s</h3>
+            <h3 className="font-headline-display text-3xl md:text-4xl text-primary font-bold mb-2">1,000s</h3>
             <p className="font-body-md text-body-md text-on-surface-variant">Cases litigated as both Prosecutor and Defense Attorney.</p>
           </div>
           
           <div className="bg-surface text-on-surface rounded-xl p-8 shadow-md border border-legal-gray flex flex-col justify-end min-h-[220px]">
             <span className="material-symbols-outlined text-5xl text-heritage-gold mb-4">home</span>
             <div>
-              <h3 className="font-headline-md text-headline-md text-primary mb-2">30+ Years</h3>
+              <h3 className="font-headline-display text-3xl md:text-4xl text-primary font-bold mb-2">30+ Years</h3>
               <p className="font-body-md text-body-md text-on-surface-variant">Proudly calling San Antonio home. A lifelong Texan.</p>
             </div>
           </div>
           
           <div className="md:col-span-2 bg-surface text-on-surface rounded-xl p-8 shadow-md border border-legal-gray flex flex-col justify-center min-h-[220px]">
-            <h3 className="font-headline-md text-headline-md text-primary mb-3">Comprehensive Expertise</h3>
+            <h3 className="font-headline-display text-3xl md:text-4xl text-primary font-bold mb-3">Comprehensive Expertise</h3>
             <p className="font-body-md text-body-md text-on-surface-variant">
               Experienced in both felony and misdemeanor level cases encompassing violent and serious offenses ranging from Intoxication Manslaughter and White-Collar crimes to DWI, Drug Offenses, Burglaries, Theft, Assaults, and Immigration Matters.
             </p>
