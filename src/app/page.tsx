@@ -25,33 +25,35 @@ export default async function Home() {
           <div className="absolute inset-0 bg-cover bg-center opacity-40 patriotic-pattern"></div>
           <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-transparent"></div>
         </div>
-        <div className="relative z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 md:grid-cols-2 gap-gutter items-center">
-          <div className="flex flex-col gap-stack-lg order-2 md:order-1 pt-12 md:pt-0">
-            <div className="space-y-4">
-              <h2 className="text-heritage-gold font-label-bold text-label-bold uppercase tracking-widest flex items-center gap-2">
-                <span className="material-symbols-outlined text-lg icon-fill-1">star</span>
-                For Judge County Court 12
-              </h2>
-              <h1 className="font-headline-display text-headline-lg-mobile md:text-headline-display text-on-primary uppercase leading-tight">
-                Vote <br/>
+        <div className="relative z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 md:grid-cols-2 gap-y-8 md:gap-gutter items-center">
+          <div className="contents md:flex md:flex-col md:gap-stack-lg">
+            <div className="space-y-4 order-1 pt-12 md:pt-0 text-center md:text-left">
+              <div className="flex justify-center md:justify-start mb-6 md:mb-4">
+                <h2 className="bg-heritage-gold text-primary font-bold text-xs md:text-sm uppercase tracking-widest px-4 py-2 rounded flex items-center gap-2">
+                  <span className="material-symbols-outlined text-base">how_to_vote</span>
+                  For Judge County Court 12
+                </h2>
+              </div>
+              <h1 className="font-headline-display text-5xl md:text-headline-display text-on-primary uppercase leading-tight drop-shadow-md">
+                Vote <br className="hidden md:block"/>
                 <span className="text-heritage-gold">Deborah</span> <br/>
                 Dietzmann
               </h1>
-              <p className="font-body-lg text-body-lg text-inverse-on-surface opacity-90 max-w-xl">
+              <p className="font-body-lg text-lg md:text-xl text-inverse-on-surface opacity-90 max-w-xl mx-auto md:mx-0">
                 Over 25 years of criminal trial experience, dedicated to keeping Bexar County safe while preserving the rights of its citizens.
               </p>
             </div>
-            <div className="flex flex-wrap gap-4">
-              <Link href="/volunteer" className="bg-secondary hover:bg-on-secondary-fixed-variant text-on-secondary font-label-bold text-label-bold uppercase px-8 py-4 rounded shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-4 order-3 md:order-2 pb-12 md:pb-0 justify-center md:justify-start w-full">
+              <Link href="/volunteer" className="bg-secondary hover:bg-on-secondary-fixed-variant text-on-secondary font-label-bold text-label-bold uppercase px-8 py-4 rounded shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
                 <span>Get Involved</span>
                 <span className="material-symbols-outlined">arrow_forward</span>
               </Link>
-              <Link href="/issues" className="border border-on-primary hover:border-heritage-gold text-on-primary hover:text-heritage-gold font-label-bold text-label-bold uppercase px-8 py-4 rounded transition-all duration-200">
+              <Link href="/issues" className="border border-on-primary hover:border-heritage-gold text-on-primary hover:text-heritage-gold font-label-bold text-label-bold uppercase px-8 py-4 rounded transition-all duration-200 text-center">
                 Read Platform
               </Link>
             </div>
           </div>
-          <div className="order-1 md:order-2 flex justify-center md:justify-end relative h-[400px] md:h-[600px]">
+          <div className="order-2 md:order-none flex justify-center md:justify-end relative h-[400px] md:h-[600px] w-full">
             <div className="relative w-[300px] md:w-[450px] h-[400px] md:h-[600px]">
               <Image 
                 src="/headshot-1.jpeg" 
@@ -135,7 +137,7 @@ export default async function Home() {
             </div>
           </div>
           
-          <div className="bg-surface text-on-surface rounded-xl p-8 flex flex-col justify-center items-center text-center shadow-md border border-legal-gray min-h-[220px]">
+          <div className="bg-surface text-on-surface rounded-xl p-8 flex flex-col justify-center shadow-md border border-legal-gray min-h-[220px]">
             <span className="material-symbols-outlined text-4xl text-secondary mb-3">balance</span>
             <h3 className="font-headline-display text-3xl md:text-4xl text-primary font-bold mb-2">1,000s</h3>
             <p className="font-body-md text-body-md text-on-surface-variant">Cases litigated as both Prosecutor and Defense Attorney.</p>

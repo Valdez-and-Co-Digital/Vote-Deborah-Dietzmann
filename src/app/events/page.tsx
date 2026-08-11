@@ -37,10 +37,10 @@ export default async function EventsPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-primary to-transparent"></div>
         </div>
         <div className="relative z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop text-center">
-          <h1 className="font-headline-display text-headline-lg-mobile md:text-headline-display text-heritage-gold mb-6 uppercase tracking-wider drop-shadow-md">
+          <h1 className="font-headline-display text-4xl md:text-5xl lg:text-6xl text-heritage-gold mb-6 font-bold tracking-tight uppercase drop-shadow-md">
             Campaign Events &amp; Appearances
           </h1>
-          <p className="font-body-lg text-body-lg text-inverse-on-surface opacity-90 max-w-2xl mx-auto leading-relaxed">
+          <p className="font-body-lg text-lg md:text-xl lg:text-2xl text-inverse-on-surface opacity-90 max-w-2xl mx-auto leading-relaxed">
             Join Deborah in the community. See where she'll be next and get involved in the movement for fair, experienced leadership.
           </p>
         </div>
@@ -53,7 +53,7 @@ export default async function EventsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             
             {/* Left Column: Calendar UI (Dynamic) */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 hidden lg:block">
               <InteractiveCalendar events={allEvents || []} />
             </div>
 
