@@ -80,7 +80,7 @@ export default function InteractiveCalendar({ events }: { events: Event[] }) {
         <div className="grid grid-cols-7 gap-2">
           {/* Padding days before the 1st */}
           {paddingDays.map((pad) => (
-            <div key={`pad-${pad}`} className="aspect-square border border-outline-variant/30 rounded p-1 flex flex-col items-end opacity-40 bg-surface"></div>
+            <div key={`pad-${pad}`} className="min-h-[80px] md:min-h-[100px] border border-outline-variant/30 rounded p-1 flex flex-col items-end opacity-40 bg-surface"></div>
           ))}
           
           {/* Actual Days */}
@@ -95,7 +95,7 @@ export default function InteractiveCalendar({ events }: { events: Event[] }) {
             return (
               <div 
                 key={day} 
-                className={`aspect-square border rounded p-1 flex flex-col ${
+                className={`min-h-[80px] md:min-h-[100px] border rounded p-1 flex flex-col ${
                   hasEvents 
                     ? 'border-primary bg-primary/5 shadow-sm' 
                     : 'border-outline-variant/50 hover:border-primary/50'
