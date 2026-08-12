@@ -53,7 +53,14 @@ export default function VolunteerClientForm() {
       });
 
       if (!formspreeResponse.ok) {
-        throw new Error("Failed to send email notification.");
+        let errorMsg = "Failed to send email notification.";
+        try {
+          const errorData = await formspreeResponse.json();
+          errorMsg = "Formspree Error: " + (errorData.error || errorData.message || JSON.stringify(errorData));
+        } catch (e) {
+          errorMsg += " Status: " + formspreeResponse.status;
+        }
+        throw new Error(errorMsg);
       }
 
       // Success
