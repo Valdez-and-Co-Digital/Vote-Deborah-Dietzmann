@@ -54,7 +54,7 @@ export default async function LoginPage({
             </div>
           )}
 
-          <Button formAction={login} variant="primary" className="w-full justify-center mt-2">
+          <Button type="submit" formAction={login} variant="primary" className="w-full justify-center mt-2">
             Log In
           </Button>
         </form>
