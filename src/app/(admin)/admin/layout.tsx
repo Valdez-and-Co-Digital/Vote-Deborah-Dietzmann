@@ -26,7 +26,7 @@ export default async function AdminLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased bg-surface-container-lowest min-h-screen flex flex-col md:flex-row">
+      <body className="antialiased bg-surface-container-lowest min-h-screen grid grid-cols-1 md:grid-cols-[240px_1fr]">
         
         {/* Sidebar - Only show if logged in */}
         {user && (
@@ -34,7 +34,7 @@ export default async function AdminLayout({
         )}
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-auto bg-surface-container-lowest">
+        <main className="min-w-0 overflow-auto bg-surface-container-lowest">
           {children}
         </main>
       </body>
