@@ -16,10 +16,22 @@ export default function VolunteerClientForm() {
     setErrorMsg("");
 
     const formData = new FormData(e.currentTarget);
-    const name = formData.get('Name') as string;
-    const email = formData.get('Email') as string;
-    const phone = formData.get('Phone') as string;
+    const name = (formData.get('Name') as string)?.trim().slice(0, 200);
+    const email = (formData.get('Email') as string)?.trim().toLowerCase().slice(0, 254);
+    const phone = (formData.get('Phone') as string)?.trim().slice(0, 20);
     setUserName(name);
+
+    // Basic validation
+    if (!name || name.length < 2) {
+      setErrorMsg("Please provide a valid name.");
+      setIsSubmitting(false);
+      return;
+    }
+    if (!email || !email.includes('@') || !email.includes('.')) {
+      setErrorMsg("Please provide a valid email address.");
+      setIsSubmitting(false);
+      return;
+    }
     
     // Collect checkboxes
     const interests = [];
