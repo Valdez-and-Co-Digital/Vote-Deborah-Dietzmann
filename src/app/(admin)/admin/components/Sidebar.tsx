@@ -18,7 +18,7 @@ export default function Sidebar({ userEmail }: SidebarProps) {
   ];
 
   return (
-    <aside className="w-full md:w-60 bg-primary text-on-primary flex-shrink-0 flex flex-col border-b md:border-b-0 md:border-r border-outline-variant/20 min-h-screen sticky top-0 z-10">
+    <aside className="w-full md:fixed md:left-0 md:top-0 md:w-60 md:h-screen bg-primary text-on-primary flex flex-col border-b md:border-b-0 md:border-r border-outline-variant/20 z-40 overflow-y-auto">
       <div className="p-6">
         <h2 className="font-headline-sm text-heritage-gold mb-1">Campaign Admin</h2>
         <p className="font-body-sm opacity-80 truncate">{userEmail || 'Admin User'}</p>
