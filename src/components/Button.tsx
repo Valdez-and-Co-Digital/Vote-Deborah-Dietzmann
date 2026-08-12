@@ -7,9 +7,10 @@ interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
   className?: string;
   disabled?: boolean;
+  formAction?: string | ((formData: FormData) => void | Promise<void>);
 }
 
-export default function Button({ href, variant = 'primary', children, type = 'button', className = '', disabled = false }: ButtonProps) {
+export default function Button({ href, variant = 'primary', children, type = 'button', className = '', disabled = false, formAction }: ButtonProps) {
   const base = "inline-flex items-center justify-center gap-2 font-label-bold text-label-bold uppercase tracking-wider px-8 py-4 rounded shadow-md transition-all duration-200 cursor-pointer";
   const variants = {
     primary: "bg-secondary hover:bg-on-secondary-fixed-variant text-on-secondary shadow-md hover:shadow-lg",
@@ -21,5 +22,14 @@ export default function Button({ href, variant = 'primary', children, type = 'bu
   if (href) {
     return <Link href={href} className={classes}>{children}</Link>;
   }
-  return <button type={type} className={`${classes} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={disabled}>{children}</button>;
+  return (
+    <button 
+      type={type} 
+      className={`${classes} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`} 
+      disabled={disabled}
+      formAction={formAction}
+    >
+      {children}
+    </button>
+  );
 }
