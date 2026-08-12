@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   },
 };
 
+import Script from "next/script";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -37,6 +39,26 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
+        {/* Google Analytics 4 */}
+        <Script
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtag/js?id=G-D8HWW7QQRD`}
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-D8HWW7QQRD', {
+                page_path: window.location.pathname,
+              });
+            `,
+          }}
+        />
+
         <Navigation />
         <main>
           {children}
