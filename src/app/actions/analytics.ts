@@ -1,8 +1,5 @@
 'use server';
 
-import crypto from 'node:crypto';
-
-// Minimal JWT signer to avoid bringing in 13MB of Google/gRPC SDKs that crash Cloudflare Free Tier
 async function getGoogleAccessToken(clientEmail: string, privateKey: string) {
   const header = { alg: 'RS256', typ: 'JWT' };
   const now = Math.floor(Date.now() / 1000);
@@ -14,14 +11,35 @@ async function getGoogleAccessToken(clientEmail: string, privateKey: string) {
     iat: now
   };
 
-  const encodeB64Url = (obj: any) => Buffer.from(JSON.stringify(obj)).toString('base64url');
-  const signatureInput = `${encodeB64Url(header)}.${encodeB64Url(payload)}`;
+  const encodeB64Url = (str: string) => btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  const signatureInput = `${encodeB64Url(JSON.stringify(header))}.${encodeB64Url(JSON.stringify(payload))}`;
   
-  const sign = crypto.createSign('RSA-SHA256');
-  sign.update(signatureInput);
-  sign.end();
+  const pemHeader = "-----BEGIN PRIVATE KEY-----";
+  const pemFooter = "-----END PRIVATE KEY-----";
+  const pemContents = privateKey.replace(pemHeader, "").replace(pemFooter, "").replace(/\s/g, "");
   
-  const signature = sign.sign(privateKey, 'base64url');
+  const binaryDerString = atob(pemContents);
+  const binaryDer = new Uint8Array(binaryDerString.length);
+  for (let i = 0; i < binaryDerString.length; i++) {
+    binaryDer[i] = binaryDerString.charCodeAt(i);
+  }
+
+  const key = await crypto.subtle.importKey(
+    "pkcs8",
+    binaryDer.buffer,
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+
+  const signatureBuffer = await crypto.subtle.sign(
+    "RSASSA-PKCS1-v1_5",
+    key,
+    new TextEncoder().encode(signatureInput)
+  );
+
+  const signatureBase64 = btoa(String.fromCharCode(...new Uint8Array(signatureBuffer)));
+  const signature = signatureBase64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   const jwt = `${signatureInput}.${signature}`;
 
   const res = await fetch('https://oauth2.googleapis.com/token', {
