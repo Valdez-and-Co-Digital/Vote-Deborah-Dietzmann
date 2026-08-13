@@ -18,20 +18,20 @@ export default async function AdminDashboardPage() {
 
   const { data: recentVolunteers } = await supabase
     .from('volunteers')
-    .select('id, first_name, last_name, email, created_at')
+    .select('id, name, email, created_at')
     .order('created_at', { ascending: false })
     .limit(5);
 
   const { count: eventsCount } = await supabase
     .from('events')
     .select('*', { count: 'exact', head: true })
-    .gte('event_date', new Date().toISOString());
+    .gte('date', new Date().toISOString());
 
   const { data: upcomingEvents } = await supabase
     .from('events')
-    .select('id, title, event_date, location')
-    .gte('event_date', new Date().toISOString())
-    .order('event_date', { ascending: true })
+    .select('id, title, date, location')
+    .gte('date', new Date().toISOString())
+    .order('date', { ascending: true })
     .limit(3);
 
   return (
@@ -100,7 +100,7 @@ export default async function AdminDashboardPage() {
                 {recentVolunteers.map((vol) => (
                   <li key={vol.id} className="py-4 flex justify-between items-center">
                     <div>
-                      <p className="font-label-bold text-primary">{vol.first_name} {vol.last_name}</p>
+                      <p className="font-label-bold text-primary">{vol.name}</p>
                       <p className="text-sm text-legal-gray mt-1">{vol.email}</p>
                     </div>
                     <span className="text-xs text-legal-gray bg-surface-container py-1 px-2 rounded">
@@ -133,7 +133,7 @@ export default async function AdminDashboardPage() {
                     <div className="flex justify-between items-start mb-1">
                       <p className="font-label-bold text-primary">{evt.title}</p>
                       <span className="text-xs text-primary bg-primary/10 py-1 px-2 rounded border border-primary/20 whitespace-nowrap ml-2">
-                        {new Date(evt.event_date).toLocaleDateString()}
+                        {new Date(evt.date).toLocaleDateString()}
                       </span>
                     </div>
                     <div className="flex items-center text-sm text-legal-gray gap-2 mt-2">

@@ -8,8 +8,7 @@ export type EventType = {
   title: string;
   description: string;
   location: string;
-  event_date: string;
-  capacity: number;
+  date: string;
   rsvp_count?: number;
 };
 
@@ -21,74 +20,64 @@ interface EventCardProps {
 export default function EventCard({ event, onUpdate }: EventCardProps) {
   const supabase = createClient();
   const [isDeleting, setIsDeleting] = useState(false);
-  
-  const percentFull = Math.min(Math.round(((event.rsvp_count || 0) / (event.capacity || 1)) * 100), 100);
-  
-  let progressColor = "bg-primary";
-  if (percentFull >= 90) progressColor = "bg-error";
-  else if (percentFull >= 70) progressColor = "bg-yellow-500";
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this event?')) return;
-    
-    setIsDeleting(true);
-    const { error } = await supabase.from('events').delete().eq('id', event.id);
-    if (!error) {
+    if (confirm('Are you sure you want to delete this event?')) {
+      setIsDeleting(true);
+      await supabase.from('events').delete().eq('id', event.id);
+      setIsDeleting(false);
       onUpdate();
     }
-    setIsDeleting(false);
   };
 
   return (
-    <div className="bg-neutral-white border border-outline-variant rounded-2xl p-6 shadow-sm flex flex-col relative overflow-hidden group">
-      <div className="flex justify-between items-start mb-2">
-        <h3 className="font-headline-md text-primary text-xl pr-12">{event.title}</h3>
-        <div className="flex items-center gap-1 absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button 
-            className="p-1.5 bg-surface-container rounded-md hover:bg-surface-variant transition-colors text-primary"
-            title="Edit Event"
-          >
-            <span className="material-symbols-outlined text-[18px]">edit</span>
-          </button>
-          <button 
-            className="p-1.5 bg-red-50 rounded-md hover:bg-red-100 transition-colors text-error"
-            title="Delete Event"
-            onClick={handleDelete}
-            disabled={isDeleting}
-          >
-            <span className="material-symbols-outlined text-[18px]">delete</span>
-          </button>
+    <div className="bg-neutral-white border border-outline-variant rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all hover:shadow-md">
+      <div className="flex-1">
+        <div className="flex items-center gap-3 mb-2">
+          <h3 className="font-headline-sm text-primary text-lg">{event.title}</h3>
+          {new Date(event.date) < new Date() ? (
+            <span className="px-2 py-1 bg-surface-variant text-on-surface-variant text-[10px] uppercase font-bold rounded-full">Past</span>
+          ) : (
+            <span className="px-2 py-1 bg-primary/10 text-primary text-[10px] uppercase font-bold rounded-full border border-primary/20">Upcoming</span>
+          )}
+        </div>
+        
+        <p className="font-body-sm text-on-surface opacity-80 mb-4">{event.description}</p>
+        
+        <div className="flex flex-col sm:flex-row gap-4 sm:items-center text-sm text-legal-gray">
+          <div className="flex items-center gap-1">
+            <span className="material-symbols-outlined text-[16px]">calendar_today</span>
+            <span>{new Date(event.date).toLocaleString()}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="material-symbols-outlined text-[16px]">location_on</span>
+            <span>{event.location}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="material-symbols-outlined text-[16px]">group</span>
+            <span>{event.rsvp_count || 0} RSVPs</span>
+          </div>
         </div>
       </div>
       
-      <div className="flex items-center text-sm text-legal-gray gap-4 mb-4">
-        <div className="flex items-center gap-1">
-          <span className="material-symbols-outlined text-[16px]">calendar_today</span>
-          <span>{new Date(event.event_date).toLocaleString()}</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="material-symbols-outlined text-[16px]">location_on</span>
-          <span>{event.location}</span>
-        </div>
-      </div>
-      
-      <p className="font-body-md text-on-surface-variant text-sm mb-6 line-clamp-2 flex-1">
-        {event.description}
-      </p>
-      
-      <div className="mt-auto">
-        <div className="flex justify-between items-end mb-2">
-          <span className="font-label-bold text-xs uppercase tracking-wider text-legal-gray">RSVP Status</span>
-          <span className="font-headline-sm text-primary text-sm">
-            {event.rsvp_count || 0} <span className="text-legal-gray text-xs font-body-sm">/ {event.capacity}</span>
-          </span>
-        </div>
-        <div className="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
-          <div 
-            className={`h-full rounded-full transition-all duration-500 ${progressColor}`} 
-            style={{ width: `${percentFull}%` }}
-          />
-        </div>
+      <div className="flex md:flex-col gap-2 min-w-[120px]">
+        <button 
+          className="btn-secondary py-2 px-4 w-full flex items-center justify-center gap-2"
+          onClick={() => {
+            alert('Edit functionality coming soon');
+          }}
+        >
+          <span className="material-symbols-outlined text-[18px]">edit</span>
+          Edit
+        </button>
+        <button 
+          className="bg-error/10 text-error border border-error/20 hover:bg-error/20 rounded-md py-2 px-4 font-label-bold transition-all w-full flex items-center justify-center gap-2 disabled:opacity-50"
+          onClick={handleDelete}
+          disabled={isDeleting}
+        >
+          <span className="material-symbols-outlined text-[18px]">delete</span>
+          Delete
+        </button>
       </div>
     </div>
   );

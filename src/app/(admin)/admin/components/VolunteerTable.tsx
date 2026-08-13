@@ -3,16 +3,12 @@
 import { useState, useMemo } from 'react';
 import { createClient } from '@/utils/supabase/client';
 
-type Volunteer = {
+export type Volunteer = {
   id: string;
-  first_name: string;
-  last_name: string;
+  name: string;
   email: string;
   phone: string | null;
-  interest_door_knocking: boolean;
-  interest_phone_banking: boolean;
-  interest_host_event: boolean;
-  interest_other: boolean;
+  interests: string[] | null;
   created_at: string;
   status: string;
 };
@@ -39,17 +35,17 @@ export default function VolunteerTable({ initialVolunteers }: VolunteerTableProp
     if (searchTerm) {
       const lowerTerm = searchTerm.toLowerCase();
       result = result.filter(v => 
-        v.first_name.toLowerCase().includes(lowerTerm) || 
-        v.last_name.toLowerCase().includes(lowerTerm) || 
-        v.email.toLowerCase().includes(lowerTerm)
+        (v.name && v.name.toLowerCase().includes(lowerTerm)) || 
+        (v.email && v.email.toLowerCase().includes(lowerTerm))
       );
     }
 
     if (filterInterest !== 'All') {
       result = result.filter(v => {
-        if (filterInterest === 'Door Knocking') return v.interest_door_knocking;
-        if (filterInterest === 'Phone Banking') return v.interest_phone_banking;
-        if (filterInterest === 'Host Meet & Greet') return v.interest_host_event;
+        if (!v.interests) return false;
+        if (filterInterest === 'Door Knocking') return v.interests.includes('Door Knocking / Canvassing');
+        if (filterInterest === 'Phone Banking') return v.interests.includes('Phone Banking');
+        if (filterInterest === 'Host Meet & Greet') return v.interests.includes('Host a Meet & Greet');
         return true;
       });
     }
@@ -98,15 +94,12 @@ export default function VolunteerTable({ initialVolunteers }: VolunteerTableProp
   };
 
   const exportCSV = () => {
-    const headers = ["First Name", "Last Name", "Email", "Phone", "Door Knocking", "Phone Banking", "Host Event", "Date", "Status"];
+    const headers = ["Name", "Email", "Phone", "Interests", "Date", "Status"];
     const rows = filteredAndSorted.map(v => [
-      v.first_name,
-      v.last_name,
-      v.email,
+      v.name || '',
+      v.email || '',
       v.phone || '',
-      v.interest_door_knocking ? 'Yes' : 'No',
-      v.interest_phone_banking ? 'Yes' : 'No',
-      v.interest_host_event ? 'Yes' : 'No',
+      (v.interests || []).join('; '),
       new Date(v.created_at).toLocaleDateString(),
       v.status || 'new'
     ]);
@@ -171,11 +164,11 @@ export default function VolunteerTable({ initialVolunteers }: VolunteerTableProp
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm whitespace-nowrap">
+      <div className="overflow-x-auto w-full">
+        <table className="w-full text-left text-sm whitespace-nowrap min-w-[800px]">
           <thead className="bg-surface-container-low text-primary uppercase font-label-bold text-xs border-b border-outline-variant">
             <tr>
-              <th className="px-6 py-4 cursor-pointer hover:bg-surface-variant transition-colors" onClick={() => handleSort('first_name')}>
+              <th className="px-6 py-4 cursor-pointer hover:bg-surface-variant transition-colors" onClick={() => handleSort('name')}>
                 <div className="flex items-center gap-1">Name <span className="material-symbols-outlined text-[14px]">sort</span></div>
               </th>
               <th className="px-6 py-4">Email & Phone</th>
@@ -192,17 +185,19 @@ export default function VolunteerTable({ initialVolunteers }: VolunteerTableProp
             {paginatedData.length > 0 ? paginatedData.map((vol, i) => (
               <tr key={vol.id} className={i % 2 === 0 ? 'bg-white' : 'bg-surface-container-lowest/50'}>
                 <td className="px-6 py-4 font-label-bold text-primary">
-                  {vol.first_name} {vol.last_name}
+                  {vol.name || 'Unnamed Volunteer'}
                 </td>
                 <td className="px-6 py-4">
                   <div className="text-on-surface">{vol.email}</div>
                   <div className="text-xs text-legal-gray">{vol.phone || 'N/A'}</div>
                 </td>
                 <td className="px-6 py-4 flex flex-wrap gap-1 max-w-[200px]">
-                  {vol.interest_door_knocking && <span className="px-2 py-1 bg-green-100 text-green-800 text-[10px] uppercase font-bold rounded-full">Door</span>}
-                  {vol.interest_phone_banking && <span className="px-2 py-1 bg-blue-100 text-blue-800 text-[10px] uppercase font-bold rounded-full">Phone</span>}
-                  {vol.interest_host_event && <span className="px-2 py-1 bg-purple-100 text-purple-800 text-[10px] uppercase font-bold rounded-full">Host</span>}
-                  {!vol.interest_door_knocking && !vol.interest_phone_banking && !vol.interest_host_event && vol.interest_other && <span className="px-2 py-1 bg-gray-100 text-gray-800 text-[10px] uppercase font-bold rounded-full">Other</span>}
+                  {vol.interests?.includes('Door Knocking / Canvassing') && <span className="px-2 py-1 bg-green-100 text-green-800 text-[10px] uppercase font-bold rounded-full">Door</span>}
+                  {vol.interests?.includes('Phone Banking') && <span className="px-2 py-1 bg-blue-100 text-blue-800 text-[10px] uppercase font-bold rounded-full">Phone</span>}
+                  {vol.interests?.includes('Host a Meet & Greet') && <span className="px-2 py-1 bg-purple-100 text-purple-800 text-[10px] uppercase font-bold rounded-full">Host</span>}
+                  {vol.interests?.filter(i => !['Door Knocking / Canvassing', 'Phone Banking', 'Host a Meet & Greet'].includes(i)).map(otherInterest => (
+                     <span key={otherInterest} className="px-2 py-1 bg-gray-100 text-gray-800 text-[10px] uppercase font-bold rounded-full">Other</span>
+                  ))}
                 </td>
                 <td className="px-6 py-4 text-on-surface">
                   {new Date(vol.created_at).toLocaleDateString()}

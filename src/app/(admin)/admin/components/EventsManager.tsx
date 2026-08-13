@@ -19,8 +19,7 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
     title: '',
     description: '',
     location: '',
-    event_date: '',
-    capacity: 50
+    date: ''
   });
 
   const refreshEvents = async () => {
@@ -30,15 +29,15 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
     const { data: upcoming } = await supabase
       .from('events')
       .select('*, rsvps(count)')
-      .gte('event_date', now)
-      .order('event_date', { ascending: true });
+      .gte('date', now)
+      .order('date', { ascending: true });
       
     // Fetch past
     const { data: past } = await supabase
       .from('events')
       .select('*, rsvps(count)')
-      .lt('event_date', now)
-      .order('event_date', { ascending: false });
+      .lt('date', now)
+      .order('date', { ascending: false });
       
     if (upcoming) {
       setUpcomingEvents(upcoming.map(e => ({...e, rsvp_count: e.rsvps?.[0]?.count || 0})));
@@ -55,25 +54,22 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
         title: formData.title,
         description: formData.description,
         location: formData.location,
-        event_date: new Date(formData.event_date).toISOString(),
-        capacity: formData.capacity
+        date: new Date(formData.date).toISOString()
       }
     ]);
 
     if (!error) {
       setIsModalOpen(false);
-      setFormData({ title: '', description: '', location: '', event_date: '', capacity: 50 });
+      setFormData({ title: '', description: '', location: '', date: '' });
       refreshEvents();
     } else {
       alert("Error adding event");
     }
   };
 
-  // Quick stats
   const totalEvents = upcomingEvents.length + pastEvents.length;
   const totalRsvps = [...upcomingEvents, ...pastEvents].reduce((acc, curr) => acc + (curr.rsvp_count || 0), 0);
-  const totalCapacity = [...upcomingEvents, ...pastEvents].reduce((acc, curr) => acc + (curr.capacity || 1), 0);
-  const avgAttendance = totalCapacity > 0 ? Math.round((totalRsvps / totalCapacity) * 100) : 0;
+  const avgAttendance = totalEvents > 0 ? Math.round((totalRsvps / (totalEvents * 50)) * 100) : 0;
 
   return (
     <>
@@ -165,7 +161,7 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
                   <li key={event.id} className="py-3 flex justify-between items-center">
                     <div>
                       <p className="font-label-bold text-primary">{event.title}</p>
-                      <p className="text-xs text-legal-gray">{new Date(event.event_date).toLocaleDateString()} - {event.location}</p>
+                      <p className="text-xs text-legal-gray">{new Date(event.date).toLocaleDateString()} - {event.location}</p>
                     </div>
                     <div className="text-sm font-label-bold text-secondary">
                       {event.rsvp_count} attended
@@ -206,7 +202,7 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
                 <input 
                   required type="datetime-local" 
                   className="w-full px-3 py-2 border border-outline-variant rounded-md focus:outline-none focus:border-primary" 
-                  value={formData.event_date} onChange={e => setFormData({...formData, event_date: e.target.value})} 
+                  value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} 
                 />
               </div>
               
@@ -219,14 +215,7 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
                 />
               </div>
               
-              <div>
-                <label className="block font-label-bold text-xs uppercase text-legal-gray mb-1">Capacity (Max RSVPs)</label>
-                <input 
-                  required type="number" min="1" 
-                  className="w-full px-3 py-2 border border-outline-variant rounded-md focus:outline-none focus:border-primary" 
-                  value={formData.capacity} onChange={e => setFormData({...formData, capacity: parseInt(e.target.value) || 50})} 
-                />
-              </div>
+
               
               <div>
                 <label className="block font-label-bold text-xs uppercase text-legal-gray mb-1">Description</label>

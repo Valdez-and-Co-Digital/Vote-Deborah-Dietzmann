@@ -16,15 +16,15 @@ export default async function EventsManagementPage() {
   const { data: upcoming } = await supabase
     .from('events')
     .select('*, rsvps(count)')
-    .gte('event_date', now)
-    .order('event_date', { ascending: true });
+    .gte('date', now)
+    .order('date', { ascending: true });
     
   // Fetch past
   const { data: past } = await supabase
     .from('events')
     .select('*, rsvps(count)')
-    .lt('event_date', now)
-    .order('event_date', { ascending: false });
+    .lt('date', now)
+    .order('date', { ascending: false });
 
   // Map to flat RSVP count
   const upcomingEvents = (upcoming || []).map(e => ({
