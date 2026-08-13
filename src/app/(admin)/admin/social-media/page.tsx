@@ -68,12 +68,17 @@ export default function SocialMediaPage() {
     try {
       const res = await fetch('/api/cron/daily-briefing');
       if (!res.ok) {
-        throw new Error("API Route Failed");
+        let errMsg = "API Route Failed";
+        try {
+          const errData = await res.json();
+          if (errData.error) errMsg = errData.error;
+        } catch(e) {}
+        throw new Error(errMsg);
       }
       await fetchLatestData();
     } catch (err: any) {
       console.error("Error generating data:", err);
-      setError("Failed to generate new AI content.");
+      setError(`Failed to generate new AI content: ${err.message}`);
     } finally {
       setIsGenerating(false);
     }

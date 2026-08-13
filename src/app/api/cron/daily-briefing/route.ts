@@ -57,9 +57,9 @@ export async function GET(request: Request) {
       Position the Judge as a proactive, empathetic leader.
     `;
 
-    const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
+    const response = await ai.interactions.create({
+        model: 'gemini-3.6-flash',
+        input: prompt,
         config: {
             tools: [{ googleSearch: {} }],
             responseMimeType: "application/json",
@@ -99,7 +99,7 @@ export async function GET(request: Request) {
         }
     });
 
-    const jsonText = response.text || '{}';
+    const jsonText = response.output_text || '{}';
     let parsedJson = null;
     try {
       parsedJson = JSON.parse(jsonText);
@@ -121,8 +121,8 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.json({ success: true, message: 'Briefing generated successfully' });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error generating briefing:", error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: `Internal Server Error: ${error.message}` }, { status: 500 });
   }
 }
