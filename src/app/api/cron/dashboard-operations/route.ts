@@ -68,8 +68,14 @@ export async function GET(request: Request) {
 
     const markdownText = response.text || '';
 
-    // 4. Save to Database
-    const { error: insertError } = await supabase.from('daily_briefings').insert({
+    // 4. Save to Database using Admin Client to bypass RLS
+    const { createClient: createSupabaseClient } = require('@supabase/supabase-js');
+    const supabaseAdmin = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    const { error: insertError } = await supabaseAdmin.from('daily_briefings').insert({
       analytics_summary: 'DASHBOARD_OPERATIONS',
       social_media_drafts: 'N/A',
       raw_markdown: markdownText,

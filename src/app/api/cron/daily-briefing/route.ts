@@ -107,8 +107,14 @@ export async function GET(request: Request) {
       console.error("Failed to parse Gemini JSON:", e);
     }
 
-    // 4. Save to Database
-    const { error: insertError } = await supabase.from('daily_briefings').insert({
+    // 4. Save to Database using Admin Client to bypass RLS
+    const { createClient: createSupabaseClient } = require('@supabase/supabase-js');
+    const supabaseAdmin = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    const { error: insertError } = await supabaseAdmin.from('daily_briefings').insert({
       analytics_summary: 'Moved to Dashboard Operations',
       social_media_drafts: 'Structured JSON via Gemini',
       social_media_json: parsedJson,
