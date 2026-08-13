@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import EventCard, { EventType } from './EventCard';
+import PastEventRow from './PastEventRow';
 
 interface EventsManagerProps {
   initialUpcoming: EventType[];
@@ -69,7 +70,13 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
 
   const totalEvents = upcomingEvents.length + pastEvents.length;
   const totalRsvps = [...upcomingEvents, ...pastEvents].reduce((acc, curr) => acc + (curr.rsvp_count || 0), 0);
-  const avgAttendance = totalEvents > 0 ? Math.round((totalRsvps / (totalEvents * 50)) * 100) : 0;
+  
+  const pastEventsWithAttendance = pastEvents.filter(e => e.actual_attendance != null);
+  const totalAttended = pastEventsWithAttendance.reduce((acc, curr) => acc + (curr.actual_attendance || 0), 0);
+  
+  const avgAttendance = pastEventsWithAttendance.length > 0 
+    ? Math.round(totalAttended / pastEventsWithAttendance.length) 
+    : 0;
 
   return (
     <>
@@ -126,7 +133,7 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
               </div>
               <div className="flex justify-between items-center">
                 <span className="font-body-md text-legal-gray">Avg Attendance</span>
-                <span className="font-headline-md text-primary">{avgAttendance}%</span>
+                <span className="font-headline-md text-primary">{avgAttendance} / event</span>
               </div>
             </div>
           </div>
@@ -158,15 +165,7 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
             {pastEvents.length > 0 ? (
               <ul className="divide-y divide-outline-variant/30">
                 {pastEvents.map(event => (
-                  <li key={event.id} className="py-3 flex justify-between items-center">
-                    <div>
-                      <p className="font-label-bold text-primary">{event.title}</p>
-                      <p className="text-xs text-legal-gray">{new Date(event.date).toLocaleDateString()} - {event.location}</p>
-                    </div>
-                    <div className="text-sm font-label-bold text-secondary">
-                      {event.rsvp_count} attended
-                    </div>
-                  </li>
+                  <PastEventRow key={event.id} event={event} onUpdate={refreshEvents} />
                 ))}
               </ul>
             ) : (

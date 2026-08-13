@@ -9,7 +9,9 @@ export type EventType = {
   description: string;
   location: string;
   date: string;
+  end_time: string | null;
   rsvp_count?: number;
+  actual_attendance?: number | null;
 };
 
 interface EventCardProps {
