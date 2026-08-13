@@ -15,6 +15,7 @@ export default function Sidebar({ userEmail }: SidebarProps) {
     { href: '/admin/volunteers', label: 'Volunteers', icon: 'groups' },
     { href: '/admin/events', label: 'Events', icon: 'event' },
     { href: '/admin/analytics', label: 'Site Analytics', icon: 'analytics' },
+    { href: '/admin/logs', label: 'Audit Logs', icon: 'history' },
   ];
 
   return (
