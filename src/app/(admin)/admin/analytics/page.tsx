@@ -10,29 +10,31 @@ export default async function AnalyticsPage() {
     redirect('/admin/login');
   }
 
-  // Mock GA Data
-  const topPages = [
-    { path: '/', views: 2341, percent: 100 },
-    { path: '/about', views: 1204, percent: 51 },
-    { path: '/issues', views: 987, percent: 42 },
-    { path: '/events', views: 756, percent: 32 },
-    { path: '/volunteer', views: 643, percent: 27 },
-    { path: '/experience', views: 412, percent: 18 },
-  ];
-
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto pt-16 md:pt-8">
+      {/* Mobile Header */}
+      <div className="md:hidden flex items-center gap-4 mb-6">
+        <span className="material-symbols-outlined text-primary text-2xl">arrow_back</span>
+        <h1 className="font-headline-md text-primary text-lg font-bold tracking-widest uppercase">Site Analytics</h1>
+      </div>
+
+      {/* Mobile Date Range */}
+      <div className="md:hidden bg-neutral-white border border-outline-variant/30 rounded-xl p-4 flex justify-between items-center mb-6 shadow-sm">
+        <span className="text-primary font-body-md">Date Range</span>
+        <span className="text-primary font-label-bold flex items-center gap-1">
+          Last 7 days <span className="material-symbols-outlined text-[18px]">expand_more</span>
+        </span>
+      </div>
+
+      <div className="hidden md:flex mb-6 justify-between items-end">
         <div>
-          <h1 className="font-headline-lg text-primary mb-2">Site Analytics</h1>
-          <p className="font-body-md text-legal-gray">Website performance and traffic insights (Mock Data).</p>
+          <h1 className="font-headline-lg text-primary text-2xl md:text-3xl mb-1">Site Analytics</h1>
         </div>
         <div className="flex gap-4 items-center">
-          <select className="px-3 py-2 border border-outline-variant rounded-md text-sm bg-white focus:outline-none focus:border-primary">
+          <select className="bg-surface-container-low border border-outline-variant/30 rounded-xl py-2 px-4 text-sm focus:outline-none">
             <option>Last 7 days</option>
             <option>Last 30 days</option>
-            <option>Last 90 days</option>
-            <option>Custom</option>
+            <option>This Year</option>
           </select>
           <button className="btn-secondary py-2 px-4 text-sm flex items-center gap-2">
             <span className="material-symbols-outlined text-[18px]">refresh</span>
@@ -41,96 +43,139 @@ export default async function AnalyticsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
         <KPICard 
           title="Total Visitors" 
           value="3,241" 
-          icon="group"
-          trend={{ value: '18%', isPositive: true }}
+          icon="" 
+          variant="grey"
+          trend={{ value: "+18%", isPositive: true }}
         />
         <KPICard 
           title="Page Views" 
           value="8,472" 
-          icon="visibility"
-          trend={{ value: '12%', isPositive: true }}
+          icon=""
+          variant="grey"
+          trend={{ value: "+12%", isPositive: true }} 
         />
         <KPICard 
           title="Bounce Rate" 
           value="34.2%" 
-          icon="exit_to_app"
-          trend={{ value: '5%', isPositive: true }} // Green arrow down is positive for bounce rate, we'll map isPositive=true to green in UI
+          icon=""
+          variant="grey"
+          trend={{ value: "-5%", isPositive: true }} 
         />
         <KPICard 
           title="Avg Session Duration" 
           value="2m 34s" 
-          icon="timer"
-          trend={{ value: '8%', isPositive: true }}
+          icon=""
+          variant="grey"
+          trend={{ value: "+8%", isPositive: true }} 
         />
       </div>
 
-      {/* Traffic Over Time Placeholder */}
-      <div className="bg-neutral-white border border-outline-variant rounded-2xl p-6 shadow-sm mb-8">
-        <h3 className="font-headline-sm text-primary mb-4 border-b border-outline-variant pb-2">Traffic Over Time</h3>
-        <div className="h-64 bg-surface-container-low rounded-lg flex items-center justify-center border border-dashed border-outline">
-          <p className="font-body-sm text-legal-gray italic">Area Chart: Daily Visitors Placeholder (Requires Chart.js or Recharts)</p>
+      {/* AI Insights Section */}
+      <div className="mb-6 md:mb-8">
+        <h2 className="font-headline-md text-primary text-xl font-bold mb-4">AI Insights</h2>
+        <div className="space-y-4">
+          <div className="bg-neutral-white border border-outline-variant/30 rounded-2xl p-4 shadow-sm flex items-start gap-4">
+            <span className="material-symbols-outlined text-heritage-gold mt-1 icon-fill-1 text-2xl" style={{fontVariationSettings: "'FILL' 1"}}>lightbulb</span>
+            <div>
+              <h3 className="font-headline-sm text-primary font-bold mb-1">Traffic Spike Detected</h3>
+              <p className="text-sm font-body-sm text-legal-gray leading-relaxed">
+                A 25% increase in traffic from social media observed following the recent policy announcement post. Consider boosting similar content.
+              </p>
+            </div>
+          </div>
+          <div className="bg-error/5 border border-error/20 rounded-2xl p-4 shadow-sm flex items-start gap-4">
+            <span className="material-symbols-outlined text-error mt-1 text-2xl">warning</span>
+            <div>
+              <h3 className="font-headline-sm text-primary font-bold mb-1">High Bounce Rate on Donation Page</h3>
+              <p className="text-sm font-body-sm text-legal-gray leading-relaxed">
+                Mobile users are leaving the donation flow at step 2. Review the form layout for potential usability issues on smaller screens.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        {/* Top Pages */}
-        <div className="bg-neutral-white border border-outline-variant rounded-2xl p-6 shadow-sm">
-          <h3 className="font-headline-sm text-primary mb-4 border-b border-outline-variant pb-2">Top Pages</h3>
-          <div className="flex flex-col gap-4">
-            {topPages.map((page, i) => (
-              <div key={i} className="flex flex-col gap-1">
-                <div className="flex justify-between items-center text-sm">
-                  <span className="font-label-bold text-primary">{page.path === '/' ? 'Home' : page.path.substring(1)}</span>
-                  <span className="text-legal-gray">{page.views.toLocaleString()}</span>
+      <div className="bg-neutral-white border border-outline-variant/30 rounded-2xl p-6 shadow-sm mb-6 md:mb-8">
+        <h2 className="font-headline-md text-primary text-xl mb-6">Traffic Over Time</h2>
+        <div className="h-64 bg-surface-container-lowest border-2 border-dashed border-outline-variant/30 rounded-xl flex items-center justify-center text-legal-gray">
+          Area Chart Visualization: Daily Visitors
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-6 md:mb-8">
+        <div className="bg-neutral-white border border-outline-variant/30 rounded-2xl p-6 shadow-sm">
+          <h2 className="font-headline-md text-primary text-xl mb-6">Top Pages</h2>
+          <div className="space-y-4">
+            {[
+              { name: 'Home', views: '2,341 views', pct: 100 },
+              { name: 'About', views: '1,204 views', pct: 51 },
+              { name: 'Issues', views: '987 views', pct: 42 },
+              { name: 'Events', views: '756 views', pct: 32 },
+              { name: 'Volunteer', views: '643 views', pct: 27 },
+              { name: 'Experience', views: '412 views', pct: 17 },
+            ].map(page => (
+              <div key={page.name}>
+                <div className="flex justify-between text-sm font-body-sm text-primary mb-1">
+                  <span>{page.name}</span>
+                  <span className="text-legal-gray">{page.views}</span>
                 </div>
-                <div className="h-2 w-full bg-surface-container-high rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-secondary rounded-full" 
-                    style={{ width: `${page.percent}%` }}
-                  />
+                <div className="w-full bg-surface-container-lowest rounded-full h-2">
+                  <div className="bg-[#0a1f44] h-2 rounded-full" style={{ width: `${page.pct}%` }}></div>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Traffic Sources & Devices */}
-        <div className="flex flex-col gap-8">
-          {/* Traffic Sources */}
-          <div className="bg-neutral-white border border-outline-variant rounded-2xl p-6 shadow-sm">
-            <h3 className="font-headline-sm text-primary mb-4 border-b border-outline-variant pb-2">Traffic Sources</h3>
-            <div className="flex items-center gap-6">
-              <div className="w-32 h-32 rounded-full border-[16px] border-primary flex items-center justify-center relative">
-                {/* CSS Donut placeholder */}
-                <div className="absolute inset-0 rounded-full border-[16px] border-secondary" style={{ clipPath: 'polygon(50% 50%, 100% 0, 100% 100%, 50% 100%)' }}></div>
-                <div className="absolute inset-0 rounded-full border-[16px] border-heritage-gold" style={{ clipPath: 'polygon(50% 50%, 0 100%, 0 0)' }}></div>
+        <div className="bg-neutral-white border border-outline-variant/30 rounded-2xl p-6 shadow-sm">
+          <h2 className="font-headline-md text-primary text-xl mb-6">Traffic Sources</h2>
+          <div className="flex flex-col md:flex-row items-center gap-8 justify-center h-full pb-8">
+            <div className="w-48 h-48 rounded-full border-[24px] border-[#0a1f44] relative flex items-center justify-center border-t-heritage-gold border-r-heritage-gold border-b-[#4285F4] border-l-[#9CA3AF]">
+              <div className="absolute w-full text-center">
+                <span className="text-xs text-legal-gray">Donut Chart</span>
               </div>
-              <div className="flex flex-col gap-2 text-sm flex-1">
-                <div className="flex justify-between items-center"><span className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-primary"></span> Direct</span> <span>40%</span></div>
-                <div className="flex justify-between items-center"><span className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-secondary"></span> Organic</span> <span>25%</span></div>
-                <div className="flex justify-between items-center"><span className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-heritage-gold"></span> Social</span> <span>20%</span></div>
-                <div className="flex justify-between items-center"><span className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-outline"></span> Referral</span> <span>10%</span></div>
-              </div>
+            </div>
+            <div className="space-y-3 w-full md:w-auto flex-1">
+              {[
+                { name: 'Direct', pct: '40%', color: 'bg-[#0a1f44]' },
+                { name: 'Organic Search', pct: '25%', color: 'bg-heritage-gold' },
+                { name: 'Social Media', pct: '20%', color: 'bg-[#4285F4]' },
+                { name: 'Referral', pct: '10%', color: 'bg-[#9CA3AF]' },
+                { name: 'Email', pct: '5%', color: 'bg-outline-variant' },
+              ].map(source => (
+                <div key={source.name} className="flex justify-between items-center text-sm font-body-sm">
+                  <div className="flex items-center gap-2">
+                    <span className={`w-3 h-3 rounded-full ${source.color}`}></span>
+                    <span className="text-primary">{source.name}</span>
+                  </div>
+                  <span className="font-label-bold">{source.pct}</span>
+                </div>
+              ))}
             </div>
           </div>
-          
-          {/* Device Breakdown */}
-          <div className="bg-neutral-white border border-outline-variant rounded-2xl p-6 shadow-sm">
-            <h3 className="font-headline-sm text-primary mb-4 border-b border-outline-variant pb-2">Device Breakdown</h3>
-            <div className="flex h-6 rounded-full overflow-hidden mb-3 text-xs text-white font-bold text-center">
-              <div className="bg-primary flex items-center justify-center" style={{ width: '55%' }}>55%</div>
-              <div className="bg-secondary flex items-center justify-center" style={{ width: '38%' }}>38%</div>
-              <div className="bg-heritage-gold flex items-center justify-center" style={{ width: '7%' }}>7%</div>
-            </div>
-            <div className="flex justify-center gap-6 text-sm text-legal-gray">
-              <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[16px]">desktop_mac</span> Desktop</span>
-              <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[16px]">smartphone</span> Mobile</span>
-              <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[16px]">tablet_mac</span> Tablet</span>
-            </div>
+        </div>
+      </div>
+
+      <div className="bg-neutral-white border border-outline-variant/30 rounded-2xl p-6 shadow-sm">
+        <h2 className="font-headline-md text-primary text-xl mb-6">Device Breakdown</h2>
+        <div className="flex w-full h-8 rounded-md overflow-hidden mb-4 text-xs font-bold text-white">
+          <div className="bg-[#0a1f44] flex items-center justify-center" style={{ width: '55%' }}>55%</div>
+          <div className="bg-heritage-gold flex items-center justify-center" style={{ width: '38%' }}>38%</div>
+          <div className="bg-[#D1D5DB] flex items-center justify-center text-primary" style={{ width: '7%' }}>7%</div>
+        </div>
+        <div className="flex justify-center gap-8 text-sm text-legal-gray">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-[18px]">computer</span> Desktop
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-[18px]">smartphone</span> Mobile
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-[18px]">tablet_mac</span> Tablet
           </div>
         </div>
       </div>

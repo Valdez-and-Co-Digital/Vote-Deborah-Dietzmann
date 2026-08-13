@@ -43,42 +43,76 @@ export async function GET(request: Request) {
     // 3. Prompt Gemini with Google Search tool enabled
     const prompt = `
       You are an expert campaign manager AI. We are running a judicial campaign for Deborah Dietzmann in ${process.env.LOCAL_AREA || 'Bexar County, Texas'}.
-      Here is the latest data snapshot for the campaign:
-      ${dataSnapshot}
-
-      Based on this data, please generate a Daily Briefing formatted in Markdown.
       
-      It must contain two sections:
-      ### 📊 Campaign Recommendations
-      (3 brief bullet points of actionable advice based on our data snapshot)
-
-      ### 📱 Social Media Drafts
-      Write two engaging social media posts connecting our judicial campaign to today's local news in ${process.env.LOCAL_AREA || 'Bexar County, Texas'}. 
-      You MUST search the live web for local news. The topics should pertain to the candidate's interests:
+      You MUST search the live web for local news today in ${process.env.LOCAL_AREA || 'Bexar County, Texas'}. 
+      The topics should pertain to the candidate's interests:
       
-      1. Infrastructure & Emergency Management: (e.g., Extreme weather, highway closures, broadband, power grid)
-      2. Economic Development & Taxes: (e.g., Property tax appraisals, corporate moves, budget meetings)
-      3. Public Safety & Justice: (e.g., Crime rates, bail laws, law enforcement funding, rehab facilities)
-      4. Civic Engagement & Community Milestones: (e.g., High school sports championships, charity drives, election deadlines)
+      1. Infrastructure & Emergency Management (Local)
+      2. Economic Development & Taxes (Local)
+      3. Public Safety & Justice (Judicial)
+      4. Civic Engagement & Community Milestones (Community)
       
-      Draft the posts from the County Judge perspective, positioning them as a proactive, empathetic leader and a community pillar.
+      Find 3 trending news articles (one Local, one Judicial, one Community).
+      Then, generate 2 social media posts based on those news articles, written from the County Judge perspective.
+      Position the Judge as a proactive, empathetic leader.
     `;
 
     const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
         contents: prompt,
         config: {
-            tools: [{ googleSearch: {} }]
+            tools: [{ googleSearch: {} }],
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "object",
+              properties: {
+                trending_news: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      publisher: { type: "string" },
+                      time_ago: { type: "string" },
+                      title: { type: "string" },
+                      snippet: { type: "string" },
+                      category: { type: "string", description: "e.g., Local, Judicial, Community" }
+                    },
+                    required: ["publisher", "time_ago", "title", "snippet", "category"]
+                  }
+                },
+                recommendations: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      based_on_title: { type: "string" },
+                      goal: { type: "string", description: "e.g., Engagement Goal, Issue Awareness" },
+                      suggested_image_description: { type: "string" },
+                      generated_caption: { type: "string" }
+                    },
+                    required: ["based_on_title", "goal", "suggested_image_description", "generated_caption"]
+                  }
+                }
+              },
+              required: ["trending_news", "recommendations"]
+            }
         }
     });
 
-    const markdownText = response.text || '';
+    const jsonText = response.text || '{}';
+    let parsedJson = null;
+    try {
+      parsedJson = JSON.parse(jsonText);
+    } catch (e) {
+      console.error("Failed to parse Gemini JSON:", e);
+    }
 
     // 4. Save to Database
     const { error: insertError } = await supabase.from('daily_briefings').insert({
-      analytics_summary: 'Generated from real campaign data',
-      social_media_drafts: 'Generated via Gemini with Google Search',
-      raw_markdown: markdownText,
+      analytics_summary: 'Moved to Dashboard Operations',
+      social_media_drafts: 'Structured JSON via Gemini',
+      social_media_json: parsedJson,
+      raw_markdown: 'Legacy markdown fallback',
     });
 
     if (insertError) {

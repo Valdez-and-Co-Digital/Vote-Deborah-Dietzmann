@@ -27,6 +27,7 @@ export default function AIDailyBriefing() {
       const { data, error } = await supabase
         .from('daily_briefings')
         .select('*')
+        .eq('analytics_summary', 'DASHBOARD_OPERATIONS')
         .order('created_at', { ascending: false })
         .limit(1)
         .single();
@@ -47,12 +48,9 @@ export default function AIDailyBriefing() {
     setIsGenerating(true);
     setError(null);
     try {
-      // We will call the API route manually here (useful for testing)
-      const res = await fetch('/api/cron/daily-briefing', {
+      const res = await fetch('/api/cron/dashboard-operations', {
         headers: {
           'Authorization': `Bearer ${process.env.NEXT_PUBLIC_CRON_SECRET || ''}` 
-          // We use NEXT_PUBLIC_CRON_SECRET just for manual testing in the dashboard if we want, 
-          // though typically this is triggered securely by Vercel Cron.
         }
       });
       if (!res.ok) {
@@ -73,11 +71,11 @@ export default function AIDailyBriefing() {
       <div className="flex items-center justify-between mb-4 pb-4 border-b border-outline-variant/30">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-            <span className="material-symbols-outlined">auto_awesome</span>
+            <span className="material-symbols-outlined">psychiatry</span>
           </div>
           <div>
-            <h2 className="font-headline-sm text-primary text-xl font-bold">AI Daily Briefing</h2>
-            <p className="font-body-sm text-legal-gray text-xs">Powered by Gemini 2.5 Flash</p>
+            <h2 className="font-headline-sm text-primary text-xl font-bold">Campaign Operations</h2>
+            <p className="font-body-sm text-legal-gray text-xs">AI Assistant</p>
           </div>
         </div>
         <button 

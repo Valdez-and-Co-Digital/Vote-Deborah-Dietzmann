@@ -44,9 +44,10 @@ export default function Sidebar({ userEmail }: SidebarProps) {
 
   const links = [
     { href: '/admin', label: 'Dashboard', icon: 'dashboard', exact: true },
-    { href: '/admin/volunteers', label: 'Volunteers', icon: 'groups' },
     { href: '/admin/events', label: 'Events', icon: 'event' },
-    { href: '/admin/analytics', label: 'Site Analytics', icon: 'analytics' },
+    { href: '/admin/social-media', label: 'Social', icon: 'share' },
+    { href: '/admin/analytics', label: 'Analytics', icon: 'analytics' },
+    { href: '/admin/volunteers', label: 'Volunteers', icon: 'groups' },
     { href: '/admin/logs', label: 'Audit Logs', icon: 'history' },
   ];
 
@@ -111,22 +112,19 @@ export default function Sidebar({ userEmail }: SidebarProps) {
 
       {/* Mobile Bottom Navigation */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#0a1f44] border-t border-outline-variant/20 z-50 flex justify-around items-end h-[68px] pb-[env(safe-area-inset-bottom)]">
-        {links.slice(0, 4).map((link) => {
+        {links.slice(0, 5).map((link) => {
           const isActive = link.exact ? pathname === link.href : pathname.startsWith(link.href);
           return (
             <Link 
               key={link.href}
               href={link.href}
-              className="relative flex flex-col items-center justify-center w-full h-full pb-2"
+              className={`relative flex flex-col items-center justify-center w-full h-full pb-2 ${isActive ? 'bg-[#990000]' : ''}`}
             >
-              {isActive && (
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-heritage-gold rounded-b-sm"></div>
-              )}
-              <div className={`flex flex-col items-center gap-1 mt-auto ${isActive ? 'text-heritage-gold' : 'text-on-primary/60'}`}>
+              <div className={`flex flex-col items-center gap-1 mt-auto ${isActive ? 'text-white' : 'text-on-primary/60'}`}>
                 <span className={`material-symbols-outlined text-[24px] ${isActive ? 'icon-fill-1' : ''}`}>
                   {link.icon}
                 </span>
-                <span className="text-[10px] font-label-bold tracking-wider">{link.label.split(' ')[0]}</span>
+                <span className="text-[10px] font-label-bold tracking-wider">{link.label}</span>
               </div>
             </Link>
           );
