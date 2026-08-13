@@ -39,29 +39,56 @@ export default async function VolunteersManagementPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-neutral-white p-6 rounded-lg border border-outline-variant/30 shadow-sm flex flex-col items-center text-center">
-          <div className="p-3 bg-yellow-100 text-yellow-800 rounded-full mb-3">
-            <span className="material-symbols-outlined icon-fill-1">fiber_new</span>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+        {/* Card 1: New This Week */}
+        <div className="bg-neutral-white p-5 rounded-2xl border border-outline-variant/30 shadow-sm flex flex-col relative overflow-hidden">
+          <div className="absolute -top-12 -right-12 w-32 h-32 bg-green-50 rounded-full opacity-50 pointer-events-none"></div>
+          <div className="flex justify-between items-start mb-4 relative z-10">
+            <div className="w-10 h-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center">
+              <span className="material-symbols-outlined text-xl">person_add</span>
+            </div>
+            <div className="bg-green-50 text-green-700 px-2 py-1 rounded text-[10px] font-bold flex items-center gap-1">
+              <span className="material-symbols-outlined text-[12px]">trending_up</span> 12%
+            </div>
           </div>
-          <p className="font-headline-lg text-3xl text-primary">{newThisWeek}</p>
-          <p className="font-label-bold uppercase tracking-wider text-legal-gray text-xs mt-1">New This Week</p>
+          <div className="relative z-10">
+            <p className="font-headline-lg text-[32px] text-primary leading-tight">{newThisWeek}</p>
+            <p className="text-legal-gray text-sm font-body-sm mt-1">New This Week</p>
+          </div>
         </div>
 
-        <div className="bg-neutral-white p-6 rounded-lg border border-outline-variant/30 shadow-sm flex flex-col items-center text-center">
-          <div className="p-3 bg-blue-100 text-blue-800 rounded-full mb-3">
-            <span className="material-symbols-outlined icon-fill-1">how_to_reg</span>
+        {/* Card 2: Contacted */}
+        <div className="bg-neutral-white p-5 rounded-2xl border border-outline-variant/30 shadow-sm flex flex-col relative overflow-hidden">
+          <div className="absolute -top-12 -right-12 w-32 h-32 bg-blue-50 rounded-full opacity-50 pointer-events-none"></div>
+          <div className="flex justify-between items-start mb-4 relative z-10">
+            <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+              <span className="material-symbols-outlined text-xl">chat_bubble_outline</span>
+            </div>
+            <div className="bg-surface-variant text-on-surface-variant px-2 py-1 rounded text-[10px] font-bold flex items-center gap-1">
+              <span className="material-symbols-outlined text-[12px]">arrow_right_alt</span> 0%
+            </div>
           </div>
-          <p className="font-headline-lg text-3xl text-primary">{contacted}</p>
-          <p className="font-label-bold uppercase tracking-wider text-legal-gray text-xs mt-1">Contacted</p>
+          <div className="relative z-10">
+            <p className="font-headline-lg text-[32px] text-primary leading-tight">{contacted}</p>
+            <p className="text-legal-gray text-sm font-body-sm mt-1">Contacted</p>
+          </div>
         </div>
 
-        <div className="bg-neutral-white p-6 rounded-lg border border-outline-variant/30 shadow-sm flex flex-col items-center text-center">
-          <div className="p-3 bg-red-100 text-red-800 rounded-full mb-3">
-            <span className="material-symbols-outlined icon-fill-1">pending_actions</span>
+        {/* Card 3: Pending Follow-up */}
+        <div className="bg-neutral-white p-5 rounded-2xl border border-outline-variant/30 shadow-sm flex flex-col relative overflow-hidden">
+          <div className="absolute -top-12 -right-12 w-32 h-32 bg-orange-50 rounded-full opacity-50 pointer-events-none"></div>
+          <div className="flex justify-between items-start mb-4 relative z-10">
+            <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center">
+              <span className="material-symbols-outlined text-xl">assignment_late</span>
+            </div>
+            <div className="bg-error/10 text-error px-2 py-1 rounded text-[10px] font-bold flex items-center gap-1">
+              <span className="material-symbols-outlined text-[12px]">trending_down</span> 5%
+            </div>
           </div>
-          <p className="font-headline-lg text-3xl text-primary">{pending}</p>
-          <p className="font-label-bold uppercase tracking-wider text-legal-gray text-xs mt-1">Pending Follow-up</p>
+          <div className="relative z-10">
+            <p className="font-headline-lg text-[32px] text-primary leading-tight">{pending}</p>
+            <p className="text-legal-gray text-sm font-body-sm mt-1">Pending Follow-up</p>
+          </div>
         </div>
       </div>
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "../../globals.css";
 import { createClient } from '@/utils/supabase/server';
 import Sidebar from './components/Sidebar';
+import DesktopHeader from './components/DesktopHeader';
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | Deborah Dietzmann",
@@ -39,8 +40,11 @@ export default async function AdminLayout({
         )}
 
         {/* Main Content Area */}
-        <main className={`min-h-screen bg-surface-container-lowest pb-20 md:pb-0 ${user ? 'md:ml-60' : ''}`}>
-          {children}
+        <main className={`min-h-screen bg-surface-container-lowest pt-16 md:pt-0 pb-20 md:pb-0 ${user ? 'md:ml-60' : ''} flex flex-col`}>
+          {user && <DesktopHeader />}
+          <div className="flex-1">
+            {children}
+          </div>
         </main>
       </body>
     </html>
