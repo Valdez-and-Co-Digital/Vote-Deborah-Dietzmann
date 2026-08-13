@@ -37,22 +37,36 @@ export async function GET(request: Request) {
       - Upcoming Events: ${recentEvents.length} scheduled.
       - Total Volunteers: ${volunteers?.length || 0} (${newVolunteersCount} new).
       - Total RSVPs across all events: ${totalRsvps}.
-      Local Area: ${process.env.LOCAL_AREA || 'the local district'}
+      Local Area: ${process.env.LOCAL_AREA || 'Bexar County, Texas'}
     `;
 
-    // 3. Prompt Gemini with Google Search tool enabled
+    // Fetch Live News from Google News RSS to use as Context
+    const Parser = require('rss-parser');
+    const parser = new Parser();
+    let liveNewsContext = '';
+    try {
+      const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(process.env.LOCAL_AREA || 'Bexar County, Texas')}&hl=en-US&gl=US&ceid=US:en`;
+      const feed = await parser.parseURL(feedUrl);
+      const topArticles = feed.items.slice(0, 10).map(item => `- Title: ${item.title}\n  Published: ${item.pubDate}`).join('\n\n');
+      liveNewsContext = `\n\n=== LIVE NEWS FROM TODAY ===\n${topArticles}\n============================\n`;
+    } catch (err) {
+      console.error("Failed to fetch Google News RSS:", err);
+    }
+
+    // 3. Prompt Gemini
     const prompt = `
       You are an expert campaign manager AI. We are running a judicial campaign for Deborah Dietzmann in ${process.env.LOCAL_AREA || 'Bexar County, Texas'}.
       
-      You MUST search the live web for local news today in ${process.env.LOCAL_AREA || 'Bexar County, Texas'}. 
-      The topics should pertain to the candidate's interests:
+      Here is the latest live news from today in the area:
+      ${liveNewsContext}
       
+      The topics should pertain to the candidate's interests:
       1. Infrastructure & Emergency Management (Local)
       2. Economic Development & Taxes (Local)
       3. Public Safety & Justice (Judicial)
       4. Civic Engagement & Community Milestones (Community)
       
-      Find 3 trending news articles (one Local, one Judicial, one Community).
+      Analyze the live news provided above. Pick 3 trending news articles (one Local, one Judicial, one Community) that are most relevant.
       Then, generate 2 social media posts based on those news articles, written from the County Judge perspective.
       Position the Judge as a proactive, empathetic leader.
     `;
