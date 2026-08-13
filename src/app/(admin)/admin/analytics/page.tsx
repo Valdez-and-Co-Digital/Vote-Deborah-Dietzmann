@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import KPICard from '../components/KPICard';
+import { getAnalyticsData } from '@/app/actions/analytics';
 
 export default async function AnalyticsPage() {
   const supabase = await createClient();
@@ -9,6 +10,9 @@ export default async function AnalyticsPage() {
   if (!user) {
     redirect('/admin/login');
   }
+
+  // Fetch real Google Analytics Data (last 7 days by default)
+  const gaData = await getAnalyticsData(7);
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto pt-16 md:pt-8">
@@ -46,31 +50,31 @@ export default async function AnalyticsPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
         <KPICard 
           title="Total Visitors" 
-          value="3,241" 
+          value={gaData.visitors.value} 
           icon="" 
           variant="grey"
-          trend={{ value: "+18%", isPositive: true }}
+          trend={gaData.visitors.trend}
         />
         <KPICard 
           title="Page Views" 
-          value="8,472" 
+          value={gaData.pageViews.value} 
           icon=""
           variant="grey"
-          trend={{ value: "+12%", isPositive: true }} 
+          trend={gaData.pageViews.trend} 
         />
         <KPICard 
           title="Bounce Rate" 
-          value="34.2%" 
+          value={gaData.bounceRate.value} 
           icon=""
           variant="grey"
-          trend={{ value: "-5%", isPositive: true }} 
+          trend={gaData.bounceRate.trend} 
         />
         <KPICard 
           title="Avg Session Duration" 
-          value="2m 34s" 
+          value={gaData.avgSession.value} 
           icon=""
           variant="grey"
-          trend={{ value: "+8%", isPositive: true }} 
+          trend={gaData.avgSession.trend} 
         />
       </div>
 
@@ -110,18 +114,11 @@ export default async function AnalyticsPage() {
         <div className="bg-neutral-white border border-outline-variant/30 rounded-2xl p-6 shadow-sm">
           <h2 className="font-headline-md text-primary text-xl mb-6">Top Pages</h2>
           <div className="space-y-4">
-            {[
-              { name: 'Home', views: '2,341 views', pct: 100 },
-              { name: 'About', views: '1,204 views', pct: 51 },
-              { name: 'Issues', views: '987 views', pct: 42 },
-              { name: 'Events', views: '756 views', pct: 32 },
-              { name: 'Volunteer', views: '643 views', pct: 27 },
-              { name: 'Experience', views: '412 views', pct: 17 },
-            ].map(page => (
+            {gaData.topPages.map(page => (
               <div key={page.name}>
-                <div className="flex justify-between text-sm font-body-sm text-primary mb-1">
-                  <span>{page.name}</span>
-                  <span className="text-legal-gray">{page.views}</span>
+                <div className="flex justify-between text-sm font-body-sm text-primary mb-1 truncate gap-2">
+                  <span className="truncate">{page.name}</span>
+                  <span className="text-legal-gray shrink-0">{page.views}</span>
                 </div>
                 <div className="w-full bg-surface-container-lowest rounded-full h-2">
                   <div className="bg-[#0a1f44] h-2 rounded-full" style={{ width: `${page.pct}%` }}></div>
@@ -140,13 +137,7 @@ export default async function AnalyticsPage() {
               </div>
             </div>
             <div className="space-y-3 w-full md:w-auto flex-1">
-              {[
-                { name: 'Direct', pct: '40%', color: 'bg-[#0a1f44]' },
-                { name: 'Organic Search', pct: '25%', color: 'bg-heritage-gold' },
-                { name: 'Social Media', pct: '20%', color: 'bg-[#4285F4]' },
-                { name: 'Referral', pct: '10%', color: 'bg-[#9CA3AF]' },
-                { name: 'Email', pct: '5%', color: 'bg-outline-variant' },
-              ].map(source => (
+              {gaData.trafficSources.map(source => (
                 <div key={source.name} className="flex justify-between items-center text-sm font-body-sm">
                   <div className="flex items-center gap-2">
                     <span className={`w-3 h-3 rounded-full ${source.color}`}></span>
@@ -163,9 +154,9 @@ export default async function AnalyticsPage() {
       <div className="bg-neutral-white border border-outline-variant/30 rounded-2xl p-6 shadow-sm">
         <h2 className="font-headline-md text-primary text-xl mb-6">Device Breakdown</h2>
         <div className="flex w-full h-8 rounded-md overflow-hidden mb-4 text-xs font-bold text-white">
-          <div className="bg-[#0a1f44] flex items-center justify-center" style={{ width: '55%' }}>55%</div>
-          <div className="bg-heritage-gold flex items-center justify-center" style={{ width: '38%' }}>38%</div>
-          <div className="bg-[#D1D5DB] flex items-center justify-center text-primary" style={{ width: '7%' }}>7%</div>
+          <div className="bg-[#0a1f44] flex items-center justify-center transition-all duration-500" style={{ width: `${gaData.deviceBreakdown.desktop}%` }}>{gaData.deviceBreakdown.desktop > 0 ? `${gaData.deviceBreakdown.desktop}%` : ''}</div>
+          <div className="bg-heritage-gold flex items-center justify-center transition-all duration-500" style={{ width: `${gaData.deviceBreakdown.mobile}%` }}>{gaData.deviceBreakdown.mobile > 0 ? `${gaData.deviceBreakdown.mobile}%` : ''}</div>
+          <div className="bg-[#D1D5DB] flex items-center justify-center text-primary transition-all duration-500" style={{ width: `${gaData.deviceBreakdown.tablet}%` }}>{gaData.deviceBreakdown.tablet > 0 ? `${gaData.deviceBreakdown.tablet}%` : ''}</div>
         </div>
         <div className="flex justify-center gap-8 text-sm text-legal-gray">
           <div className="flex items-center gap-2">

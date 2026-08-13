@@ -32,7 +32,7 @@ export default async function AdminLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="antialiased bg-surface-container-lowest min-h-screen">
+      <body className="antialiased bg-surface-container-lowest min-h-screen" suppressHydrationWarning>
         
         {/* Sidebar - Only show if logged in */}
         {user && (
