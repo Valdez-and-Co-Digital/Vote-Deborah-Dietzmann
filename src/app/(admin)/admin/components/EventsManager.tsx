@@ -32,7 +32,9 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
     date: '',
     time: '',
     capacity: 0,
-    category: ''
+    category: '',
+    rsvpType: 'internal',
+    rsvpUrl: ''
   });
 
   const refreshEvents = async () => {
@@ -71,6 +73,11 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
       `${formData.state} ${formData.zipCode}`.trim()
     ].filter(Boolean).join(', ');
     
+    let finalRsvpLink: string | null = null;
+    if (formData.rsvpType === 'internal') finalRsvpLink = 'internal';
+    else if (formData.rsvpType === 'email') finalRsvpLink = formData.rsvpUrl ? `mailto:${formData.rsvpUrl}` : null;
+    else if (formData.rsvpType === 'external') finalRsvpLink = formData.rsvpUrl || null;
+
     if (editingEventId) {
       const { error } = await supabase.from('events').update({
         title: formData.title,
@@ -78,13 +85,14 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
         location: combinedLocation,
         date: new Date(`${formData.date}T${formData.time || '00:00'}`).toISOString(),
         capacity: formData.capacity,
-        category: formData.category
+        category: formData.category,
+        rsvp_link: finalRsvpLink
       }).eq('id', editingEventId);
 
       if (!error) {
         setIsModalOpen(false);
         setEditingEventId(null);
-        setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '' });
+        setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '', rsvpType: 'internal', rsvpUrl: '' });
         refreshEvents();
       } else {
         alert("Error updating event");
@@ -97,13 +105,14 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
           location: combinedLocation,
           date: new Date(`${formData.date}T${formData.time || '00:00'}`).toISOString(),
           capacity: formData.capacity,
-          category: formData.category
+          category: formData.category,
+          rsvp_link: finalRsvpLink
         }
       ]);
 
       if (!error) {
         setIsModalOpen(false);
-        setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '' });
+        setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '', rsvpType: 'internal', rsvpUrl: '' });
         refreshEvents();
       } else {
         console.error("Supabase Insert Error:", error);
@@ -231,6 +240,46 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
                 </div>
               </div>
 
+              {/* RSVP Settings Section */}
+              <div className="flex flex-col gap-4">
+                <h3 className="hidden md:block font-headline-md text-primary text-lg border-b border-outline-variant/30 pb-2 mb-2">RSVP Settings</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-label-bold text-sm text-primary mb-2">RSVP Action</label>
+                    <div className="relative bg-white md:bg-transparent">
+                      <select 
+                        className="w-full pl-3 pr-3 py-3 border border-outline-variant/60 rounded-lg focus:outline-none focus:border-primary appearance-none font-body-md text-primary bg-transparent" 
+                        value={formData.rsvpType} onChange={e => setFormData({...formData, rsvpType: e.target.value as any})} 
+                      >
+                        <option value="internal">Internal RSVP Form</option>
+                        <option value="external">External Link (Eventbrite, etc)</option>
+                        <option value="email">Email Address</option>
+                        <option value="none">No RSVP Button</option>
+                      </select>
+                      <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+                    </div>
+                  </div>
+                  {(formData.rsvpType === 'external' || formData.rsvpType === 'email') && (
+                    <div>
+                      <label className="block font-label-bold text-sm text-primary mb-2">
+                        {formData.rsvpType === 'external' ? 'Link URL' : 'Email Address'} <span className="text-error">*</span>
+                      </label>
+                      <div className="relative bg-white md:bg-transparent">
+                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-heritage-gold">
+                          {formData.rsvpType === 'external' ? 'link' : 'mail'}
+                        </span>
+                        <input 
+                          required type={formData.rsvpType === 'email' ? 'email' : 'url'} 
+                          placeholder={formData.rsvpType === 'external' ? 'https://...' : 'rsvp@campaign.com'}
+                          className="w-full pl-10 pr-3 py-3 border border-outline-variant/60 rounded-lg focus:outline-none focus:border-primary font-body-md" 
+                          value={formData.rsvpUrl} onChange={e => setFormData({...formData, rsvpUrl: e.target.value})} 
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {/* Location Section */}
               <div className="flex flex-col gap-4">
                 <h3 className="hidden md:block font-headline-md text-primary text-lg border-b border-outline-variant/30 pb-2 mb-2">Location</h3>
@@ -330,7 +379,7 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
             <button 
               onClick={() => {
                 setEditingEventId(null);
-                setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '' });
+                setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '', rsvpType: 'internal', rsvpUrl: '' });
                 setIsModalOpen(true);
               }}
               className="hidden md:flex bg-[#8B0000] hover:bg-[#6b0000] text-white py-2 px-4 rounded-md items-center gap-1 font-label-bold transition-colors shadow-sm text-sm"
@@ -383,6 +432,18 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
                           sAddr = e.location || '';
                         }
 
+                        let parsedRsvpType = 'none';
+                        let parsedRsvpUrl = '';
+                        if (e.rsvp_link === 'internal') {
+                          parsedRsvpType = 'internal';
+                        } else if (e.rsvp_link?.startsWith('mailto:')) {
+                          parsedRsvpType = 'email';
+                          parsedRsvpUrl = e.rsvp_link.replace('mailto:', '');
+                        } else if (e.rsvp_link) {
+                          parsedRsvpType = 'external';
+                          parsedRsvpUrl = e.rsvp_link;
+                        }
+
                         setFormData({
                           title: e.title,
                           description: e.description || '',
@@ -395,7 +456,9 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
                           date: datePart,
                           time: timePart.substring(0, 5),
                           capacity: e.capacity || 0,
-                          category: e.category || ''
+                          category: e.category || '',
+                          rsvpType: parsedRsvpType as any,
+                          rsvpUrl: parsedRsvpUrl
                         });
                         setIsModalOpen(true);
                       }}
@@ -498,7 +561,7 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
           <button 
             onClick={() => {
               setEditingEventId(null);
-              setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '' });
+              setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '', rsvpType: 'internal', rsvpUrl: '' });
               setIsModalOpen(true);
             }}
             className="md:hidden fixed bottom-24 right-4 w-14 h-14 bg-primary text-neutral-white rounded-full flex items-center justify-center shadow-lg z-40 transition-transform active:scale-95"
