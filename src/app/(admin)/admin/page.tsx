@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import KPICard from './components/KPICard';
 import Link from 'next/link';
+import AIDailyBriefing from './components/AIDailyBriefing';
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
@@ -109,7 +110,11 @@ export default async function AdminDashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+        {/* AI Daily Briefing */}
+        <div className="lg:col-span-1">
+          <AIDailyBriefing />
+        </div>
         {/* Recent Volunteers */}
         <div className="bg-neutral-white border border-outline-variant/30 rounded-2xl p-6 shadow-sm flex flex-col">
           <div className="flex items-center justify-between mb-2">

@@ -1,0 +1,707 @@
+[
+  {
+    "id": "TC001",
+    "title": "Submit volunteer interest from the public homepage",
+    "description": "A visitor can review campaign information on the homepage and submit the volunteer form successfully.",
+    "category": "Public Landing Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Scroll through campaign information"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the volunteer form with valid information"
+      },
+      {
+        "type": "action",
+        "description": "Submit the volunteer form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a submission completion message is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Submit an RSVP form from the public homepage",
+    "description": "A public visitor can submit the RSVP form for a campaign event on the landing page and see a completion state afterward.",
+    "category": "Events Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the RSVP name field with a valid name"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the RSVP email field with a valid email"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid campaign event from the RSVP event field"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid attendance option"
+      },
+      {
+        "type": "action",
+        "description": "Submit the RSVP form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an RSVP submission confirmation is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Sign in to the admin dashboard",
+    "description": "An authenticated admin can sign in through the admin login page and reach the protected dashboard.",
+    "category": "Events Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the admin dashboard is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Set a new password for an invited admin",
+    "description": "An invited admin can complete the password setup flow and see confirmation that the password was updated.",
+    "category": "Password Setup",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/update-password"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the new password field with a valid password"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password confirmation field with the same password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the password setup form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a password update confirmation is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Require authentication before accessing admin pages",
+    "description": "A visitor who is not signed in is prevented from opening protected admin pages and is sent to the login gate.",
+    "category": "Admin Login",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the admin login page is displayed"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /admin/events"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the admin login page is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Block unauthenticated access to the admin area",
+    "description": "A visitor who is not signed in is prevented from viewing protected admin pages and is directed to authenticate.",
+    "category": "Events Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the admin login page is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "Add a new campaign event",
+    "description": "An authenticated admin can create a new event in the events manager and see it appear in the event list after saving.",
+    "category": "Events Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open event management"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to add a new event"
+      },
+      {
+        "type": "action",
+        "description": "Fill in a valid event title"
+      },
+      {
+        "type": "action",
+        "description": "Fill in a valid event date"
+      },
+      {
+        "type": "action",
+        "description": "Fill in a valid event time"
+      },
+      {
+        "type": "action",
+        "description": "Fill in a valid event location"
+      },
+      {
+        "type": "action",
+        "description": "Save the event"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new event appears in the event list"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "Edit an existing upcoming event",
+    "description": "An authenticated admin can update an upcoming event and see the revised details in the events list.",
+    "category": "Events Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open event management"
+      },
+      {
+        "type": "action",
+        "description": "Select an upcoming event to edit"
+      },
+      {
+        "type": "action",
+        "description": "Update the event title"
+      },
+      {
+        "type": "action",
+        "description": "Save the event changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated event information is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "Filter volunteers by status",
+    "description": "An authenticated admin can filter the volunteer list by status and see only matching volunteers.",
+    "category": "Volunteer Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open volunteer management"
+      },
+      {
+        "type": "action",
+        "description": "Choose a volunteer status filter"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the volunteer list is filtered by the selected status"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Update attendance for a past event",
+    "description": "An authenticated admin can record attendance for a past event and see the updated attendance state after saving.",
+    "category": "Events Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open event management"
+      },
+      {
+        "type": "action",
+        "description": "Switch to the past events view"
+      },
+      {
+        "type": "action",
+        "description": "Select a past event to update attendance"
+      },
+      {
+        "type": "action",
+        "description": "Set the actual attendance value"
+      },
+      {
+        "type": "action",
+        "description": "Save the attendance update"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated attendance state is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "Mark a volunteer as contacted",
+    "description": "An authenticated admin can change a volunteer to contacted and see the updated status in the list.",
+    "category": "Volunteer Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open volunteer management"
+      },
+      {
+        "type": "action",
+        "description": "Select a volunteer to mark as contacted"
+      },
+      {
+        "type": "action",
+        "description": "Mark the volunteer as contacted"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the volunteer status is updated to contacted"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC012",
+    "title": "View events on the admin calendar",
+    "description": "An authenticated admin can open the event calendar, see event days highlighted, and select a date to view matching event details.",
+    "category": "Events Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open event management"
+      },
+      {
+        "type": "action",
+        "description": "Open the event calendar"
+      },
+      {
+        "type": "action",
+        "description": "Select a date with scheduled events"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify matching event details are displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC013",
+    "title": "Mark a volunteer as done",
+    "description": "An authenticated admin can change a volunteer to done and see the updated status in the list.",
+    "category": "Volunteer Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open volunteer management"
+      },
+      {
+        "type": "action",
+        "description": "Select a volunteer to mark as done"
+      },
+      {
+        "type": "action",
+        "description": "Mark the volunteer as done"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the volunteer status is updated to done"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC014",
+    "title": "Review campaign information on the public landing page",
+    "description": "A public visitor can read the campaign information on the homepage and see the main public content sections.",
+    "category": "Events Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the campaign information section"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify campaign information is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the public forms are available"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC015",
+    "title": "View audit logs for recent admin changes",
+    "description": "An authenticated admin can open the audit log page and review recent event and volunteer changes with the associated admin email.",
+    "category": "Audit Logs",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open audit logs"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify recent audit log entries are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify admin email references are displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC016",
+    "title": "Show an error for invalid admin credentials",
+    "description": "An admin sees an error message when submitting invalid login credentials and is not signed in.",
+    "category": "Admin Login",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with invalid credentials"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with invalid credentials"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a login error message is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC017",
+    "title": "Reject mismatched password confirmation during setup",
+    "description": "An invited admin entering mismatched passwords on the password setup page sees a validation error and cannot complete the update.",
+    "category": "Events Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/update-password"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the new password field with a valid password"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password confirmation field with a different password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the password update form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a password confirmation validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC018",
+    "title": "Show validation for an incomplete volunteer form",
+    "description": "A visitor sees validation feedback when required volunteer form fields are left empty or invalid and the form is not submitted.",
+    "category": "Public Landing Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Scroll through campaign information"
+      },
+      {
+        "type": "action",
+        "description": "Submit the volunteer form without completing required fields"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a volunteer form validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC019",
+    "title": "Show validation for an incomplete RSVP form",
+    "description": "A visitor sees validation feedback when required RSVP form fields are left empty or invalid and the form is not submitted.",
+    "category": "Public Landing Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Scroll through campaign information"
+      },
+      {
+        "type": "action",
+        "description": "Submit the RSVP form without completing required fields"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an RSVP form validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC020",
+    "title": "Show validation for mismatched password confirmation",
+    "description": "An invited admin sees validation feedback when the password confirmation does not match and the password is not updated.",
+    "category": "Password Setup",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/update-password"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the new password field with a valid password"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password confirmation field with a different password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the password setup form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a password confirmation validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC021",
+    "title": "Reject an invalid admin login attempt",
+    "description": "An unauthenticated user entering invalid admin credentials sees a login validation error and remains on the login page.",
+    "category": "Events Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin email field with an invalid email"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the admin password field with an invalid password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a login validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  }
+]
