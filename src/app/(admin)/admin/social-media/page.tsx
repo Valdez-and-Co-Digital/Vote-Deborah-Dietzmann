@@ -66,11 +66,7 @@ export default function SocialMediaPage() {
     setIsGenerating(true);
     setError(null);
     try {
-      const res = await fetch('/api/cron/daily-briefing', {
-        headers: {
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_CRON_SECRET || ''}` 
-        }
-      });
+      const res = await fetch('/api/cron/daily-briefing');
       if (!res.ok) {
         throw new Error("API Route Failed");
       }
