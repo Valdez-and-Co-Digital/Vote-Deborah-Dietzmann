@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
-import { GoogleGenAI } from '@google/genai';
+import Parser from 'rss-parser';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,8 +8,6 @@ export async function GET(request: Request) {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
     // 1. Verify authorization (allow either authenticated admins or the automated CRON_SECRET)
     const authHeader = request.headers.get('authorization');
@@ -41,7 +39,6 @@ export async function GET(request: Request) {
     `;
 
     // Fetch Live News from Google News RSS to use as Context
-    const Parser = require('rss-parser');
     const parser = new Parser();
     let liveNewsContext = '';
     try {
@@ -73,13 +70,17 @@ export async function GET(request: Request) {
       CRITICAL: You MUST include the hashtag #VoteDietzmann at the end of every generated caption, alongside any other relevant hashtags you choose.
     `;
 
-    const response = await ai.interactions.create({
-        model: 'gemini-3.6-flash',
-        input: prompt,
-        response_format: {
-          type: "text",
-          mime_type: "application/json",
-          schema: {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("Missing GEMINI_API_KEY");
+
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
             type: "object",
             properties: {
               trending_news: {
@@ -113,9 +114,16 @@ export async function GET(request: Request) {
             required: ["trending_news", "recommendations"]
           }
         }
+      })
     });
 
-    const jsonText = response.output_text || '{}';
+    if (!response.ok) {
+      console.error("Gemini API error:", await response.text());
+      return NextResponse.json({ error: 'Failed to generate posts from AI' }, { status: 500 });
+    }
+
+    const data = await response.json();
+    const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
     let parsedJson = null;
     try {
       parsedJson = JSON.parse(jsonText);

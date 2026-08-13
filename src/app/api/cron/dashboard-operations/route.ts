@@ -1,7 +1,6 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { GoogleGenAI } from '@google/genai';
 
 export async function GET(request: Request) {
   try {
@@ -10,7 +9,7 @@ export async function GET(request: Request) {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const apiKey = process.env.GEMINI_API_KEY;
 
     // 1. Verify authorization
     const authHeader = request.headers.get('authorization');
@@ -61,12 +60,25 @@ export async function GET(request: Request) {
       - "We have 4 new volunteers this week. Ensure the volunteer coordinator has reached out."
     `;
 
-    const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt
+    if (!apiKey) {
+      throw new Error("Missing GEMINI_API_KEY");
+    }
+
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
+      })
     });
 
-    const markdownText = response.text || '';
+    if (!response.ok) {
+      console.error("Gemini API error:", await response.text());
+      return NextResponse.json({ error: 'Failed to generate posts from AI' }, { status: 500 });
+    }
+
+    const data = await response.json();
+    const markdownText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
     // 4. Save to Database using Admin Client to bypass RLS
     const { createClient: createSupabaseClient } = require('@supabase/supabase-js');

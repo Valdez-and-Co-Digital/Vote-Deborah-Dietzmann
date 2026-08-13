@@ -1,7 +1,6 @@
 'use server';
 
 import crypto from 'node:crypto';
-import { GoogleGenAI } from '@google/genai';
 
 // Minimal JWT signer to avoid bringing in 13MB of Google/gRPC SDKs that crash Cloudflare Free Tier
 async function getGoogleAccessToken(clientEmail: string, privateKey: string) {
@@ -241,7 +240,9 @@ function getFallbackData() {
 }
 
 async function generateInsights(gaData: any) {
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return [];
+
   const prompt = `
     You are an expert web analytics AI. Here is the latest website traffic data:
     ${JSON.stringify(gaData, null, 2)}
@@ -254,29 +255,43 @@ async function generateInsights(gaData: any) {
     - "type": either "positive" or "warning"
   `;
 
-  const response = await ai.interactions.create({
-    model: 'gemini-3.6-flash',
-    input: prompt,
-    response_format: {
-      type: "text",
-      mime_type: "application/json",
-      schema: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            title: { type: "string" },
-            description: { type: "string" },
-            type: { type: "string", enum: ["positive", "warning"] }
-          },
-          required: ["title", "description", "type"]
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                title: { type: "string" },
+                description: { type: "string" },
+                type: { type: "string", enum: ["positive", "warning"] }
+              },
+              required: ["title", "description", "type"]
+            }
+          }
         }
-      }
-    }
-  });
+      })
+    });
 
-  if (response.output_text) {
-    return JSON.parse(response.output_text);
+    if (!response.ok) {
+      console.error("Gemini API error:", await response.text());
+      return [];
+    }
+
+    const data = await response.json();
+    const outputText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (outputText) {
+      return JSON.parse(outputText);
+    }
+  } catch (e) {
+    console.error("Failed to fetch insights:", e);
   }
+  
   return [];
 }
