@@ -13,6 +13,7 @@ export type EventType = {
   capacity?: number;
   category?: string;
   rsvp_count?: number;
+  rsvp_link?: string | null;
   actual_attendance?: number | null;
 };
 
