@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import EventCard, { EventType } from './EventCard';
 import PastEventRow from './PastEventRow';
+import CalendarWidget from './CalendarWidget';
 
 interface EventsManagerProps {
   initialUpcoming: EventType[];
@@ -178,12 +179,10 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
             </div>
           </div>
           
-          {/* Mini Calendar Placeholder */}
+          {/* Event Calendar Widget */}
           <div className="bg-neutral-white border border-outline-variant rounded-2xl p-6 shadow-sm">
             <h3 className="font-headline-sm text-primary mb-4 border-b border-outline-variant pb-2">Event Calendar</h3>
-            <div className="h-48 bg-surface-container-low rounded-lg flex items-center justify-center border border-dashed border-outline">
-              <p className="font-body-sm text-legal-gray italic">Calendar Widget</p>
-            </div>
+            <CalendarWidget events={[...upcomingEvents, ...pastEvents]} />
           </div>
         </div>
       </div>
