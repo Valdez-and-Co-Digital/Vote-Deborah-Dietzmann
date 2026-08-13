@@ -149,18 +149,15 @@ export default function SocialMediaPage() {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {data.trending_news?.map((news, idx) => (
-                <div key={idx} className="bg-neutral-white border border-outline-variant/30 rounded-2xl overflow-hidden shadow-sm flex flex-col">
-                  <div className="h-40 bg-surface-container-low flex flex-col justify-between p-4 relative">
-                    <span className="bg-[#0a1f44] text-white text-xs px-2 py-1 rounded w-max">
-                      {news.category}
-                    </span>
-                    <span className="material-symbols-outlined absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-outline/40 text-4xl">
-                      image
-                    </span>
-                  </div>
-                  <div className="p-5 flex-1 flex flex-col">
-                    <div className="text-xs text-legal-gray mb-2 font-body-sm">
-                      {news.publisher} • {news.time_ago}
+                <div key={idx} className="bg-neutral-white border border-outline-variant/30 rounded-2xl overflow-hidden shadow-sm flex flex-col p-5">
+                  <div className="flex flex-col flex-1">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="bg-[#0a1f44] text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded">
+                        {news.category}
+                      </span>
+                      <div className="text-xs text-legal-gray font-body-sm">
+                        {news.time_ago}
+                      </div>
                     </div>
                     <h3 className="font-headline-sm text-primary font-bold mb-3 leading-tight">
                       {news.title}
@@ -196,12 +193,19 @@ export default function SocialMediaPage() {
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Suggested Image */}
+                    {/* Source Article Link */}
                     <div>
-                      <h4 className="text-xs font-label-bold text-legal-gray uppercase tracking-wider mb-3">Suggested Image</h4>
-                      <div className="h-48 bg-surface-container-lowest border-2 border-dashed border-outline-variant/50 rounded-xl flex flex-col items-center justify-center text-outline text-center p-4">
-                        <span className="material-symbols-outlined text-4xl mb-2">image</span>
-                        <span className="text-sm font-body-md">{rec.suggested_image_description}</span>
+                      <h4 className="text-xs font-label-bold text-legal-gray uppercase tracking-wider mb-3">Source Article</h4>
+                      <div className="h-48 bg-surface-container-lowest border border-outline-variant/50 rounded-xl flex flex-col items-center justify-center text-center p-4">
+                        <span className="material-symbols-outlined text-4xl mb-2 text-primary">link</span>
+                        <span className="text-sm font-body-md mb-3 text-on-surface-variant">Link to original story</span>
+                        {rec.article_link ? (
+                          <a href={rec.article_link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-label-md bg-primary/10 px-6 py-2.5 rounded-full inline-block truncate max-w-full">
+                            Read Article
+                          </a>
+                        ) : (
+                          <span className="text-outline text-sm">No link provided</span>
+                        )}
                       </div>
                     </div>
 
