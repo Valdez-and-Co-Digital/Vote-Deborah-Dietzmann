@@ -60,7 +60,7 @@ export async function GET(request: Request) {
     const response = await ai.interactions.create({
         model: 'gemini-3.6-flash',
         input: prompt,
-        tools: [{ googleSearch: {} }],
+        tools: [{ type: 'google_search' }],
         responseMimeType: "application/json",
         responseSchema: {
           type: "object",
