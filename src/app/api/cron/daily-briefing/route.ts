@@ -117,7 +117,7 @@ export async function GET(request: Request) {
 
     if (insertError) {
       console.error("Supabase insert error:", insertError);
-      return NextResponse.json({ error: 'Failed to save to database' }, { status: 500 });
+      return NextResponse.json({ error: `Failed to save to database: ${insertError.message || JSON.stringify(insertError)}` }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, message: 'Briefing generated successfully' });
