@@ -15,6 +15,7 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
   const [upcomingEvents, setUpcomingEvents] = useState<EventType[]>(initialUpcoming);
   const [pastEvents, setPastEvents] = useState<EventType[]>(initialPast);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     title: '',
@@ -48,23 +49,42 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
     }
   };
 
-  const handleAddEvent = async (e: React.FormEvent) => {
+  const handleSaveEvent = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { error } = await supabase.from('events').insert([
-      {
+    
+    if (editingEventId) {
+      const { error } = await supabase.from('events').update({
         title: formData.title,
         description: formData.description,
         location: formData.location,
         date: new Date(formData.date).toISOString()
-      }
-    ]);
+      }).eq('id', editingEventId);
 
-    if (!error) {
-      setIsModalOpen(false);
-      setFormData({ title: '', description: '', location: '', date: '' });
-      refreshEvents();
+      if (!error) {
+        setIsModalOpen(false);
+        setEditingEventId(null);
+        setFormData({ title: '', description: '', location: '', date: '' });
+        refreshEvents();
+      } else {
+        alert("Error updating event");
+      }
     } else {
-      alert("Error adding event");
+      const { error } = await supabase.from('events').insert([
+        {
+          title: formData.title,
+          description: formData.description,
+          location: formData.location,
+          date: new Date(formData.date).toISOString()
+        }
+      ]);
+
+      if (!error) {
+        setIsModalOpen(false);
+        setFormData({ title: '', description: '', location: '', date: '' });
+        refreshEvents();
+      } else {
+        alert("Error adding event");
+      }
     }
   };
 
@@ -86,7 +106,11 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
           <p className="font-body-md text-legal-gray">Create and track campaign events and RSVPs.</p>
         </div>
         <button 
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setEditingEventId(null);
+            setFormData({ title: '', description: '', location: '', date: '' });
+            setIsModalOpen(true);
+          }}
           className="btn-primary py-2 px-6 flex items-center gap-2 !bg-[#8B0000] !border-[#8B0000] hover:!bg-[#6b0000]"
         >
           <span className="material-symbols-outlined text-[20px]">add</span>
@@ -105,7 +129,23 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
           <div className="flex flex-col gap-4">
             {upcomingEvents.length > 0 ? (
               upcomingEvents.map(event => (
-                <EventCard key={event.id} event={event} onUpdate={refreshEvents} />
+                <EventCard 
+                  key={event.id} 
+                  event={event} 
+                  onUpdate={refreshEvents}
+                  onEdit={(e) => {
+                    setEditingEventId(e.id);
+                    const d = new Date(e.date);
+                    const localIso = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+                    setFormData({
+                      title: e.title,
+                      description: e.description || '',
+                      location: e.location || '',
+                      date: localIso
+                    });
+                    setIsModalOpen(true);
+                  }}
+                />
               ))
             ) : (
               <div className="bg-neutral-white border border-outline-variant rounded-2xl p-12 text-center shadow-sm">
@@ -180,13 +220,13 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
         <div className="fixed inset-0 bg-primary/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-neutral-white rounded-2xl p-6 max-w-md w-full shadow-lg">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="font-headline-md text-primary">Add New Event</h2>
+              <h2 className="font-headline-md text-primary">{editingEventId ? "Edit Event" : "Add New Event"}</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-outline hover:text-primary">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             
-            <form onSubmit={handleAddEvent} className="flex flex-col gap-4">
+            <form onSubmit={handleSaveEvent} className="flex flex-col gap-4">
               <div>
                 <label className="block font-label-bold text-xs uppercase text-legal-gray mb-1">Event Title</label>
                 <input 

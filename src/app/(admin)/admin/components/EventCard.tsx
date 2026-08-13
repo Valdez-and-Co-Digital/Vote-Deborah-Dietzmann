@@ -17,9 +17,10 @@ export type EventType = {
 interface EventCardProps {
   event: EventType;
   onUpdate: () => void;
+  onEdit?: (event: EventType) => void;
 }
 
-export default function EventCard({ event, onUpdate }: EventCardProps) {
+export default function EventCard({ event, onUpdate, onEdit }: EventCardProps) {
   const supabase = createClient();
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -66,7 +67,7 @@ export default function EventCard({ event, onUpdate }: EventCardProps) {
         <button 
           className="btn-secondary py-2 px-4 w-full flex items-center justify-center gap-2"
           onClick={() => {
-            alert('Edit functionality coming soon');
+            if (onEdit) onEdit(event);
           }}
         >
           <span className="material-symbols-outlined text-[18px]">edit</span>
