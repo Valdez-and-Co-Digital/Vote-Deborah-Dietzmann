@@ -61,39 +61,42 @@ export async function GET(request: Request) {
         model: 'gemini-3.6-flash',
         input: prompt,
         tools: [{ type: 'google_search' }],
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: "object",
-          properties: {
-            trending_news: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  publisher: { type: "string" },
-                  time_ago: { type: "string" },
-                  title: { type: "string" },
-                  snippet: { type: "string" },
-                  category: { type: "string", description: "e.g., Local, Judicial, Community" }
-                },
-                required: ["publisher", "time_ago", "title", "snippet", "category"]
+        response_format: {
+          type: "text",
+          mime_type: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              trending_news: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    publisher: { type: "string" },
+                    time_ago: { type: "string" },
+                    title: { type: "string" },
+                    snippet: { type: "string" },
+                    category: { type: "string", description: "e.g., Local, Judicial, Community" }
+                  },
+                  required: ["publisher", "time_ago", "title", "snippet", "category"]
+                }
+              },
+              recommendations: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    based_on_title: { type: "string" },
+                    goal: { type: "string", description: "e.g., Engagement Goal, Issue Awareness" },
+                    suggested_image_description: { type: "string" },
+                    generated_caption: { type: "string" }
+                  },
+                  required: ["based_on_title", "goal", "suggested_image_description", "generated_caption"]
+                }
               }
             },
-            recommendations: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  based_on_title: { type: "string" },
-                  goal: { type: "string", description: "e.g., Engagement Goal, Issue Awareness" },
-                  suggested_image_description: { type: "string" },
-                  generated_caption: { type: "string" }
-                },
-                required: ["based_on_title", "goal", "suggested_image_description", "generated_caption"]
-              }
-            }
-          },
-          required: ["trending_news", "recommendations"]
+            required: ["trending_news", "recommendations"]
+          }
         }
     });
 
