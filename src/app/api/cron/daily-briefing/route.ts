@@ -47,7 +47,7 @@ export async function GET(request: Request) {
     try {
       const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(process.env.LOCAL_AREA || 'Bexar County, Texas')}&hl=en-US&gl=US&ceid=US:en`;
       const feed = await parser.parseURL(feedUrl);
-      const topArticles = feed.items.slice(0, 10).map(item => `- Title: ${item.title}\n  Link: ${item.link}\n  Published: ${item.pubDate}`).join('\n\n');
+      const topArticles = feed.items.slice(0, 10).map((item: any) => `- Title: ${item.title}\n  Link: ${item.link}\n  Published: ${item.pubDate}`).join('\n\n');
       liveNewsContext = `\n\n=== LIVE NEWS FROM TODAY ===\n${topArticles}\n============================\n`;
     } catch (err) {
       console.error("Failed to fetch Google News RSS:", err);
