@@ -69,6 +69,8 @@ export async function GET(request: Request) {
       Analyze the live news provided above. Pick 3 trending news articles (one Local, one Judicial, one Community) that are most relevant.
       Then, generate 2 social media posts based on those news articles, written from the County Judge perspective.
       Position the Judge as a proactive, empathetic leader.
+      
+      CRITICAL: You MUST include the hashtag #VoteDietzmann at the end of every generated caption, alongside any other relevant hashtags you choose.
     `;
 
     const response = await ai.interactions.create({

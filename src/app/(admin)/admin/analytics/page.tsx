@@ -82,24 +82,31 @@ export default async function AnalyticsPage() {
       <div className="mb-6 md:mb-8">
         <h2 className="font-headline-md text-primary text-xl font-bold mb-4">AI Insights</h2>
         <div className="space-y-4">
-          <div className="bg-neutral-white border border-outline-variant/30 rounded-2xl p-4 shadow-sm flex items-start gap-4">
-            <span className="material-symbols-outlined text-heritage-gold mt-1 icon-fill-1 text-2xl" style={{fontVariationSettings: "'FILL' 1"}}>lightbulb</span>
-            <div>
-              <h3 className="font-headline-sm text-primary font-bold mb-1">Traffic Spike Detected</h3>
-              <p className="text-sm font-body-sm text-legal-gray leading-relaxed">
-                A 25% increase in traffic from social media observed following the recent policy announcement post. Consider boosting similar content.
-              </p>
+          {gaData.insights && gaData.insights.length > 0 ? (
+            gaData.insights.map((insight: any, i: number) => (
+              <div key={i} className={`border rounded-2xl p-4 shadow-sm flex items-start gap-4 ${insight.type === 'warning' ? 'bg-error/5 border-error/20' : 'bg-neutral-white border-outline-variant/30'}`}>
+                <span className={`material-symbols-outlined mt-1 text-2xl ${insight.type === 'warning' ? 'text-error' : 'text-heritage-gold icon-fill-1'}`} style={insight.type !== 'warning' ? {fontVariationSettings: "'FILL' 1"} : {}}>
+                  {insight.type === 'warning' ? 'warning' : 'lightbulb'}
+                </span>
+                <div>
+                  <h3 className="font-headline-sm text-primary font-bold mb-1">{insight.title}</h3>
+                  <p className="text-sm font-body-sm text-legal-gray leading-relaxed">
+                    {insight.description}
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="bg-neutral-white border border-outline-variant/30 rounded-2xl p-4 shadow-sm flex items-start gap-4">
+              <span className="material-symbols-outlined text-heritage-gold mt-1 icon-fill-1 text-2xl" style={{fontVariationSettings: "'FILL' 1"}}>lightbulb</span>
+              <div>
+                <h3 className="font-headline-sm text-primary font-bold mb-1">Checking Insights</h3>
+                <p className="text-sm font-body-sm text-legal-gray leading-relaxed">
+                  No new insights available at this time. We need a bit more data to analyze!
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="bg-error/5 border border-error/20 rounded-2xl p-4 shadow-sm flex items-start gap-4">
-            <span className="material-symbols-outlined text-error mt-1 text-2xl">warning</span>
-            <div>
-              <h3 className="font-headline-sm text-primary font-bold mb-1">High Bounce Rate on Donation Page</h3>
-              <p className="text-sm font-body-sm text-legal-gray leading-relaxed">
-                Mobile users are leaving the donation flow at step 2. Review the form layout for potential usability issues on smaller screens.
-              </p>
-            </div>
-          </div>
+          )}
         </div>
       </div>
 

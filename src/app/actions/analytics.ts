@@ -1,6 +1,7 @@
 'use server';
 
 import crypto from 'node:crypto';
+import { GoogleGenAI } from '@google/genai';
 
 // Minimal JWT signer to avoid bringing in 13MB of Google/gRPC SDKs that crash Cloudflare Free Tier
 async function getGoogleAccessToken(clientEmail: string, privateKey: string) {
@@ -63,9 +64,10 @@ export async function getAnalyticsData(days = 7) {
       return getFallbackData();
     }
 
-    const privateKey = process.env.GA_PRIVATE_KEY.replace(/\\n/g, '\n');
-    const accessToken = await getGoogleAccessToken(process.env.GA_CLIENT_EMAIL, privateKey);
-    const propertyId = process.env.GA_PROPERTY_ID;
+    const propertyId = process.env.GA_PROPERTY_ID.replace(/^"|"$/g, '').trim();
+    const clientEmail = process.env.GA_CLIENT_EMAIL.replace(/^"|"$/g, '').trim();
+    const privateKey = process.env.GA_PRIVATE_KEY.replace(/^"|"$/g, '').trim().replace(/\\n/g, '\n');
+    const accessToken = await getGoogleAccessToken(clientEmail, privateKey);
 
     const [overviewResponse, pagesResponse, sourcesResponse, devicesResponse] = await Promise.all([
       runReport(accessToken, propertyId, {
@@ -158,7 +160,7 @@ export async function getAnalyticsData(days = 7) {
       tablet: deviceTotal > 0 ? Math.round((tablet / deviceTotal) * 100) : 0,
     };
 
-    return {
+    const baseData = {
       visitors: {
         value: currentUsers.toLocaleString(),
         trend: calculateTrend(currentUsers, prevUsers)
@@ -179,6 +181,18 @@ export async function getAnalyticsData(days = 7) {
       trafficSources,
       deviceBreakdown
     };
+
+    // Generate AI Insights
+    let insights = [];
+    try {
+      if (process.env.GEMINI_API_KEY) {
+        insights = await generateInsights(baseData);
+      }
+    } catch (e) {
+      console.error("Failed to generate AI insights:", e);
+    }
+
+    return { ...baseData, insights };
   } catch (error) {
     console.error("Error fetching GA Data:", error);
     return getFallbackData();
@@ -221,6 +235,48 @@ function getFallbackData() {
     trafficSources: [
       { name: 'Direct', pct: '0%', color: 'bg-[#0a1f44]' }
     ],
-    deviceBreakdown: { desktop: 0, mobile: 0, tablet: 0 }
+    deviceBreakdown: { desktop: 0, mobile: 0, tablet: 0 },
+    insights: []
   };
+}
+
+async function generateInsights(gaData: any) {
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  const prompt = `
+    You are an expert web analytics AI. Here is the latest website traffic data:
+    ${JSON.stringify(gaData, null, 2)}
+    
+    Analyze the data and provide exactly 2 short, actionable insights. 
+    Make one insight positive (e.g., highlighting good traffic or engagement) and one highlighting an area for improvement (e.g., bounce rate, low mobile usage).
+    Return a JSON array of 2 objects, each with:
+    - "title": A short bold title (e.g., "Traffic Spike Detected")
+    - "description": A 1-2 sentence description of the insight and a suggested action.
+    - "type": either "positive" or "warning"
+  `;
+
+  const response = await ai.interactions.create({
+    model: 'gemini-3.6-flash',
+    input: prompt,
+    response_format: {
+      type: "text",
+      mime_type: "application/json",
+      schema: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            title: { type: "string" },
+            description: { type: "string" },
+            type: { type: "string", enum: ["positive", "warning"] }
+          },
+          required: ["title", "description", "type"]
+        }
+      }
+    }
+  });
+
+  if (response.output_text) {
+    return JSON.parse(response.output_text);
+  }
+  return [];
 }

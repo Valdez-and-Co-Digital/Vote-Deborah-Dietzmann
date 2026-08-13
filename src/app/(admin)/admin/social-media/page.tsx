@@ -182,11 +182,11 @@ export default function SocialMediaPage() {
               {data.recommendations?.map((rec, idx) => (
                 <div key={idx} className="bg-neutral-white border border-outline-variant/30 rounded-2xl p-6 shadow-sm">
                   <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 pb-4 border-b border-outline-variant/30 gap-4">
-                    <div className="flex items-center gap-2 text-sm text-legal-gray">
-                      <span className="material-symbols-outlined text-[18px]">link</span>
+                    <div className="flex items-center gap-2 text-sm text-legal-gray flex-1 min-w-0">
+                      <span className="material-symbols-outlined text-[18px] shrink-0">link</span>
                       <span className="font-body-md truncate">Based on: <strong className="text-primary">{rec.based_on_title}</strong></span>
                     </div>
-                    <div className="flex items-center gap-1 text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full whitespace-nowrap">
+                    <div className="flex items-center gap-1 text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full whitespace-nowrap shrink-0">
                       <span className="material-symbols-outlined text-[14px]">thumb_up</span>
                       {rec.goal}
                     </div>
