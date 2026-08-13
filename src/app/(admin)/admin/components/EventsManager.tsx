@@ -5,6 +5,7 @@ import { createClient } from '@/utils/supabase/client';
 import EventCard, { EventType } from './EventCard';
 import PastEventRow from './PastEventRow';
 import CalendarWidget from './CalendarWidget';
+import RsvpListModal from './RsvpListModal';
 
 interface EventsManagerProps {
   initialUpcoming: EventType[];
@@ -17,6 +18,7 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
   const [pastEvents, setPastEvents] = useState<EventType[]>(initialPast);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEventId, setEditingEventId] = useState<string | null>(null);
+  const [viewingRsvpsForEvent, setViewingRsvpsForEvent] = useState<EventType | null>(null);
   
   const [formData, setFormData] = useState({
     title: '',
@@ -146,6 +148,7 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
                     });
                     setIsModalOpen(true);
                   }}
+                  onViewRsvps={(e) => setViewingRsvpsForEvent(e)}
                 />
               ))
             ) : (
@@ -204,7 +207,12 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
             {pastEvents.length > 0 ? (
               <ul className="divide-y divide-outline-variant/30">
                 {pastEvents.map(event => (
-                  <PastEventRow key={event.id} event={event} onUpdate={refreshEvents} />
+                  <PastEventRow 
+                    key={event.id} 
+                    event={event} 
+                    onUpdate={refreshEvents} 
+                    onViewRsvps={(e) => setViewingRsvpsForEvent(e)}
+                  />
                 ))}
               </ul>
             ) : (
@@ -270,6 +278,15 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
             </form>
           </div>
         </div>
+      )}
+
+      {/* View RSVPs Modal */}
+      {viewingRsvpsForEvent && (
+        <RsvpListModal 
+          eventId={viewingRsvpsForEvent.id} 
+          eventTitle={viewingRsvpsForEvent.title} 
+          onClose={() => setViewingRsvpsForEvent(null)} 
+        />
       )}
     </>
   );

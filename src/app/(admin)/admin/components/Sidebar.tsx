@@ -19,7 +19,9 @@ export default function Sidebar({ userEmail }: SidebarProps) {
   ];
 
   return (
-    <aside className="w-full md:fixed md:left-0 md:top-0 md:w-60 md:h-screen bg-primary text-on-primary flex flex-col border-b md:border-b-0 md:border-r border-outline-variant/20 z-40 overflow-y-auto">
+    <>
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex fixed left-0 top-0 w-60 h-screen bg-primary text-on-primary flex-col border-r border-outline-variant/20 z-40 overflow-y-auto">
       <div className="p-6">
         <h2 className="font-headline-sm text-heritage-gold mb-1">Campaign Admin</h2>
         <p className="font-body-sm opacity-80 truncate">{userEmail || 'Admin User'}</p>
@@ -51,6 +53,30 @@ export default function Sidebar({ userEmail }: SidebarProps) {
           <span className="font-label-bold tracking-wide">View Live Site</span>
         </Link>
       </nav>
-    </aside>
+      </aside>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-primary border-t border-outline-variant/20 z-50 flex justify-around items-center px-1 py-2 pb-[env(safe-area-inset-bottom)]">
+        {links.map((link) => {
+          const isActive = link.exact ? pathname === link.href : pathname.startsWith(link.href);
+          return (
+            <Link 
+              key={link.href}
+              href={link.href}
+              className={`flex flex-col items-center gap-1 p-1 transition-colors ${
+                isActive 
+                  ? 'text-heritage-gold' 
+                  : 'text-on-primary/60 hover:text-on-primary'
+              }`}
+            >
+              <span className={`material-symbols-outlined text-[24px] ${isActive ? 'icon-fill-1' : ''}`}>
+                {link.icon}
+              </span>
+              <span className="text-[10px] font-label-bold tracking-wider">{link.label.split(' ')[0]}</span>
+            </Link>
+          );
+        })}
+      </nav>
+    </>
   );
 }

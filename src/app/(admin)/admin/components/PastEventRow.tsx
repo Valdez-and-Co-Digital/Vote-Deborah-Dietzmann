@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { EventType } from './EventCard';
 
-export default function PastEventRow({ event, onUpdate }: { event: EventType, onUpdate: () => void }) {
+export default function PastEventRow({ event, onUpdate, onViewRsvps }: { event: EventType, onUpdate: () => void, onViewRsvps?: (event: EventType) => void }) {
   const supabase = createClient();
   const [isEditing, setIsEditing] = useState(false);
   const [attendance, setAttendance] = useState<string>(event.actual_attendance?.toString() || '');
@@ -27,7 +27,12 @@ export default function PastEventRow({ event, onUpdate }: { event: EventType, on
       </div>
       <div className="flex items-center gap-4">
         <div className="text-sm text-legal-gray flex flex-col items-end">
-          <span><strong className="text-primary">{event.rsvp_count}</strong> RSVPs</span>
+          <button 
+            onClick={() => onViewRsvps && onViewRsvps(event)}
+            className="hover:text-primary transition-colors text-right"
+          >
+            <strong className="text-primary underline decoration-dotted underline-offset-2">{event.rsvp_count}</strong> <span className="underline decoration-dotted underline-offset-2">RSVPs</span>
+          </button>
           {isEditing ? (
             <div className="flex items-center gap-2 mt-2">
               <input 

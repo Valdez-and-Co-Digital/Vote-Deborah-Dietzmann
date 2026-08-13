@@ -18,9 +18,10 @@ interface EventCardProps {
   event: EventType;
   onUpdate: () => void;
   onEdit?: (event: EventType) => void;
+  onViewRsvps?: (event: EventType) => void;
 }
 
-export default function EventCard({ event, onUpdate, onEdit }: EventCardProps) {
+export default function EventCard({ event, onUpdate, onEdit, onViewRsvps }: EventCardProps) {
   const supabase = createClient();
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -56,10 +57,13 @@ export default function EventCard({ event, onUpdate, onEdit }: EventCardProps) {
             <span className="material-symbols-outlined text-[16px]">location_on</span>
             <span>{event.location}</span>
           </div>
-          <div className="flex items-center gap-1">
+          <button 
+            onClick={() => onViewRsvps && onViewRsvps(event)}
+            className="flex items-center gap-1 hover:text-primary transition-colors text-left"
+          >
             <span className="material-symbols-outlined text-[16px]">group</span>
-            <span>{event.rsvp_count || 0} RSVPs</span>
-          </div>
+            <span className="underline decoration-dotted underline-offset-2">{event.rsvp_count || 0} RSVPs</span>
+          </button>
         </div>
       </div>
       

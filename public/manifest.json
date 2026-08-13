@@ -1,0 +1,16 @@
+{
+  "name": "Campaign Admin Dashboard",
+  "short_name": "Admin",
+  "description": "Admin Dashboard for Deborah Dietzmann Campaign",
+  "start_url": "/admin",
+  "display": "standalone",
+  "background_color": "#0a1f44",
+  "theme_color": "#0a1f44",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
