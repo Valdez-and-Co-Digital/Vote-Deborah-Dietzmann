@@ -13,8 +13,8 @@ interface NewsItem {
 
 interface Recommendation {
   based_on_title: string;
+  article_link?: string;
   goal: string;
-  suggested_image_description: string;
   generated_caption: string;
 }
 
