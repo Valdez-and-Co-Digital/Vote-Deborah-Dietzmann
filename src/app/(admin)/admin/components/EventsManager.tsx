@@ -106,7 +106,8 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
         setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '' });
         refreshEvents();
       } else {
-        alert("Error adding event");
+        console.error("Supabase Insert Error:", error);
+        alert(`Error adding event: ${error.message || JSON.stringify(error)}`);
       }
     }
   };
