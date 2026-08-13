@@ -114,7 +114,7 @@ export default async function AnalyticsPage() {
         <div className="bg-neutral-white border border-outline-variant/30 rounded-2xl p-6 shadow-sm">
           <h2 className="font-headline-md text-primary text-xl mb-6">Top Pages</h2>
           <div className="space-y-4">
-            {gaData.topPages.map(page => (
+            {gaData.topPages.map((page: { name: string; views: string; pct: number }) => (
               <div key={page.name}>
                 <div className="flex justify-between text-sm font-body-sm text-primary mb-1 truncate gap-2">
                   <span className="truncate">{page.name}</span>
@@ -137,7 +137,7 @@ export default async function AnalyticsPage() {
               </div>
             </div>
             <div className="space-y-3 w-full md:w-auto flex-1">
-              {gaData.trafficSources.map(source => (
+              {gaData.trafficSources.map((source: { name: string; color: string; pct: string }) => (
                 <div key={source.name} className="flex justify-between items-center text-sm font-body-sm">
                   <div className="flex items-center gap-2">
                     <span className={`w-3 h-3 rounded-full ${source.color}`}></span>

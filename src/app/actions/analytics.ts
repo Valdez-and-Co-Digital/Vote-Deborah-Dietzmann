@@ -18,7 +18,12 @@ export async function getAnalyticsData(days = 7) {
 
     const property = `properties/${process.env.GA_PROPERTY_ID}`;
 
-    const [overviewResponse, pagesResponse, sourcesResponse, devicesResponse] = await Promise.all([
+    const [
+      [overviewResponse], 
+      [pagesResponse], 
+      [sourcesResponse], 
+      [devicesResponse]
+    ] = await Promise.all([
       analyticsDataClient.runReport({
         property,
         dateRanges: [
@@ -72,7 +77,7 @@ export async function getAnalyticsData(days = 7) {
 
     // Parse Top Pages
     const maxViews = parseInt(pagesResponse.rows?.[0]?.metricValues?.[0]?.value || '1', 10);
-    const topPages = (pagesResponse.rows || []).map(row => {
+    const topPages = (pagesResponse.rows || []).map((row: any) => {
       const name = row.dimensionValues?.[0]?.value || 'Unknown';
       const rawViews = parseInt(row.metricValues?.[0]?.value || '0', 10);
       return {
@@ -85,12 +90,12 @@ export async function getAnalyticsData(days = 7) {
     // Parse Sources
     const sourceColors = ['bg-[#0a1f44]', 'bg-heritage-gold', 'bg-[#4285F4]', 'bg-[#9CA3AF]', 'bg-outline-variant'];
     let totalSessions = 0;
-    const sourcesRaw = (sourcesResponse.rows || []).map(row => {
+    const sourcesRaw = (sourcesResponse.rows || []).map((row: any) => {
       const val = parseInt(row.metricValues?.[0]?.value || '0', 10);
       totalSessions += val;
       return { name: row.dimensionValues?.[0]?.value || 'Unknown', raw: val };
     });
-    const trafficSources = sourcesRaw.slice(0, 5).map((s, i) => ({
+    const trafficSources = sourcesRaw.slice(0, 5).map((s: any, i: number) => ({
       name: s.name,
       pct: totalSessions > 0 ? `${Math.round((s.raw / totalSessions) * 100)}%` : '0%',
       color: sourceColors[i] || sourceColors[0]
@@ -98,7 +103,7 @@ export async function getAnalyticsData(days = 7) {
 
     // Parse Devices
     let desktop = 0, mobile = 0, tablet = 0, deviceTotal = 0;
-    (devicesResponse.rows || []).forEach(row => {
+    (devicesResponse.rows || []).forEach((row: any) => {
       const name = (row.dimensionValues?.[0]?.value || '').toLowerCase();
       const val = parseInt(row.metricValues?.[0]?.value || '0', 10);
       deviceTotal += val;
