@@ -1,6 +1,60 @@
 'use server';
 
-import { BetaAnalyticsDataClient } from '@google-analytics/data';
+import crypto from 'node:crypto';
+
+// Minimal JWT signer to avoid bringing in 13MB of Google/gRPC SDKs that crash Cloudflare Free Tier
+async function getGoogleAccessToken(clientEmail: string, privateKey: string) {
+  const header = { alg: 'RS256', typ: 'JWT' };
+  const now = Math.floor(Date.now() / 1000);
+  const payload = {
+    iss: clientEmail,
+    scope: 'https://www.googleapis.com/auth/analytics.readonly',
+    aud: 'https://oauth2.googleapis.com/token',
+    exp: now + 3600,
+    iat: now
+  };
+
+  const encodeB64Url = (obj: any) => Buffer.from(JSON.stringify(obj)).toString('base64url');
+  const signatureInput = `${encodeB64Url(header)}.${encodeB64Url(payload)}`;
+  
+  const sign = crypto.createSign('RSA-SHA256');
+  sign.update(signatureInput);
+  sign.end();
+  
+  const signature = sign.sign(privateKey, 'base64url');
+  const jwt = `${signatureInput}.${signature}`;
+
+  const res = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      assertion: jwt
+    })
+  });
+  
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error_description || 'Failed to get access token');
+  
+  return data.access_token;
+}
+
+async function runReport(accessToken: string, propertyId: string, body: any) {
+  const res = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error("Analytics API Error:", errorText);
+    throw new Error('Analytics API Request Failed');
+  }
+  return res.json();
+}
 
 export async function getAnalyticsData(days = 7) {
   try {
@@ -9,23 +63,12 @@ export async function getAnalyticsData(days = 7) {
       return getFallbackData();
     }
 
-    const analyticsDataClient = new BetaAnalyticsDataClient({
-      credentials: {
-        client_email: process.env.GA_CLIENT_EMAIL,
-        private_key: process.env.GA_PRIVATE_KEY.replace(/\\n/g, '\n'),
-      },
-    });
+    const privateKey = process.env.GA_PRIVATE_KEY.replace(/\\n/g, '\n');
+    const accessToken = await getGoogleAccessToken(process.env.GA_CLIENT_EMAIL, privateKey);
+    const propertyId = process.env.GA_PROPERTY_ID;
 
-    const property = `properties/${process.env.GA_PROPERTY_ID}`;
-
-    const [
-      [overviewResponse], 
-      [pagesResponse], 
-      [sourcesResponse], 
-      [devicesResponse]
-    ] = await Promise.all([
-      analyticsDataClient.runReport({
-        property,
+    const [overviewResponse, pagesResponse, sourcesResponse, devicesResponse] = await Promise.all([
+      runReport(accessToken, propertyId, {
         dateRanges: [
           { startDate: `${days}daysAgo`, endDate: 'today' },
           { startDate: `${days * 2}daysAgo`, endDate: `${days + 1}daysAgo` },
@@ -37,23 +80,20 @@ export async function getAnalyticsData(days = 7) {
           { name: 'averageSessionDuration' },
         ],
       }),
-      analyticsDataClient.runReport({
-        property,
+      runReport(accessToken, propertyId, {
         dateRanges: [{ startDate: `${days}daysAgo`, endDate: 'today' }],
         dimensions: [{ name: 'pageTitle' }],
         metrics: [{ name: 'screenPageViews' }],
         orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }],
         limit: 6,
       }),
-      analyticsDataClient.runReport({
-        property,
+      runReport(accessToken, propertyId, {
         dateRanges: [{ startDate: `${days}daysAgo`, endDate: 'today' }],
         dimensions: [{ name: 'sessionDefaultChannelGroup' }],
         metrics: [{ name: 'sessions' }],
         orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
       }),
-      analyticsDataClient.runReport({
-        property,
+      runReport(accessToken, propertyId, {
         dateRanges: [{ startDate: `${days}daysAgo`, endDate: 'today' }],
         dimensions: [{ name: 'deviceCategory' }],
         metrics: [{ name: 'sessions' }],
