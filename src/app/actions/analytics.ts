@@ -162,7 +162,7 @@ export async function getAnalyticsData(days = 7) {
       const name = row.dimensionValues?.[0]?.value || 'Unknown';
       const rawViews = parseInt(row.metricValues?.[0]?.value || '0', 10);
       return {
-        name: name.replace(' - Deborah Dietzmann for Judge', '').substring(0, 20),
+        name: name.replace(' - Deborah Dietzmann for Judge', ''),
         views: `${rawViews.toLocaleString()} views`,
         pct: Math.round((rawViews / (maxViews || 1)) * 100)
       };
