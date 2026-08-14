@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 import KPICard from '../components/KPICard';
 import { getAnalyticsData } from '@/app/actions/analytics';
 
+import TrafficChart from '../components/TrafficChart';
+
 export default async function AnalyticsPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -112,9 +114,7 @@ export default async function AnalyticsPage() {
 
       <div className="bg-neutral-white border border-outline-variant/30 rounded-2xl p-6 shadow-sm mb-6 md:mb-8">
         <h2 className="font-headline-md text-primary text-xl mb-6">Traffic Over Time</h2>
-        <div className="h-64 bg-surface-container-lowest border-2 border-dashed border-outline-variant/30 rounded-xl flex items-center justify-center text-legal-gray">
-          Area Chart Visualization: Daily Visitors
-        </div>
+        <TrafficChart data={gaData.trafficOverTime} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-6 md:mb-8">

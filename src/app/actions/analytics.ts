@@ -102,7 +102,7 @@ export async function getAnalyticsData(days = 7) {
     const accessToken = await getGoogleAccessToken(clientEmail, privateKey);
     console.log('[Analytics] Got access token successfully');
 
-    const [overviewResponse, pagesResponse, sourcesResponse, devicesResponse] = await Promise.all([
+    const [overviewResponse, pagesResponse, sourcesResponse, devicesResponse, timeseriesResponse] = await Promise.all([
       runReport(accessToken, propertyId, {
         dateRanges: [
           { startDate: `${days}daysAgo`, endDate: 'today' },
@@ -132,6 +132,12 @@ export async function getAnalyticsData(days = 7) {
         dateRanges: [{ startDate: `${days}daysAgo`, endDate: 'today' }],
         dimensions: [{ name: 'deviceCategory' }],
         metrics: [{ name: 'sessions' }],
+      }),
+      runReport(accessToken, propertyId, {
+        dateRanges: [{ startDate: `${days}daysAgo`, endDate: 'today' }],
+        dimensions: [{ name: 'date' }],
+        metrics: [{ name: 'activeUsers' }],
+        orderBys: [{ dimension: { dimensionName: 'date' }, desc: false }]
       })
     ]);
 
@@ -193,6 +199,16 @@ export async function getAnalyticsData(days = 7) {
       tablet: deviceTotal > 0 ? Math.round((tablet / deviceTotal) * 100) : 0,
     };
 
+    // Parse Traffic Over Time
+    const trafficOverTime = (timeseriesResponse.rows || []).map((row: any) => {
+      const dateStr = row.dimensionValues?.[0]?.value || '';
+      const formatted = dateStr ? new Date(`${dateStr.substring(0,4)}-${dateStr.substring(4,6)}-${dateStr.substring(6,8)}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }) : 'Unknown';
+      return {
+        date: formatted,
+        visitors: parseInt(row.metricValues?.[0]?.value || '0', 10)
+      };
+    });
+
     const baseData = {
       visitors: {
         value: currentUsers.toLocaleString(),
@@ -212,7 +228,8 @@ export async function getAnalyticsData(days = 7) {
       },
       topPages,
       trafficSources,
-      deviceBreakdown
+      deviceBreakdown,
+      trafficOverTime
     };
 
     // Generate AI Insights
@@ -271,6 +288,13 @@ function getFallbackData() {
       { name: 'Direct', pct: '0%', color: 'bg-[#0a1f44]' }
     ],
     deviceBreakdown: { desktop: 0, mobile: 0, tablet: 0 },
+    trafficOverTime: [
+      { date: 'Oct 1', visitors: 10 },
+      { date: 'Oct 2', visitors: 15 },
+      { date: 'Oct 3', visitors: 12 },
+      { date: 'Oct 4', visitors: 20 },
+      { date: 'Oct 5', visitors: 25 },
+    ],
     insights: []
   };
 }
@@ -292,7 +316,7 @@ async function generateInsights(gaData: any) {
   `;
 
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/antigravity-preview-05-2026:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
