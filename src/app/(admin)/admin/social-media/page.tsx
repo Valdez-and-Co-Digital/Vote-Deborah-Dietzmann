@@ -98,12 +98,12 @@ export default function SocialMediaPage() {
         <h1 className="font-headline-md text-primary text-lg font-bold tracking-widest uppercase">Social Media</h1>
       </div>
 
-      <div className="hidden md:flex mb-8 justify-between items-end">
-        <div>
+      <div className="flex mb-8 justify-between items-end">
+        <div className="hidden md:block">
           <h1 className="font-headline-lg text-primary text-2xl md:text-3xl mb-1">Social Media Management</h1>
         </div>
-        <div className="hidden md:flex gap-4 items-center">
-          <select className="bg-surface-container-low border border-outline-variant/30 rounded-xl py-2 px-4 text-sm focus:outline-none">
+        <div className="flex gap-2 md:gap-4 items-center ml-auto">
+          <select className="hidden md:block bg-surface-container-low border border-outline-variant/30 rounded-xl py-2 px-4 text-sm focus:outline-none">
             <option>Last 7 days</option>
             <option>Last 30 days</option>
           </select>
