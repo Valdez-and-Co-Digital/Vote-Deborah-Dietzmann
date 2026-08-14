@@ -11,6 +11,7 @@ type Event = {
   location: string | null;
   description: string | null;
   rsvp_link?: string | null;
+  image_url?: string | null;
 };
 
 export default function EventsClientView({ events }: { events: Event[] }) {
@@ -97,9 +98,16 @@ export default function EventsClientView({ events }: { events: Event[] }) {
           const { googleLink, outlookLink } = getCalendarLinks(event);
 
           return (
-            <div key={event.id} id={`event-${event.id}`} className="bg-white rounded-xl shadow-md border-l-4 border-primary p-5 hover:shadow-lg transition-shadow">
-              <div className="text-primary font-bold text-xs uppercase tracking-widest mb-2">{dateFormatted}</div>
-              <h3 className="font-headline-md text-xl text-primary mb-3">{event.title}</h3>
+            <div key={event.id} id={`event-${event.id}`} className={`bg-white rounded-xl shadow-md border-l-4 border-primary hover:shadow-lg transition-shadow flex flex-col md:flex-row overflow-hidden ${event.image_url ? 'p-0' : 'p-5'}`}>
+              {event.image_url && (
+                <div className="md:w-[40%] relative min-h-[200px] md:min-h-full bg-surface-container-lowest">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={event.image_url} alt={event.title} className="absolute inset-0 w-full h-full object-cover" />
+                </div>
+              )}
+              <div className={`flex flex-col flex-1 ${event.image_url ? 'p-5 md:p-6' : ''}`}>
+                <div className="text-primary font-bold text-xs uppercase tracking-widest mb-2">{dateFormatted}</div>
+                <h3 className="font-headline-md text-xl text-primary mb-3">{event.title}</h3>
               <div className="flex flex-col gap-2 mb-5">
                 <div className="flex items-center gap-2 text-on-surface-variant text-sm">
                   <span className="material-symbols-outlined text-[16px]">schedule</span>
@@ -196,6 +204,7 @@ export default function EventsClientView({ events }: { events: Event[] }) {
                   )}
                 </div>
               </div>
+            </div>
             </div>
           );
         })

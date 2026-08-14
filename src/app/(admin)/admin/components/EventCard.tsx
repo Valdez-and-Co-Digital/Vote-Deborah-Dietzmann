@@ -15,6 +15,7 @@ export type EventType = {
   rsvp_count?: number;
   rsvp_link?: string | null;
   actual_attendance?: number | null;
+  image_url?: string | null;
 };
 
 interface EventCardProps {

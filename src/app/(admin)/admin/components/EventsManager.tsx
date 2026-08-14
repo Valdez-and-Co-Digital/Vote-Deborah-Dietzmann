@@ -34,8 +34,17 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
     capacity: 0,
     category: '',
     rsvpType: 'internal',
-    rsvpUrl: ''
+    rsvpUrl: '',
+    imageUrl: '',
+    imageFile: null as File | null
   });
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setFormData(prev => ({ ...prev, imageFile: file, imageUrl: URL.createObjectURL(file) }));
+    }
+  };
 
   const refreshEvents = async () => {
     const now = new Date().toISOString();
@@ -78,6 +87,31 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
     else if (formData.rsvpType === 'email') finalRsvpLink = formData.rsvpUrl ? `mailto:${formData.rsvpUrl}` : null;
     else if (formData.rsvpType === 'external') finalRsvpLink = formData.rsvpUrl || null;
 
+    let finalImageUrl = formData.imageUrl;
+
+    if (formData.imageFile) {
+      const fileExt = formData.imageFile.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('event_images')
+        .upload(fileName, formData.imageFile, {
+          cacheControl: '3600',
+          upsert: false
+        });
+        
+      if (uploadError) {
+        alert("Error uploading image: " + uploadError.message);
+        return;
+      }
+      
+      const { data: publicUrlData } = supabase.storage
+        .from('event_images')
+        .getPublicUrl(fileName);
+        
+      finalImageUrl = publicUrlData.publicUrl;
+    }
+
     if (editingEventId) {
       const { error } = await supabase.from('events').update({
         title: formData.title,
@@ -86,13 +120,14 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
         date: new Date(`${formData.date}T${formData.time || '00:00'}`).toISOString(),
         capacity: formData.capacity,
         category: formData.category,
-        rsvp_link: finalRsvpLink
+        rsvp_link: finalRsvpLink,
+        image_url: finalImageUrl
       }).eq('id', editingEventId);
 
       if (!error) {
         setIsModalOpen(false);
         setEditingEventId(null);
-        setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '', rsvpType: 'internal', rsvpUrl: '' });
+        setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '', rsvpType: 'internal', rsvpUrl: '', imageUrl: '', imageFile: null });
         refreshEvents();
       } else {
         alert("Error updating event");
@@ -106,13 +141,14 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
           date: new Date(`${formData.date}T${formData.time || '00:00'}`).toISOString(),
           capacity: formData.capacity,
           category: formData.category,
-          rsvp_link: finalRsvpLink
+          rsvp_link: finalRsvpLink,
+          image_url: finalImageUrl
         }
       ]);
 
       if (!error) {
         setIsModalOpen(false);
-        setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '', rsvpType: 'internal', rsvpUrl: '' });
+        setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '', rsvpType: 'internal', rsvpUrl: '', imageUrl: '', imageFile: null });
         refreshEvents();
       } else {
         console.error("Supabase Insert Error:", error);
@@ -207,6 +243,31 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
                         value={formData.capacity || ''} onChange={e => setFormData({...formData, capacity: parseInt(e.target.value) || 0})} 
                       />
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Flyer / Image Section */}
+              <div className="flex flex-col gap-4">
+                <h3 className="hidden md:block font-headline-md text-primary text-lg border-b border-outline-variant/30 pb-2 mb-2">Event Image / Flyer</h3>
+                <div>
+                  <label className="block font-label-bold text-sm text-primary mb-2">Upload Image</label>
+                  <div className="relative bg-white md:bg-transparent border border-outline-variant/60 rounded-lg p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-primary transition-colors">
+                    {formData.imageUrl ? (
+                      <div className="relative w-full h-40">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={formData.imageUrl} alt="Preview" className="absolute inset-0 w-full h-full object-contain" />
+                        <button type="button" onClick={(e) => { e.preventDefault(); setFormData(prev => ({...prev, imageUrl: '', imageFile: null})); }} className="absolute top-2 right-2 bg-neutral-white/90 p-1 rounded-full text-error shadow hover:bg-neutral-white">
+                          <span className="material-symbols-outlined text-[18px]">close</span>
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <span className="material-symbols-outlined text-3xl text-outline-variant">image</span>
+                        <span className="font-body-sm text-legal-gray">Click to browse or drag & drop</span>
+                        <input type="file" accept="image/*" onChange={handleImageChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -379,7 +440,7 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
             <button 
               onClick={() => {
                 setEditingEventId(null);
-                setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '', rsvpType: 'internal', rsvpUrl: '' });
+                setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '', rsvpType: 'internal', rsvpUrl: '', imageUrl: '', imageFile: null });
                 setIsModalOpen(true);
               }}
               className="hidden md:flex bg-[#8B0000] hover:bg-[#6b0000] text-white py-2 px-4 rounded-md items-center gap-1 font-label-bold transition-colors shadow-sm text-sm"
@@ -458,7 +519,9 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
                           capacity: e.capacity || 0,
                           category: e.category || '',
                           rsvpType: parsedRsvpType as any,
-                          rsvpUrl: parsedRsvpUrl
+                          rsvpUrl: parsedRsvpUrl,
+                          imageUrl: e.image_url || '',
+                          imageFile: null
                         });
                         setIsModalOpen(true);
                       }}
@@ -561,7 +624,7 @@ export default function EventsManager({ initialUpcoming, initialPast }: EventsMa
           <button 
             onClick={() => {
               setEditingEventId(null);
-              setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '', rsvpType: 'internal', rsvpUrl: '' });
+              setFormData({ title: '', description: '', location: '', venueName: '', streetAddress: '', city: 'San Antonio', state: 'Texas', zipCode: '', date: '', time: '', capacity: 0, category: '', rsvpType: 'internal', rsvpUrl: '', imageUrl: '', imageFile: null });
               setIsModalOpen(true);
             }}
             className="md:hidden fixed bottom-24 right-4 w-14 h-14 bg-primary text-neutral-white rounded-full flex items-center justify-center shadow-lg z-40 transition-transform active:scale-95"
