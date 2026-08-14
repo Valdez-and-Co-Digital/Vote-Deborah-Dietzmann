@@ -41,12 +41,12 @@ export async function GET(request: Request) {
     // Fetch Live News from Google News RSS to use as Context
     const parser = new Parser();
     let liveNewsContext = '';
-    let linkMap: Record<number, string> = {};
+    let titleMap: Record<number, string> = {};
     try {
       const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(process.env.LOCAL_AREA || 'Bexar County, Texas')}&hl=en-US&gl=US&ceid=US:en`;
       const feed = await parser.parseURL(feedUrl);
       const topArticles = feed.items.slice(0, 10).map((item: any, index: number) => {
-        linkMap[index] = item.link;
+        titleMap[index] = item.title;
         return `[Article ID: ${index}]\n- Title: ${item.title}\n  Published: ${item.pubDate}`;
       }).join('\n\n');
       liveNewsContext = `\n\n=== LIVE NEWS FROM TODAY ===\n${topArticles}\n============================\n`;
@@ -135,7 +135,9 @@ export async function GET(request: Request) {
       if (parsedJson?.recommendations) {
         parsedJson.recommendations = parsedJson.recommendations.map((rec: any) => ({
           ...rec,
-          article_link: typeof rec.article_id === 'number' ? linkMap[rec.article_id] : ''
+          article_link: typeof rec.article_id === 'number' && titleMap[rec.article_id]
+            ? `https://www.google.com/search?q=${encodeURIComponent(titleMap[rec.article_id])}`
+            : ''
         }));
       }
     } catch (e) {
