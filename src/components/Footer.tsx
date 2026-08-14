@@ -54,7 +54,6 @@ export default function Footer() {
               { href: '/issues', label: 'Platform & Issues' },
               { href: '/endorsements', label: 'Endorsements' },
               { href: '/volunteer', label: 'Get Involved' },
-              { href: '/volunteer#contact', label: 'Contact Us' },
             ].map(({ href, label }) => (
               <Link key={href} href={href} className="text-inverse-on-surface opacity-70 hover:opacity-100 hover:text-heritage-gold transition-colors text-sm">
                 {label}
