@@ -18,6 +18,7 @@ export default function EventsClientView({ events }: { events: Event[] }) {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [calendarDropdownOpen, setCalendarDropdownOpen] = useState<string | null>(null);
   const [copiedEmailEventId, setCopiedEmailEventId] = useState<string | null>(null);
+  const [fullScreenImage, setFullScreenImage] = useState<string | null>(null);
 
   const handleMailtoClick = (e: React.MouseEvent<HTMLAnchorElement>, email: string, eventId: string) => {
     e.preventDefault();
@@ -100,9 +101,16 @@ export default function EventsClientView({ events }: { events: Event[] }) {
           return (
             <div key={event.id} id={`event-${event.id}`} className={`bg-white rounded-xl shadow-md border-l-4 border-primary hover:shadow-lg transition-shadow flex flex-col md:flex-row overflow-hidden ${event.image_url ? 'p-0' : 'p-5'}`}>
               {event.image_url && (
-                <div className="md:w-[40%] relative min-h-[200px] md:min-h-full bg-surface-container-lowest">
+                <div className="md:w-[40%] relative min-h-[200px] md:min-h-full bg-surface-container-lowest group">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={event.image_url} alt={event.title} className="absolute inset-0 w-full h-full object-cover" />
+                  <button 
+                    onClick={() => setFullScreenImage(event.image_url!)}
+                    className="absolute bottom-3 right-3 bg-black/60 hover:bg-black/80 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs backdrop-blur-sm transition-colors shadow-sm"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">fullscreen</span>
+                    View Full Image
+                  </button>
                 </div>
               )}
               <div className={`flex flex-col flex-1 ${event.image_url ? 'p-5 md:p-6' : ''}`}>
@@ -220,6 +228,24 @@ export default function EventsClientView({ events }: { events: Event[] }) {
           eventDescription={selectedEvent.description}
           onClose={() => setSelectedEvent(null)}
         />
+      )}
+
+      {fullScreenImage && (
+        <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setFullScreenImage(null)}>
+          <button 
+            onClick={() => setFullScreenImage(null)}
+            className="absolute top-4 right-4 md:top-8 md:right-8 text-white/70 hover:text-white p-2 transition-colors"
+          >
+            <span className="material-symbols-outlined text-4xl">close</span>
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src={fullScreenImage} 
+            alt="Full screen view" 
+            className="max-w-full max-h-[90vh] object-contain rounded-md shadow-2xl" 
+            onClick={(e) => e.stopPropagation()} 
+          />
+        </div>
       )}
     </div>
   );
