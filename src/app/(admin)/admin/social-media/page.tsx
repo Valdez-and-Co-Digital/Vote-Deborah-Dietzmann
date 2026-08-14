@@ -32,14 +32,14 @@ export default function SocialMediaPage() {
     setError(null);
     try {
       const res = await fetch('/api/cron/daily-briefing');
-      if (!res.ok) throw new Error("Failed to fetch news.");
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to fetch news.");
       if (data.trending_news) {
         setNews(data.trending_news);
       }
     } catch (err: any) {
       console.error("Error fetching news:", err);
-      setError("Failed to load news.");
+      setError(`Failed to load news: ${err.message}`);
     } finally {
       setLoading(false);
     }
