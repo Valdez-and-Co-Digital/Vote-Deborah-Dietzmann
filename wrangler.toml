@@ -1,0 +1,7 @@
+name = "vote-deborah-dietzmann"
+compatibility_date = "2024-03-20"
+keep_vars = true
+
+[vars]
+GA_PROPERTY_ID = "549574468"
+GA_CLIENT_EMAIL = "dietzmann@dietzmann-analytics-api2.iam.gserviceaccount.com"
