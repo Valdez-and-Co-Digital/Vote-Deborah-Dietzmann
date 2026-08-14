@@ -160,20 +160,23 @@ export default async function AnalyticsPage() {
 
       <div className="bg-neutral-white border border-outline-variant/30 rounded-2xl p-6 shadow-sm">
         <h2 className="font-headline-md text-primary text-xl mb-6">Device Breakdown</h2>
-        <div className="flex w-full h-8 rounded-md overflow-hidden mb-4 text-xs font-bold text-white">
-          <div className="bg-[#0a1f44] flex items-center justify-center transition-all duration-500" style={{ width: `${gaData.deviceBreakdown.desktop}%` }}>{gaData.deviceBreakdown.desktop > 0 ? `${gaData.deviceBreakdown.desktop}%` : ''}</div>
-          <div className="bg-heritage-gold flex items-center justify-center transition-all duration-500" style={{ width: `${gaData.deviceBreakdown.mobile}%` }}>{gaData.deviceBreakdown.mobile > 0 ? `${gaData.deviceBreakdown.mobile}%` : ''}</div>
+        <div className="flex w-full h-10 rounded-lg overflow-hidden mb-6 text-sm font-bold">
+          <div className="bg-[#0a1f44] flex items-center justify-center text-white transition-all duration-500" style={{ width: `${gaData.deviceBreakdown.desktop}%` }}>{gaData.deviceBreakdown.desktop > 0 ? `${gaData.deviceBreakdown.desktop}%` : ''}</div>
+          <div className="bg-heritage-gold flex items-center justify-center text-[#0a1f44] transition-all duration-500" style={{ width: `${gaData.deviceBreakdown.mobile}%` }}>{gaData.deviceBreakdown.mobile > 0 ? `${gaData.deviceBreakdown.mobile}%` : ''}</div>
           <div className="bg-[#D1D5DB] flex items-center justify-center text-primary transition-all duration-500" style={{ width: `${gaData.deviceBreakdown.tablet}%` }}>{gaData.deviceBreakdown.tablet > 0 ? `${gaData.deviceBreakdown.tablet}%` : ''}</div>
         </div>
-        <div className="flex justify-center gap-8 text-sm text-legal-gray">
+        <div className="flex justify-center gap-8 text-sm font-body-md text-primary">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[18px]">computer</span> Desktop
+            <span className="w-3 h-3 rounded-full bg-[#0a1f44]"></span>
+            <span className="material-symbols-outlined text-[18px] text-outline">computer</span> Desktop
           </div>
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[18px]">smartphone</span> Mobile
+            <span className="w-3 h-3 rounded-full bg-heritage-gold"></span>
+            <span className="material-symbols-outlined text-[18px] text-outline">smartphone</span> Mobile
           </div>
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[18px]">tablet_mac</span> Tablet
+            <span className="w-3 h-3 rounded-full bg-[#D1D5DB]"></span>
+            <span className="material-symbols-outlined text-[18px] text-outline">tablet_mac</span> Tablet
           </div>
         </div>
       </div>
