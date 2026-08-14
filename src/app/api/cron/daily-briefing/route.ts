@@ -68,7 +68,23 @@ export async function GET(request: Request) {
         snippet = snippet.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
         
         // Use provided link or fallback
-        const articleLink = linkMatch ? linkMatch[1] : `https://www.bing.com/search?q=${encodeURIComponent(rawTitle)}`;
+        let articleLink = `https://www.bing.com/search?q=${encodeURIComponent(rawTitle)}`;
+        if (linkMatch) {
+          // Unescape &amp; in the URL
+          const rawLink = linkMatch[1].replace(/&amp;/g, '&');
+          
+          // Try to extract the direct destination URL from the `url=` parameter
+          const destUrlMatch = rawLink.match(/url=([^&]+)/);
+          if (destUrlMatch) {
+            try {
+              articleLink = decodeURIComponent(destUrlMatch[1]);
+            } catch (e) {
+              articleLink = rawLink;
+            }
+          } else {
+            articleLink = rawLink;
+          }
+        }
         
         trendingNews.push({
           title: rawTitle,
