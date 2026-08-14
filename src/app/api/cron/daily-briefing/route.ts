@@ -73,6 +73,12 @@ export async function GET(request: Request) {
       Position the Judge as a proactive, empathetic leader.
       
       CRITICAL: You MUST include the hashtag #VoteDietzmann at the end of every generated caption, alongside any other relevant hashtags you choose.
+      
+      CRITICAL: You MUST output ONLY valid JSON using the following schema, wrapped in a \`\`\`json codeblock. Do not include any other text:
+      {
+        "trending_news": [{ "publisher": "string", "time_ago": "string", "title": "string", "snippet": "string", "category": "Local|Judicial|Community" }],
+        "recommendations": [{ "based_on_title": "string", "article_id": 0, "goal": "string", "generated_caption": "string" }]
+      }
     `;
 
     const apiKey = process.env.GEMINI_API_KEY;
@@ -82,43 +88,7 @@ export async function GET(request: Request) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: "object",
-            properties: {
-              trending_news: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    publisher: { type: "string" },
-                    time_ago: { type: "string" },
-                    title: { type: "string" },
-                    snippet: { type: "string" },
-                    category: { type: "string", description: "e.g., Local, Judicial, Community" }
-                  },
-                  required: ["publisher", "time_ago", "title", "snippet", "category"]
-                }
-              },
-              recommendations: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    based_on_title: { type: "string" },
-                    article_id: { type: "integer", description: "The exact integer Article ID of the article from the live news provided" },
-                    goal: { type: "string", description: "e.g., Engagement Goal, Issue Awareness" },
-                    generated_caption: { type: "string" }
-                  },
-                  required: ["based_on_title", "article_id", "goal", "generated_caption"]
-                }
-              }
-            },
-            required: ["trending_news", "recommendations"]
-          }
-        }
+        contents: [{ parts: [{ text: prompt }] }]
       })
     });
 
@@ -128,7 +98,9 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json();
-    const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+    const jsonMatch = rawText.match(/```(?:json)?\n([\s\S]*?)\n```/);
+    const jsonText = jsonMatch ? jsonMatch[1] : rawText;
     let parsedJson = null;
     try {
       parsedJson = JSON.parse(jsonText);
