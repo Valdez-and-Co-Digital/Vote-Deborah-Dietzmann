@@ -68,6 +68,7 @@ export async function GET(request: Request) {
       4. Civic Engagement & Community Milestones (Community)
       
       Analyze the live news provided above. Pick 3 trending news articles (one Local, one Judicial, one Community) that are most relevant.
+      CRITICAL PRIORITY: If there is ANY news about "Deborah Dietzmann", "Deborah Dietzman", or the "Deborah Dietzmann Judicial Campaign" in the provided articles, you MUST prioritize selecting it over any other topic.
       Then, generate 2 social media posts based on those news articles, written from the County Judge perspective.
       Position the Judge as a proactive, empathetic leader.
       
