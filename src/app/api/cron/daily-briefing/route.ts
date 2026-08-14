@@ -27,9 +27,9 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const feedUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(process.env.LOCAL_AREA || 'Bexar County, Texas')}&hl=en-US&gl=US&ceid=US:en`;
+    const feedUrl = `https://www.bing.com/news/search?q=${encodeURIComponent(process.env.LOCAL_AREA || 'Bexar County, Texas')}&format=rss`;
     
-    // Use native fetch to support Cloudflare Edge runtime (avoiding node core modules in rss-parser)
+    // Use native fetch to support Cloudflare Edge runtime
     const res = await fetch(feedUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     });
 
     if (!res.ok) {
-      throw new Error(`Google News RSS responded with status: ${res.status}`);
+      throw new Error(`News RSS responded with status: ${res.status}`);
     }
 
     const text = await res.text();
@@ -54,30 +54,28 @@ export async function GET(request: Request) {
       const titleMatch = itemXml.match(/<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/title>/);
       const pubDateMatch = itemXml.match(/<pubDate>(.*?)<\/pubDate>/);
       const descMatch = itemXml.match(/<description>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/description>/);
-      const sourceMatch = itemXml.match(/<source[^>]*>(.*?)<\/source>/);
+      const sourceMatch = itemXml.match(/<News:Source[^>]*>(.*?)<\/News:Source>/);
+      const linkMatch = itemXml.match(/<link>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/link>/);
       
       if (titleMatch) {
         let rawTitle = titleMatch[1];
         // Clean up title (decode simple entities)
         rawTitle = rawTitle.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
         
-        const titleParts = rawTitle.split(' - ');
-        const publisher = titleParts.length > 1 ? titleParts.pop() : (sourceMatch ? sourceMatch[1] : 'Local News');
-        const cleanTitle = titleParts.join(' - ');
-        
         let snippet = descMatch ? descMatch[1] : 'Click to read more about this local story...';
         // Strip HTML tags and decode common entities
         snippet = snippet.replace(/<[^>]*>?/gm, ''); 
         snippet = snippet.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
         
-        const fallbackLink = `https://www.google.com/search?q=${encodeURIComponent(cleanTitle)}`;
+        // Use provided link or fallback
+        const articleLink = linkMatch ? linkMatch[1] : `https://www.bing.com/search?q=${encodeURIComponent(rawTitle)}`;
         
         trendingNews.push({
-          title: cleanTitle,
-          publisher: publisher?.trim() || 'Local News',
+          title: rawTitle,
+          publisher: sourceMatch ? sourceMatch[1].trim() : 'Local News',
           time_ago: timeAgo(pubDateMatch ? pubDateMatch[1] : new Date().toISOString()),
           snippet: snippet.substring(0, 150).trim() + '...',
-          article_link: fallbackLink,
+          article_link: articleLink,
           category: 'Local'
         });
         
