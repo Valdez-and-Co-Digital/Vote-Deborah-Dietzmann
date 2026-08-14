@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-export default function EventMediaPage() {
+export default function EventMediaTool() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [mimeType, setMimeType] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -67,10 +67,9 @@ export default function EventMediaPage() {
   };
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto pt-16 md:pt-8">
+    <div className="flex flex-col w-full pb-8">
       {/* Header */}
       <div className="mb-6 md:mb-8">
-        <h1 className="font-headline-lg text-primary text-2xl md:text-3xl mb-2 font-bold tracking-tight">Event Media Analysis</h1>
         <p className="font-body-md text-legal-gray text-base">
           Upload event photos (town halls, rallies, block walks) to automatically generate press releases, social media posts, and newsletter excerpts.
         </p>

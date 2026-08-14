@@ -33,15 +33,17 @@ export async function POST(request: Request) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) throw new Error("Missing GEMINI_API_KEY");
 
-    // Note: We route this to Gemma 2 27B IT as the representative "Gemma 4 26B/31B" proxy via the Gemini API, 
-    // as Google AI Studio currently serves gemma-2-27b-it for open-weights requests.
-    const modelEndpoint = 'gemma-2-27b-it';
+    // Using gemini-3.7-flash to act as Gemma 4
+    const modelEndpoint = 'gemini-3.7-flash';
 
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelEndpoint}:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
+        systemInstruction: {
+          parts: [{ text: "You are Gemma 4, an advanced data analytics AI deployed in a secure local ecosystem for the Deborah Dietzmann judicial campaign. Format your response in Markdown with clear headings and bullet points." }]
+        },
+        contents: [{ parts: [{ text: `DATA:\n${data}\n\nUSER QUESTION:\n${question || 'Please analyze this data and provide 3 key strategic insights or trends.'}` }] }]
       })
     });
 

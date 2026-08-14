@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 
-export default function LocalAnalyticsPage() {
+export default function LocalAnalyticsTool() {
   const [dataInput, setDataInput] = useState('');
   const [question, setQuestion] = useState('');
   const [loading, setLoading] = useState(false);
@@ -53,19 +53,15 @@ export default function LocalAnalyticsPage() {
   };
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto pt-16 md:pt-8 flex flex-col h-[calc(100vh-64px)] md:h-screen overflow-hidden">
+    <div className="flex flex-col w-full h-full pb-8">
       {/* Header */}
       <div className="mb-4 shrink-0">
-        <div className="flex items-center gap-3 mb-2">
-          <span className="material-symbols-outlined text-primary text-3xl">shield_locked</span>
-          <h1 className="font-headline-lg text-primary text-2xl md:text-3xl font-bold tracking-tight m-0">Local Analytics</h1>
-        </div>
         <p className="font-body-md text-legal-gray text-base">
           Powered by <span className="font-bold text-primary">Gemma 4 (Open Weights)</span>. Securely analyze sensitive internal campaign data (donor lists, polling, targeting strategies).
         </p>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-0 pb-20 md:pb-0">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-0">
         {/* Left Column: Data Input */}
         <div className="flex flex-col gap-4 bg-neutral-white border border-outline-variant/30 rounded-2xl shadow-sm p-6 overflow-hidden">
           <div className="flex justify-between items-center shrink-0">

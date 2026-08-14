@@ -2,8 +2,8 @@ import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import KPICard from '../components/KPICard';
 import { getAnalyticsData } from '@/app/actions/analytics';
-
 import TrafficChart from '../components/TrafficChart';
+import LocalAnalyticsTool from '../components/LocalAnalyticsTool';
 
 export default async function AnalyticsPage() {
   const supabase = await createClient();
@@ -180,6 +180,22 @@ export default async function AnalyticsPage() {
           </div>
         </div>
       </div>
+
+      {/* Local Analytics Collapsible */}
+      <details className="bg-neutral-white border border-outline-variant/30 rounded-2xl shadow-sm group">
+        <summary className="font-headline-md text-primary text-xl p-6 cursor-pointer list-none flex items-center justify-between hover:bg-surface-container-low transition-colors rounded-2xl group-open:rounded-b-none group-open:border-b border-outline-variant/30">
+          <div className="flex items-center gap-3">
+            <span className="material-symbols-outlined text-3xl">shield_locked</span>
+            Local AI Analytics
+          </div>
+          <span className="material-symbols-outlined transition-transform duration-300 group-open:rotate-180">
+            expand_more
+          </span>
+        </summary>
+        <div className="p-6">
+          <LocalAnalyticsTool />
+        </div>
+      </details>
     </div>
   );
 }

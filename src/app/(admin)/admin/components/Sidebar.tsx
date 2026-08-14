@@ -46,9 +46,7 @@ export default function Sidebar({ userEmail }: SidebarProps) {
     { href: '/admin', label: 'Dashboard', icon: 'dashboard', exact: true },
     { href: '/admin/events', label: 'Events', icon: 'event' },
     { href: '/admin/social-media', label: 'Social', icon: 'share' },
-    { href: '/admin/event-media', label: 'Event Media', icon: 'perm_media' },
     { href: '/admin/analytics', label: 'Analytics', icon: 'analytics' },
-    { href: '/admin/local-analytics', label: 'Local Analytics', icon: 'monitoring' },
     { href: '/admin/volunteers', label: 'Volunteers', icon: 'groups' },
     { href: '/admin/logs', label: 'Audit Logs', icon: 'history' },
   ];
