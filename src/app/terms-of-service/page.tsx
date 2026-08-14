@@ -13,11 +13,12 @@ export default function TermsOfService() {
       <Navigation />
       
       <div className="flex-grow pt-32 pb-20 px-5 max-w-[900px] mx-auto w-full">
+        
         <h1 className="text-4xl md:text-5xl font-bold text-primary mb-2" style={{ fontFamily: '"Libre Caslon Text", serif' }}>
           Terms of Service
         </h1>
         <p className="text-legal-gray text-sm mb-8">Last Updated: October 24, 2024</p>
-        <div className="w-full h-px bg-outline-variant mb-12"></div>
+        <div className="w-full h-px bg-outline-variant opacity-50 mb-12"></div>
         
         <div className="bg-neutral-white border border-outline-variant shadow-sm p-8 md:p-14">
           <div className="prose prose-on-surface opacity-90 max-w-none text-sm md:text-base leading-relaxed">
@@ -47,7 +48,7 @@ export default function TermsOfService() {
                 "Compliance with all applicable local, state, and federal laws regarding political contributions and online conduct."
               ].map((item, index) => (
                 <li key={index} className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-secondary icon-fill-1 text-lg flex-shrink-0 mt-0.5">check_circle</span>
+                  <span className="material-symbols-outlined text-secondary text-lg flex-shrink-0 mt-0.5">check_circle</span>
                   <span>{item}</span>
                 </li>
               ))}

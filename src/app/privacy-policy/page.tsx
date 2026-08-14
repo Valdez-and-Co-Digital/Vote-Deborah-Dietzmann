@@ -13,12 +13,15 @@ export default function PrivacyPolicy() {
       <Navigation />
       
       <div className="flex-grow pt-32 pb-20 px-5 max-w-[900px] mx-auto w-full">
+        
+        <h1 className="text-4xl md:text-5xl font-bold text-primary mb-2" style={{ fontFamily: '"Libre Caslon Text", serif' }}>
+          Privacy Policy
+        </h1>
+        <p className="text-legal-gray text-sm mb-8">Last Updated: October 26, 2023</p>
+        
+        <div className="w-full h-px bg-outline-variant opacity-50 mb-12"></div>
+        
         <div className="bg-neutral-white border border-outline-variant shadow-sm p-8 md:p-14">
-          <h1 className="text-4xl md:text-5xl font-bold text-primary mb-2" style={{ fontFamily: '"Libre Caslon Text", serif' }}>
-            Privacy Policy
-          </h1>
-          <p className="text-legal-gray text-sm mb-8">Last Updated: October 26, 2023</p>
-          
           <div className="prose prose-on-surface opacity-90 max-w-none text-sm md:text-base leading-relaxed">
             <p className="mb-4">
               The Deborah Dietzmann Campaign ("we", "us", or "our") operates this website. This Privacy Policy informs you of our policies regarding the collection, use, and disclosure of personal data when you use our website and the choices you have associated with that data.
@@ -62,7 +65,7 @@ export default function PrivacyPolicy() {
                 "To gather analysis or valuable information so that we can improve our outreach."
               ].map((item, index) => (
                 <li key={index} className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-secondary icon-fill-1 text-xl flex-shrink-0">check_circle</span>
+                  <span className="material-symbols-outlined text-secondary text-xl flex-shrink-0">check_circle</span>
                   <span>{item}</span>
                 </li>
               ))}
@@ -78,7 +81,7 @@ export default function PrivacyPolicy() {
               If you have any questions about this Privacy Policy, please contact us:
             </p>
             
-            <div className="bg-surface-container-low border border-outline-variant p-6 rounded-lg mt-6">
+            <div className="bg-surface-container-low p-6 rounded mt-6">
               <div className="flex flex-col gap-3">
                 <a href="mailto:info@deborahdietzmann.com" className="flex items-center gap-3 text-primary hover:text-secondary transition-colors">
                   <span className="material-symbols-outlined text-legal-gray">mail</span>
