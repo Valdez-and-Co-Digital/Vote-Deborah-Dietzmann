@@ -1,5 +1,3 @@
-import Navigation from '@/components/Navigation';
-import Footer from '@/components/Footer';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -9,11 +7,8 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicy() {
   return (
-    <main className="min-h-screen bg-surface-container-lowest flex flex-col">
-      <Navigation />
-      
-      <div className="flex-grow pt-32 pb-20 px-5 max-w-[900px] mx-auto w-full">
-        
+    <div className="bg-surface-container-lowest pt-32 pb-20 px-5 flex-grow w-full">
+      <div className="max-w-[900px] mx-auto w-full">
         <h1 className="text-4xl md:text-5xl font-bold text-primary mb-2" style={{ fontFamily: '"Libre Caslon Text", serif' }}>
           Privacy Policy
         </h1>
@@ -96,8 +91,6 @@ export default function PrivacyPolicy() {
           </div>
         </div>
       </div>
-
-      <Footer />
-    </main>
+    </div>
   );
 }
