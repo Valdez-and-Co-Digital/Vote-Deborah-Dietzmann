@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "../globals.css";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import CookieConsent from "@/components/CookieConsent";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.deborahdietzmannforjudge.com"),
@@ -39,6 +40,21 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
+        {/* Google Consent Mode Default */}
+        <Script
+          id="google-consent-mode"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                'analytics_storage': 'denied',
+                'ad_storage': 'denied'
+              });
+            `,
+          }}
+        />
         {/* Google Analytics 4 */}
         <Script
           strategy="afterInteractive"
@@ -64,6 +80,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <CookieConsent />
       </body>
     </html>
   );
