@@ -89,7 +89,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-on-primary/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-center">
+        <div className="border-t border-on-primary/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-center">
           <div className="flex flex-col gap-1">
             <p className="text-inverse-on-surface opacity-50 text-xs">
               © 2026 Deborah Dietzmann for Judge. All Rights Reserved.
@@ -98,14 +98,22 @@ export default function Footer() {
               Pol. Adv. Paid for by the Deborah Dietzmann campaign. Erica Gregory, Treas.
             </p>
           </div>
-          <a
-            href="https://ballotpedia.org/Deborah_Dietzmann"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-inverse-on-surface opacity-40 hover:opacity-70 text-xs transition-opacity"
-          >
-            Ballotpedia Profile
-          </a>
+          <div className="flex items-center gap-4">
+            <Link href="/privacy-policy" className="text-inverse-on-surface opacity-40 hover:opacity-70 text-xs transition-opacity">
+              Privacy Policy
+            </Link>
+            <Link href="/terms-of-service" className="text-inverse-on-surface opacity-40 hover:opacity-70 text-xs transition-opacity">
+              Terms of Service
+            </Link>
+            <a
+              href="https://ballotpedia.org/Deborah_Dietzmann"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-inverse-on-surface opacity-40 hover:opacity-70 text-xs transition-opacity"
+            >
+              Ballotpedia Profile
+            </a>
+          </div>
         </div>
       </div>
     </footer>
