@@ -65,14 +65,16 @@ export default function Endorsements() {
           {/* Voter Guide Feature */}
           <div className="bg-primary rounded-2xl overflow-hidden shadow-xl flex flex-col md:flex-row items-center">
             <div className="w-full md:w-auto md:flex-shrink-0 p-6 flex justify-center">
-              <div className="bg-neutral-white p-3 rounded-xl shadow-lg max-w-[260px]">
-                <Image 
-                  src="/fb-safa.jpg" 
-                  alt="Family Values Voter Guide featuring Deborah Dietzmann" 
-                  width={300}
-                  height={400}
-                  className="w-full h-auto object-cover rounded"
-                />
+              <div className="bg-neutral-white p-3 rounded-xl shadow-lg max-w-[260px] md:max-w-[320px] transition-transform hover:scale-105">
+                <a href="/family-values-voter-guide.pdf" target="_blank" rel="noopener noreferrer" title="View Full Voter Guide PDF">
+                  <Image 
+                    src="/voter-guide-thumb.jpg" 
+                    alt="Family Values Voter Guide featuring Deborah Dietzmann" 
+                    width={320}
+                    height={414}
+                    className="w-full h-auto object-cover rounded border border-surface-container-high"
+                  />
+                </a>
               </div>
             </div>
             <div className="flex-1 p-8 md:p-12 text-on-primary">
@@ -84,15 +86,26 @@ export default function Endorsements() {
               <p className="font-body-md text-body-md text-inverse-on-surface opacity-90 mb-6">
                 <strong className="text-heritage-gold">Deborah Dietzmann</strong> is listed under <strong className="text-heritage-gold">Bexar County Races — Judge, Count Ct. No. 12</strong> on the official Texas Family Action Pro-Life Family Values Voter Guide, which recommends candidates committed to protecting the family.
               </p>
-              <a 
-                href="https://TexasFamilyAction.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-heritage-gold font-label-bold uppercase tracking-wider hover:underline"
-              >
-                <span className="material-symbols-outlined text-sm">open_in_new</span>
-                TexasFamilyAction.com
-              </a>
+              <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
+                <a 
+                  href="/family-values-voter-guide.pdf" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-heritage-gold text-primary font-label-bold uppercase tracking-wider px-4 py-2 rounded-lg hover:bg-neutral-white transition-colors"
+                >
+                  <span className="material-symbols-outlined text-sm">picture_as_pdf</span>
+                  View Voter Guide PDF
+                </a>
+                <a 
+                  href="https://TexasFamilyAction.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-heritage-gold font-label-bold uppercase tracking-wider hover:underline"
+                >
+                  <span className="material-symbols-outlined text-sm">open_in_new</span>
+                  TexasFamilyAction.com
+                </a>
+              </div>
             </div>
           </div>
         </div>
