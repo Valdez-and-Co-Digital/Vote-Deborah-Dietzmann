@@ -3,6 +3,7 @@ import "../../globals.css";
 import { createClient } from '@/utils/supabase/server';
 import Sidebar from './components/Sidebar';
 import DesktopHeader from './components/DesktopHeader';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | Deborah Dietzmann",
@@ -16,6 +17,17 @@ export default async function AdminLayout({
 }>) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+
+  if (user) {
+    const allowedEmails = (process.env.ADMIN_EMAILS || '')
+      .split(',')
+      .map((email) => email.trim().toLowerCase());
+    
+    if (user.email && !allowedEmails.includes(user.email.toLowerCase())) {
+      await supabase.auth.signOut();
+      redirect('/admin/login?error=Unauthorized Account. This email is not on the admin allowlist.');
+    }
+  }
 
   return (
     <html lang="en">
