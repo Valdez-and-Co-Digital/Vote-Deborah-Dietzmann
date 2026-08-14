@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import KPICard from './components/KPICard';
 import Link from 'next/link';
 import AIDailyBriefing from './components/AIDailyBriefing';
+import { getAnalyticsData } from '@/app/actions/analytics';
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
@@ -34,6 +35,8 @@ export default async function AdminDashboardPage() {
     .gte('date', new Date().toISOString())
     .order('date', { ascending: true })
     .limit(3);
+    
+  const gaData = await getAnalyticsData();
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto">
@@ -64,14 +67,14 @@ export default async function AdminDashboardPage() {
           value={volunteerCount ? volunteerCount.toLocaleString() : '--'} 
           icon="groups" 
           variant="grey"
-          trend={{ value: "+12% this week", isPositive: true }}
+          trend={{ value: "Total approved", neutral: true }}
         />
         <KPICard 
           title="Total Page Views" 
-          value="2,341" 
+          value={gaData.pageViews.value} 
           icon="visibility"
           variant="gold"
-          trend={{ value: "+5.2% this month", isPositive: true }} 
+          trend={gaData.pageViews.trend} 
         />
         <div className="hidden lg:block">
           <KPICard 
@@ -79,33 +82,39 @@ export default async function AdminDashboardPage() {
             value={eventsCount ?? '--'} 
             icon="event"
             variant="grey"
-            trend={{ value: "Next event in 3 days", neutral: true }} 
+            trend={{ value: "Next 30 days", neutral: true }} 
           />
         </div>
         <div className="hidden lg:block">
           <KPICard 
             title="Avg Session Duration" 
-            value="2m 34s" 
+            value={gaData.avgSession.value} 
             icon="timer"
             variant="gold"
-            trend={{ value: "-0.4% this week", isPositive: false }} 
+            trend={gaData.avgSession.trend} 
           />
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 mb-6 md:mb-8">
-        {/* Placeholder: Google Analytics Traffic Chart */}
+        {/* Top Pages Overview */}
         <div className="lg:col-span-3 bg-neutral-white border border-outline-variant/30 rounded-2xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="font-headline-md text-primary text-xl">Traffic Overview</h2>
-            <Link href="/admin/analytics" className="text-heritage-gold hover:underline font-label-bold text-sm">View All</Link>
+            <h2 className="font-headline-md text-primary text-xl">Top Pages Overview</h2>
+            <Link href="/admin/analytics" className="text-heritage-gold hover:underline font-label-bold text-sm">View Full Analytics</Link>
           </div>
-          <div className="h-48 flex items-end justify-between px-2 text-outline-variant relative">
-            {/* Mock chart area just for visuals */}
-            <div className="w-full absolute bottom-8 flex justify-between text-xs text-outline font-body-md">
-              <span>Mon</span><span>Tue</span><span className="text-primary font-bold">Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-            </div>
-            <p className="w-full text-center font-body-md text-legal-gray italic absolute top-1/2 -translate-y-1/2">Google Analytics data integration pending...</p>
+          <div className="space-y-5">
+            {gaData.topPages.slice(0, 4).map((page: { name: string; views: string; pct: number }) => (
+              <div key={page.name}>
+                <div className="flex justify-between text-sm font-body-sm text-primary mb-2 truncate gap-2">
+                  <span className="truncate">{page.name}</span>
+                  <span className="text-legal-gray shrink-0 font-label-bold">{page.views}</span>
+                </div>
+                <div className="w-full bg-surface-container-lowest rounded-full h-2.5 border border-outline-variant/20">
+                  <div className="bg-[#0a1f44] h-2.5 rounded-full" style={{ width: `${page.pct}%` }}></div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
