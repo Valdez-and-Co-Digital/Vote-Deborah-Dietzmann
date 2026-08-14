@@ -76,15 +76,31 @@ async function runReport(accessToken: string, propertyId: string, body: any) {
 
 export async function getAnalyticsData(days = 7) {
   try {
-    if (!process.env.GA_PROPERTY_ID || !process.env.GA_CLIENT_EMAIL || !process.env.GA_PRIVATE_KEY) {
-      console.warn("Missing GA credentials. Returning fallback data.");
+    const hasPropertyId = !!process.env.GA_PROPERTY_ID;
+    const hasClientEmail = !!process.env.GA_CLIENT_EMAIL;
+    const hasPrivateKey = !!process.env.GA_PRIVATE_KEY;
+    console.log('[Analytics] Env check:', { hasPropertyId, hasClientEmail, hasPrivateKey });
+
+    if (!hasPropertyId || !hasClientEmail || !hasPrivateKey) {
+      console.warn("[Analytics] Missing GA credentials. Returning fallback data.");
       return getFallbackData();
     }
 
-    const propertyId = process.env.GA_PROPERTY_ID.replace(/^"|"$/g, '').trim();
-    const clientEmail = process.env.GA_CLIENT_EMAIL.replace(/^"|"$/g, '').trim();
-    const privateKey = process.env.GA_PRIVATE_KEY.replace(/^"|"$/g, '').trim().replace(/\\n/g, '\n');
+    const propertyId = process.env.GA_PROPERTY_ID!.replace(/^"|"$/g, '').trim();
+    const clientEmail = process.env.GA_CLIENT_EMAIL!.replace(/^"|"$/g, '').trim();
+    // Handle both cases: literal \n (from Cloudflare) and already-real newlines
+    let privateKey = process.env.GA_PRIVATE_KEY!.replace(/^"|"$/g, '').trim();
+    if (!privateKey.includes('\n')) {
+      // Cloudflare may store as literal \n — convert them to real newlines
+      privateKey = privateKey.replace(/\\n/g, '\n');
+    }
+    console.log('[Analytics] propertyId:', propertyId);
+    console.log('[Analytics] clientEmail:', clientEmail);
+    console.log('[Analytics] privateKey starts:', privateKey.substring(0, 27));
+    console.log('[Analytics] privateKey has real newlines:', privateKey.includes('\n'));
+
     const accessToken = await getGoogleAccessToken(clientEmail, privateKey);
+    console.log('[Analytics] Got access token successfully');
 
     const [overviewResponse, pagesResponse, sourcesResponse, devicesResponse] = await Promise.all([
       runReport(accessToken, propertyId, {
@@ -210,8 +226,10 @@ export async function getAnalyticsData(days = 7) {
     }
 
     return { ...baseData, insights };
-  } catch (error) {
-    console.error("Error fetching GA Data:", error);
+  } catch (error: any) {
+    console.error("[Analytics] Error fetching GA Data:", error?.message || error);
+    console.error("[Analytics] Error stack:", error?.stack);
+
     return getFallbackData();
   }
 }
