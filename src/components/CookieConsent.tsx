@@ -11,6 +11,13 @@ export default function CookieConsent() {
     const consent = localStorage.getItem("cookie_consent");
     if (!consent) {
       setIsVisible(true);
+    } else if (consent === "granted") {
+      // Re-apply consent on subsequent page loads
+      if (typeof window !== "undefined" && window.gtag) {
+        window.gtag("consent", "update", {
+          analytics_storage: "granted",
+        });
+      }
     }
   }, []);
 
