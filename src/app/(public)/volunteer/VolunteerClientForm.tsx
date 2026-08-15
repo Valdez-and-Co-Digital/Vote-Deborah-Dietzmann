@@ -39,6 +39,12 @@ export default function VolunteerClientForm() {
     if (formData.get('Phone Banking')) interests.push('Phone Banking');
     if (formData.get('Host a Meet & Greet')) interests.push('Host a Meet & Greet');
 
+    if (interests.length === 0) {
+      setErrorMsg("Please select at least one way you would like to help.");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       // 1. Save to Supabase Database
       const { error: dbError } = await supabase
@@ -108,7 +114,7 @@ export default function VolunteerClientForm() {
         <input type="text" name="_gotcha" style={{ display: 'none' }} />
         
         <div>
-          <label htmlFor="v-name" className="block font-label-bold text-label-bold text-heritage-gold uppercase mb-2">Full Name</label>
+          <label htmlFor="v-name" className="block font-label-bold text-label-bold text-heritage-gold uppercase mb-2">Full Name *</label>
           <input 
             type="text" id="v-name" name="Name" required
             className="w-full bg-on-primary/10 border border-on-primary/20 text-on-primary placeholder:text-on-primary/50 px-4 py-3 rounded-lg focus:outline-none focus:border-heritage-gold transition-colors" 
@@ -116,7 +122,7 @@ export default function VolunteerClientForm() {
           />
         </div>
         <div>
-          <label htmlFor="v-email" className="block font-label-bold text-label-bold text-heritage-gold uppercase mb-2">Email Address</label>
+          <label htmlFor="v-email" className="block font-label-bold text-label-bold text-heritage-gold uppercase mb-2">Email Address *</label>
           <input 
             type="email" id="v-email" name="Email" required
             className="w-full bg-on-primary/10 border border-on-primary/20 text-on-primary placeholder:text-on-primary/50 px-4 py-3 rounded-lg focus:outline-none focus:border-heritage-gold transition-colors" 
@@ -132,7 +138,7 @@ export default function VolunteerClientForm() {
           />
         </div>
         <div>
-          <label className="block font-label-bold text-label-bold text-heritage-gold uppercase mb-3">How would you like to help?</label>
+          <label className="block font-label-bold text-label-bold text-heritage-gold uppercase mb-3">How would you like to help? *</label>
           <div className="flex flex-col gap-2">
             {['Door Knocking / Canvassing', 'Phone Banking', 'Host a Meet & Greet'].map(option => (
               <label key={option} className="flex items-center gap-3 text-inverse-on-surface opacity-90 cursor-pointer">
