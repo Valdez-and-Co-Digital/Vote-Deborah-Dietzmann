@@ -34,48 +34,67 @@ export async function POST(request: Request) {
     // Clean base64 string if it has the data URI prefix
     const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, "");
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { text: prompt },
-              {
-                inline_data: {
-                  mime_type: mimeType || 'image/jpeg',
-                  data: base64Data
-                }
-              }
-            ]
-          }
-        ],
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: "object",
-            properties: {
-              pressRelease: { type: "string" },
-              socialPost: { type: "string" },
-              newsletterExcerpt: { type: "string" }
-            },
-            required: ["pressRelease", "socialPost", "newsletterExcerpt"]
-          }
-        }
-      })
-    });
+    const modelsToTry = ['gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash'];
+    let lastError = null;
+    let generated_text = '{}';
 
-    if (!response.ok) {
-      const err = await response.text();
-      console.error("Gemini API error:", err);
-      return NextResponse.json({ error: 'Failed to analyze image' }, { status: 500 });
+    for (const model of modelsToTry) {
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  { text: prompt },
+                  {
+                    inline_data: {
+                      mime_type: mimeType || 'image/jpeg',
+                      data: base64Data
+                    }
+                  }
+                ]
+              }
+            ],
+            generationConfig: {
+              responseMimeType: "application/json",
+              responseSchema: {
+                type: "object",
+                properties: {
+                  pressRelease: { type: "string" },
+                  socialPost: { type: "string" },
+                  newsletterExcerpt: { type: "string" }
+                },
+                required: ["pressRelease", "socialPost", "newsletterExcerpt"]
+              }
+            }
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          generated_text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+          if (generated_text !== '{}') {
+            console.log(`Successfully generated using ${model}`);
+            break;
+          }
+        } else {
+          lastError = await response.text();
+          console.warn(`Model ${model} failed:`, lastError);
+        }
+      } catch (err: any) {
+        lastError = err.message;
+        console.warn(`Network error with model ${model}:`, err.message);
+      }
     }
 
-    const data = await response.json();
-    const generated_text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
-    const parsed = JSON.parse(generated_text);
+    if (generated_text === '{}') {
+      console.error("All Gemini fallback models failed. Last error:", lastError);
+      return NextResponse.json({ error: 'Failed to analyze image after trying multiple models' }, { status: 500 });
+    }
 
+    const parsed = JSON.parse(generated_text);
     return NextResponse.json({ success: true, data: parsed });
   } catch (error: any) {
     console.error("Error analyzing event media:", error);
