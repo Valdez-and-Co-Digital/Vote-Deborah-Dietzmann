@@ -36,21 +36,41 @@ export async function POST(request: Request) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) throw new Error("Missing GEMINI_API_KEY");
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
-      })
-    });
+    const modelsToTry = ['gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash'];
+    let lastError = null;
+    let generated_caption = '';
 
-    if (!response.ok) {
-      console.error("Gemini API error:", await response.text());
-      return NextResponse.json({ error: 'Failed to generate post from AI' }, { status: 500 });
+    for (const model of modelsToTry) {
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }]
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          generated_caption = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          if (generated_caption) {
+            console.log(`Successfully generated using ${model}`);
+            break;
+          }
+        } else {
+          lastError = await response.text();
+          console.warn(`Model ${model} failed:`, lastError);
+        }
+      } catch (err: any) {
+        lastError = err.message;
+        console.warn(`Network error with model ${model}:`, err.message);
+      }
     }
 
-    const data = await response.json();
-    const generated_caption = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    if (!generated_caption) {
+      console.error("All Gemini fallback models failed. Last error:", lastError);
+      return NextResponse.json({ error: 'Failed to generate post from AI after trying multiple models' }, { status: 500 });
+    }
 
     return NextResponse.json({ success: true, caption: generated_caption.trim() });
   } catch (error: any) {
