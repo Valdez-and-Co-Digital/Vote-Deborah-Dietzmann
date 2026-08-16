@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import AIAcknowledgementModal from '../components/AIAcknowledgementModal';
 
 interface NewsItem {
   publisher: string;
@@ -89,6 +90,7 @@ export default function SocialMediaPage() {
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto pt-16 md:pt-8">
+      <AIAcknowledgementModal />
       {/* Mobile Header */}
       <div className="md:hidden flex items-center gap-4 mb-6">
         <span className="material-symbols-outlined text-primary text-2xl">arrow_back</span>

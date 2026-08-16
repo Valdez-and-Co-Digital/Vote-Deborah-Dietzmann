@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import AIAcknowledgementModal from './AIAcknowledgementModal';
 
 export default function EventMediaTool() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -68,6 +69,7 @@ export default function EventMediaTool() {
 
   return (
     <div className="flex flex-col w-full pb-8">
+      <AIAcknowledgementModal />
       {/* Header */}
       <div className="mb-6 md:mb-8">
         <p className="font-body-md text-legal-gray text-base">

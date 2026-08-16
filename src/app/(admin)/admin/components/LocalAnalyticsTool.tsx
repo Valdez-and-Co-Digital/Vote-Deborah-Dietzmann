@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import AIAcknowledgementModal from './AIAcknowledgementModal';
 
 export default function LocalAnalyticsTool() {
   const [dataInput, setDataInput] = useState('');
@@ -54,6 +55,7 @@ export default function LocalAnalyticsTool() {
 
   return (
     <div className="flex flex-col w-full h-full pb-8">
+      <AIAcknowledgementModal />
       {/* Header */}
       <div className="mb-4 shrink-0">
         <p className="font-body-md text-legal-gray text-base">

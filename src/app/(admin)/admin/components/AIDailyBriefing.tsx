@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import ReactMarkdown from 'react-markdown';
+import AIAcknowledgementModal from './AIAcknowledgementModal';
 
 interface DailyBriefing {
   id: string;
@@ -68,6 +69,7 @@ export default function AIDailyBriefing() {
 
   return (
     <div className="bg-neutral-white border border-outline-variant/30 rounded-2xl p-6 shadow-sm flex flex-col h-full">
+      <AIAcknowledgementModal />
       <div className="flex items-center justify-between mb-4 pb-4 border-b border-outline-variant/30">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
