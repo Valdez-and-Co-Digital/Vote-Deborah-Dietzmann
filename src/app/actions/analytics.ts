@@ -142,8 +142,14 @@ export async function getAnalyticsData(days = 7) {
     ]);
 
     // Parse Overview
-    const current = overviewResponse.rows?.[0]?.metricValues || [];
-    const previous = overviewResponse.rows?.length && overviewResponse.rows.length > 1 ? overviewResponse.rows[1]?.metricValues || [] : current;
+    // GA4 implicitly adds a 'date_range_0' and 'date_range_1' dimension when multiple dateRanges are queried
+    const rows = overviewResponse.rows || [];
+    const currentRow = rows.find((r: any) => r.dimensionValues?.[0]?.value === 'date_range_0') || rows[0];
+    const prevRow = rows.find((r: any) => r.dimensionValues?.[0]?.value === 'date_range_1');
+
+    const defaultMetrics = [{value: '0'}, {value: '0'}, {value: '0'}, {value: '0'}];
+    const current = currentRow?.metricValues || defaultMetrics;
+    const previous = prevRow?.metricValues || defaultMetrics;
 
     const currentUsers = parseInt(current[0]?.value || '0', 10);
     const prevUsers = parseInt(previous[0]?.value || '0', 10);
@@ -252,16 +258,27 @@ export async function getAnalyticsData(days = 7) {
 }
 
 function calculateTrend(current: number, previous: number, invert = false) {
-  if (previous === 0) return { value: '+0%', isPositive: true };
+  if (previous === 0 && current === 0) {
+    return { value: '0.0%', neutral: true };
+  }
+  
+  if (previous === 0) {
+    return { value: '+100.0%', isPositive: !invert };
+  }
+
   const diff = current - previous;
   const pct = (diff / previous) * 100;
   
-  let isPositive = pct >= 0;
+  if (pct === 0) {
+    return { value: '0.0%', neutral: true };
+  }
+  
+  let isPositive = pct > 0;
   if (invert) {
-    isPositive = pct <= 0;
+    isPositive = pct < 0;
   }
 
-  const sign = pct >= 0 ? '+' : '';
+  const sign = pct > 0 ? '+' : '';
   return {
     value: `${sign}${pct.toFixed(1)}%`,
     isPositive
