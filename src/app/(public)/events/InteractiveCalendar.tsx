@@ -88,7 +88,10 @@ export default function InteractiveCalendar({ events }: { events: Event[] }) {
             // Check if this day has events
             const dayEvents = (events || []).filter(e => {
               const eDate = new Date(e.date);
-              return eDate.getDate() === day && eDate.getMonth() === currentMonth && eDate.getFullYear() === currentYear;
+              const eDay = parseInt(eDate.toLocaleDateString('en-US', { day: 'numeric', timeZone: 'America/Chicago' }));
+              const eMonth = parseInt(eDate.toLocaleDateString('en-US', { month: 'numeric', timeZone: 'America/Chicago' })) - 1;
+              const eYear = parseInt(eDate.toLocaleDateString('en-US', { year: 'numeric', timeZone: 'America/Chicago' }));
+              return eDay === day && eMonth === currentMonth && eYear === currentYear;
             });
             const hasEvents = dayEvents.length > 0;
 

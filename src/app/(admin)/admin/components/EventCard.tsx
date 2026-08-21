@@ -42,8 +42,8 @@ export default function EventCard({ event, onUpdate, onEdit, onViewRsvps }: Even
   
   // Format dates for display
   const eventDate = new Date(event.date);
-  const formattedDate = eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  const formattedTime = eventDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  const formattedDate = eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'America/Chicago' });
+  const formattedTime = eventDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' });
 
   // Calculate days difference for the "In X days" badge
   const diffTime = Math.abs(eventDate.getTime() - new Date().getTime());

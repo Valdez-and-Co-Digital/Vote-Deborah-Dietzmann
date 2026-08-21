@@ -181,7 +181,7 @@ export default async function AdminDashboardPage() {
                     <div className="flex justify-between items-start mb-1">
                       <p className="font-label-bold text-primary">{evt.title}</p>
                       <span className="text-xs text-primary bg-primary/10 py-1 px-2 rounded border border-primary/20 whitespace-nowrap ml-2">
-                        {new Date(evt.date).toLocaleDateString()}
+                        {new Date(evt.date).toLocaleDateString('en-US', { timeZone: 'America/Chicago' })}
                       </span>
                     </div>
                     <div className="flex items-center text-sm text-legal-gray gap-2 mt-2">

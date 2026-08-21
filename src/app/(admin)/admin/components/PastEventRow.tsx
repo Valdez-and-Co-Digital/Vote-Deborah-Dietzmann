@@ -23,7 +23,7 @@ export default function PastEventRow({ event, onUpdate, onViewRsvps }: { event: 
     <li className="py-3 flex flex-col md:flex-row md:justify-between md:items-center gap-3">
       <div>
         <p className="font-label-bold text-primary">{event.title}</p>
-        <p className="text-xs text-legal-gray">{new Date(event.date).toLocaleDateString()} - {event.location}</p>
+        <p className="text-xs text-legal-gray">{new Date(event.date).toLocaleDateString('en-US', { timeZone: 'America/Chicago' })} - {event.location}</p>
       </div>
       <div className="flex items-center gap-4">
         <div className="text-sm text-legal-gray flex flex-col items-end">

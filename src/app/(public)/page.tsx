@@ -210,11 +210,11 @@ export default async function Home() {
             ) : (
               events.map((event) => {
                 const dateObj = new Date(event.date);
-                const monthShort = dateObj.toLocaleDateString('en-US', { month: 'short' });
-                const day = dateObj.getDate();
-                const timeFormatted = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                const monthShort = dateObj.toLocaleDateString('en-US', { month: 'short', timeZone: 'America/Chicago' });
+                const day = dateObj.toLocaleDateString('en-US', { day: 'numeric', timeZone: 'America/Chicago' });
+                const timeFormatted = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' });
                 const endTimeFormatted = event.end_time 
-                  ? new Date(event.end_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+                  ? new Date(event.end_time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' })
                   : null;
 
                 return (

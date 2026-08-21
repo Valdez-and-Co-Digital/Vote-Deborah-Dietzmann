@@ -41,9 +41,12 @@ export default function CalendarWidget({ events }: CalendarWidgetProps) {
   const getEventsForDay = (day: number) => {
     return events.filter(e => {
       const eventDate = new Date(e.date);
-      return eventDate.getDate() === day && 
-             eventDate.getMonth() === month && 
-             eventDate.getFullYear() === year;
+      const eDay = parseInt(eventDate.toLocaleDateString('en-US', { day: 'numeric', timeZone: 'America/Chicago' }));
+      const eMonth = parseInt(eventDate.toLocaleDateString('en-US', { month: 'numeric', timeZone: 'America/Chicago' })) - 1;
+      const eYear = parseInt(eventDate.toLocaleDateString('en-US', { year: 'numeric', timeZone: 'America/Chicago' }));
+      return eDay === day && 
+             eMonth === month && 
+             eYear === year;
     });
   };
 
